@@ -1,42 +1,42 @@
-import { GameConfigType } from "@config";
-import { Block, BlockType } from "@objects/Block";
-import { MainScene } from "@scenes/MainScene";
+import { GameConfigType } from "@config"
+import { Block, BlockType } from "@objects/Block"
+import { MainScene } from "@scenes/MainScene"
 
 export class Blocks extends Phaser.Physics.Arcade.Group {
-  private config: GameConfigType;
+	private config: GameConfigType
 
-  constructor(scene: MainScene) {
-    super(scene.physics.world, scene, {
-      immovable: true,
-      classType: Block,
-      maxSize: scene.config.block.max
-    });
+	constructor(scene: MainScene) {
+		super(scene.physics.world, scene, {
+			immovable: true,
+			classType: Block,
+			maxSize: scene.config.block.max,
+		})
 
-    this.config = scene.config;
-  }
+		this.config = scene.config
+	}
 
-  get blocks(): Block[] {
-    return this.getChildren() as Block[];
-  }
+	get blocks(): Block[] {
+		return this.getChildren() as Block[]
+	}
 
-  add(child: Block, addToScene?: boolean | undefined): this {
-    if (this.getTotalFree() === 0) {
-      console.warn(`No more empty slots`);
-      return this;
-    }
+	add(child: Block, addToScene?: boolean | undefined): this {
+		if (this.getTotalFree() === 0) {
+			console.warn(`No more empty slots`)
+			return this
+		}
 
-    super.add(child, addToScene);
+		super.add(child, addToScene)
 
-    return this;
-  }
+		return this
+	}
 
-  getBlocksBounds(): Phaser.Geom.Rectangle[] {
-    const bounds: Phaser.Geom.Rectangle[] = [];
+	getBlocksBounds(): Phaser.Geom.Rectangle[] {
+		const bounds: Phaser.Geom.Rectangle[] = []
 
-    this.blocks.forEach((block) => {
-      bounds.push(block.getBounds());
-    });
+		this.blocks.forEach((block) => {
+			bounds.push(block.getBounds())
+		})
 
-    return bounds;
-  }
+		return bounds
+	}
 }

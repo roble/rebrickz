@@ -1,29 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES2015",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "allowUnreachableCode": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "strictPropertyInitialization": true,
-    "moduleResolution": "node",
-    "lib": ["dom", "esnext"],
-    "baseUrl": ".",
-    "paths": {
-      "@rebrickz": ["src/rebrickz/"],
-      "@config": ["src/config.ts"],
-      "@helpers": ["src/helpers.ts"],
-      "@scenes/*": ["src/scenes/*"],
-      "@objects/*": ["src/objects/*"],
-      "@assets/*": ["src/assets/*"]
-    },
-    "outDir": "dist"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+	"compilerOptions": {
+		"target": "ES2015",
+		"module": "ES2015",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowJs": true,
+		"allowUnreachableCode": true,
+		"noImplicitAny": true,
+		"sourceMap": true,
+		"strictPropertyInitialization": true,
+		"moduleResolution": "node",
+		"lib": ["dom", "esnext"],
+		"baseUrl": ".",
+		"paths": {
+			"@rebrickz": ["src/rebrickz/"],
+			"@config": ["src/config.ts"],
+			"@helpers": ["src/helpers.ts"],
+			"@scenes/*": ["src/scenes/*"],
+			"@objects/*": ["src/objects/*"],
+			"@assets/*": ["src/assets/*"]
+		},
+		"outDir": "dist"
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }
