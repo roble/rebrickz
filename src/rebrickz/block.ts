@@ -154,25 +154,24 @@ export namespace Block {
 		}
 	}
 	export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface, HasConfig {
-		config: GameConfigType
+		config!: GameConfigType
 		col!: number
 		row!: number
 		level!: number
 		blockType!: Type
 
 		constructor(scene: MainScene, options: Options) {
-			const { row, col, texture } = options || {}
-			const { size, defaultTexture } = scene.config.block
-			const x = row ? row * size : 0
-			const y = col ? col * size : 0
+			const { row, col, texture = 'block' } = options
 
-			super(scene, x, y, texture ?? defaultTexture)
+			super(scene, 0, 0, texture)
+			this.row = row
+			this.col = col
 			this.config = scene.config
 			this.followPosition = []
 		}
 
-		boot(): this {
-			console.log("boot base")
+		boot(scene?: MainScene, options?: Options): this {
+			console.log("boot base", scene, options)
 			this.on("addedtoscene", this.create, this)
 			return this
 		}
@@ -240,8 +239,8 @@ export namespace Block {
 
 	// Export as an interface to extends other classes and
 	// then merge the classes applying the mixins
-	export interface BaseBlock extends Moveable {}
-	export interface Normal extends Moveable, Damageable {}
+	export interface BaseBlock extends Moveable { }
+	export interface Normal extends Moveable, Damageable { }
 
 	applyMixins(BaseBlock, [Moveable])
 	applyMixins(Normal, [Moveable, Damageable])

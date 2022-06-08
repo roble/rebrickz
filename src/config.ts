@@ -141,6 +141,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	parent: "game",
 	backgroundColor: "#673ab7",
+	banner: { hidePhaser: true },
 	scale: {
 		width: GameConfig.width,
 		height: GameConfig.height,
