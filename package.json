@@ -6,8 +6,19 @@
 	"scripts": {
 		"build": "webpack --config webpack/prod.js ",
 		"start": "webpack-dev-server --config webpack/base.js --open",
-		"pretty": "prettier --write \"./**/*.{js,ts,jsx,json}\"",
+		"pretty": "prettier --write",
 		"prepare": "husky install"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.js": [
+			"prettier --write",
+			"git add"
+		]
 	},
 	"repository": {
 		"type": "git",
