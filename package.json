@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "webpack --config webpack/prod.js ",
 		"start": "webpack-dev-server --config webpack/base.js --open",
-		"pretty": "prettier --write",
+		"pretty": "prettier --write \"./**/*.{js,ts,jsx,json}\"",
 		"prepare": "husky install"
 	},
 	"husky": {
@@ -15,7 +15,7 @@
 		}
 	},
 	"lint-staged": {
-		"*.js": [
+		"*.js,*.ts,*.json": [
 			"prettier --write",
 			"git add"
 		]
