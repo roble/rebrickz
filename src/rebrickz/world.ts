@@ -38,16 +38,7 @@ export class World {
 		const { x, y, width, height } = worldBounds
 
 		// set the world bounds
-		this.scene.physics.world.setBounds(
-			x,
-			y,
-			width,
-			height + height / this.config.rows,
-			true,
-			true,
-			true,
-			true
-		)
+		this.scene.physics.world.setBounds(x, y, width, height + height / this.config.rows, true, true, true, true)
 
 		// save the world bounds in a variable
 		this.bounds = worldBounds

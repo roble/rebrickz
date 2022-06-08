@@ -179,16 +179,12 @@ export class MainScene extends Phaser.Scene {
 
 		if (intersect.left) return new Phaser.Geom.Point(this.world.getBounds().left, intersect.left.y)
 
-		if (intersect.right)
-			return new Phaser.Geom.Point(this.world.getBounds().right, intersect.right.y)
+		if (intersect.right) return new Phaser.Geom.Point(this.world.getBounds().right, intersect.right.y)
 
 		const collideRight = Phaser.Geom.Intersects.LineToLine(line, this.getBottomRightLine())
 
 		if (collideRight)
-			return new Phaser.Geom.Point(
-				this.world.getBounds().x,
-				this.world.getBounds().y + this.world.getBounds().height
-			)
+			return new Phaser.Geom.Point(this.world.getBounds().x, this.world.getBounds().y + this.world.getBounds().height)
 
 		const collideLeft = Phaser.Geom.Intersects.LineToLine(line, this.getBottomLeftLine())
 
@@ -246,9 +242,7 @@ export class MainScene extends Phaser.Scene {
 			this.trajectoryRectangle.setAngle(Phaser.Math.RadToDeg(this.direction) + 90)
 
 			// get intersections
-			let collideBlocks = blocksBounds.map((rect) =>
-				Phaser.Geom.Intersects.GetLineToRectangle(line, rect)
-			)
+			let collideBlocks = blocksBounds.map((rect) => Phaser.Geom.Intersects.GetLineToRectangle(line, rect))
 
 			// filter empty
 			collideBlocks = collideBlocks.filter((e) => e.length)
@@ -277,9 +271,7 @@ export class MainScene extends Phaser.Scene {
 
 			this.collision.visible = true
 
-			this.direction = Phaser.Math.Angle.Wrap(
-				Phaser.Math.Angle.Between(firstBall.x, firstBall.y, line.x1, line.y1)
-			)
+			this.direction = Phaser.Math.Angle.Wrap(Phaser.Math.Angle.Between(firstBall.x, firstBall.y, line.x1, line.y1))
 
 			// set trajectory graphics line style
 			this.drawTrajectoryLines(line, distX, distY)

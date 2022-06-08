@@ -15,6 +15,7 @@
 		"lib": ["dom", "esnext"],
 		"baseUrl": ".",
 		"paths": {
+			"@src/*": ["src/*"],
 			"@rebrickz": ["src/rebrickz/"],
 			"@config": ["src/config.ts"],
 			"@helpers": ["src/helpers.ts"],
