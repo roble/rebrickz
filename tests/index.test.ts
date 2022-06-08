@@ -1,12 +1,16 @@
 import Phaser from "phaser"
 
-describe('Phaser', function () {
+const config = {
+    type: Phaser.HEADLESS
+}
 
-    it('can create a new instance', function () {
-        expect(new Phaser.Game).toBeInstanceOf(Phaser.Game)
+describe('Phaser', () => {
+
+    it('can create a new instance', () => {
+        expect(new Phaser.Game(config)).toBeInstanceOf(Phaser.Game)
     })
 
-    it('is version 3.55.2', function () {
+    it('is version 3.55.2', () => {
         expect(Phaser).toHaveProperty('VERSION', '3.55.2');
     })
 });
