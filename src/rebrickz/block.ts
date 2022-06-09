@@ -1,8 +1,9 @@
-import { GameConfigType } from "@config"
-import { applyMixins } from "@helpers"
-import { MainScene } from "@scenes/MainScene"
+import { GameConfig as config } from '@config';
+import { applyMixins } from '@helpers';
+import Rebrickz from '@rebrickz';
 
 export namespace Block {
+
 	type Options = {
 		texture?: string
 		row: number
@@ -27,15 +28,14 @@ export namespace Block {
 		getBody(): Phaser.Physics.Arcade.Body
 	}
 
-	interface HasConfig {
-		config: GameConfigType
-	}
 	interface MoveableInterface {
-		get lastRowIndex(): number
-		get lastColIndex(): number
+		row: number
+		col: number
 		followPosition: any[]
 		move(row?: number, col?: number): this
 		moveDown(rows: number): this
+		moveLeft(cols: number): this
+		moveRight(cols: number): this
 		canMove(row?: number, col?: number): boolean
 		fall(): this
 	}
@@ -58,16 +58,10 @@ export namespace Block {
 		heal(): this
 		kill(): this
 	}
-	class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface, HasConfig {
-		config!: GameConfigType
+	class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface {
+		row!: number
+		col!: number
 		followPosition: any[] = []
-
-		get lastRowIndex(): number {
-			return this.config.rows - 1
-		}
-		get lastColIndex(): number {
-			return this.config.cols - 1
-		}
 
 		private animate(args: object) {
 			this.scene?.tweens.add({
@@ -76,29 +70,76 @@ export namespace Block {
 			})
 		}
 
-		move(row?: number, col?: number): this {
-			console.log("move")
-			return this
+		/**
+		 * @param rows rows to move down or use -1 to move to very last row
+		 */
+		moveDown(rows = 1): this {
+			return this.move(rows > 0 ? this.row + rows : -1, undefined)
 		}
 
-		moveDown(rows: number): this {
-			console.log("move down")
+		/**
+		 * @param cols cols to move down or use -1 to move to very last col
+		 */
+		moveLeft(cols = 1): this {
+			return this.move(undefined, cols > 0 && this.col > 0 ? this.col - cols : 0)
+		}
+
+		/**
+		 * @param cols cols to move down or use -1 to move to very last col
+		 */
+		moveRight(cols = 1): this {
+			return this.move(undefined, cols > 0 ? this.col + cols : -1)
+		}
+
+		move(row?: number, col?: number): this {
+			let targetRow,
+				targetCol
+
+			if (row !== undefined && !Rebrickz.World.canMove(row))
+				targetRow = row < 0 ? Rebrickz.World.lastRowIndex : Math.min(row, Rebrickz.World.lastRowIndex)
+
+			if (col !== undefined && !Rebrickz.World.canMove(undefined, col))
+				targetCol = col < 0 ? Rebrickz.World.lastColIndex : Math.min(col, Rebrickz.World.lastColIndex)
+
+			if (targetRow !== undefined) this.row = targetRow
+
+			if (targetCol !== undefined) this.col = targetCol
+
+			const { tweens } = config.block
+
+			this.scene.time.addEvent({
+				delay: Phaser.Math.Between(tweens.move.delay.min, tweens.move.delay.max),
+				callback: this.animate,
+				callbackScope: this,
+				args: [
+					{
+						alpha: 1,
+						scale: 1,
+						ease: tweens.fall.ease,
+						duration: tweens.fall.duration,
+						x: Rebrickz.Position.getXByCol(targetCol ?? this.col),
+						y: Rebrickz.Position.getYByRow(targetRow ?? this.row),
+					},
+				],
+			})
+
 			return this
 		}
 
 		canMove(row?: number | undefined, col?: number | undefined): boolean {
 			if (!row && !col) return false
 			let flag = false
-			if (row !== undefined && (row < 0 || row + 1 >= this.lastRowIndex)) flag = true
-			if (col !== undefined && (col < 0 || col + 1 >= this.lastColIndex)) flag = true
+			if (row !== undefined && (row < 0 || row + 1 >= Rebrickz.World.lastRowIndex)) flag = true
+			if (col !== undefined && (col < 0 || col + 1 >= Rebrickz.World.lastColIndex)) flag = true
 
 			return flag
 		}
 
 		fall(): this {
 			console.log("fall")
-			const { initialPositionY, tweens } = this.config.block
+			const { initialPositionY, tweens } = config.block
 
+			const finalY = this.y
 			this.y = initialPositionY
 
 			this.scene.time.addEvent({
@@ -111,16 +152,15 @@ export namespace Block {
 						scale: 1,
 						ease: tweens.fall.ease,
 						duration: tweens.fall.duration,
-						y: 200,
+						y: finalY,
 					},
 				],
 			})
 			return this
 		}
 	}
-	class Damageable extends Phaser.Physics.Arcade.Sprite implements DamageableInterface, HasConfig {
+	class Damageable extends Phaser.Physics.Arcade.Sprite implements DamageableInterface {
 		_level!: number
-		config!: GameConfigType
 		health: number = 0
 		maxHealth: number = 0
 		textObject!: Phaser.GameObjects.Text
@@ -153,24 +193,30 @@ export namespace Block {
 			return this
 		}
 	}
-	export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface, HasConfig {
-		config!: GameConfigType
+	export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface {
 		col!: number
 		row!: number
 		level!: number
 		blockType!: Type
 
-		constructor(scene: MainScene, options: Options) {
+		constructor(scene: Phaser.Scene, options: Options) {
 			const { row, col, texture = 'block' } = options
 
 			super(scene, 0, 0, texture)
-			this.row = row
-			this.col = col
-			this.config = scene.config
+			this.fixPosition(row, col)
 			this.followPosition = []
 		}
 
-		boot(scene?: MainScene, options?: Options): this {
+		private fixPosition(row: number, col: number) {
+			this.setOrigin(0.5, 0)
+			this.row = Rebrickz.World.isValidRow(row) ? row : 0
+			this.col = Rebrickz.World.isValidCol(col) ? col : 0
+
+			this.x = Rebrickz.Position.getXByCol(this.col)
+			this.y = Rebrickz.Position.getYByRow(this.row)
+		}
+
+		boot(scene?: Phaser.Scene, options?: Options): this {
 			console.log("boot base", scene, options)
 			this.on("addedtoscene", this.create, this)
 			return this
@@ -182,7 +228,7 @@ export namespace Block {
 
 		create() {
 			console.log("added to scene")
-			const { initialAlpha, initialDepth, initialScale } = this.config.block
+			const { initialAlpha, initialDepth, initialScale } = config.block
 			this.setScale(initialScale)
 			this.setAlpha(initialAlpha)
 			this.setDepth(initialDepth)
@@ -197,7 +243,7 @@ export namespace Block {
 	}
 
 	export class Normal extends BaseBlock {
-		constructor(scene: MainScene, options: Options) {
+		constructor(scene: Phaser.Scene, options: Options) {
 			super(scene, { ...options, texture: "block" })
 			this.blockType = Type.NORMAL
 			this.boot()
@@ -208,13 +254,13 @@ export namespace Block {
 			super.boot()
 			this.textObject = this.scene.add.text(
 				this.x,
-				this.config.block.initialPositionY,
+				config.block.initialPositionY,
 				this.health?.toString(),
-				this.config.block.text.style
+				config.block.text.style
 			)
 			this.textObject.setAlpha(0)
 			this.textObject.setDepth(this.depth + 1)
-			this.textObject.setOrigin(0.5)
+			this.textObject.setOrigin(0.5, -1.5)
 			this.followPosition.push(this.textObject)
 
 			this.render()
@@ -224,14 +270,14 @@ export namespace Block {
 	}
 
 	export class SpecialBall extends BaseBlock {
-		constructor(scene: MainScene, options: Options) {
+		constructor(scene: Phaser.Scene, options: Options) {
 			super(scene, { ...options, texture: "special_ball" })
 			this.blockType = Type.SPECIAL_BALL
 		}
 	}
 
 	export class ExtraBall extends BaseBlock {
-		constructor(scene: MainScene, options: Options) {
+		constructor(scene: Phaser.Scene, options: Options) {
 			super(scene, { ...options, texture: "extra_ball" })
 			this.blockType = Type.EXTRA_BALL
 		}

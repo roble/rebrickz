@@ -13,6 +13,7 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.baseURL = "assets/"
 		// preload the assets
 		this.load.image("ground", "ground.png")
+		this.load.image("ground_tile", "ground_tile.png")
 		this.load.image("ball", "ball.png")
 		this.load.image("block", "block.png")
 		this.load.image("collision", "collision.png")

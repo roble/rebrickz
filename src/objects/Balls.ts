@@ -1,10 +1,9 @@
 import Phaser from "phaser"
-import { GameConfigType } from "@config"
+import { GameConfig as config } from "@config"
 import { Ball, BallState } from "@objects/Ball"
 import { MainScene } from "@scenes/MainScene"
 
 export class Balls extends Phaser.Physics.Arcade.Group {
-	private config: GameConfigType
 
 	constructor(scene: MainScene) {
 		super(scene.physics.world, scene, {
@@ -12,15 +11,13 @@ export class Balls extends Phaser.Physics.Arcade.Group {
 			bounceY: 1,
 			classType: Ball,
 			collideWorldBounds: true,
-			maxSize: scene.config.ball.max,
+			maxSize: config.ball.max,
 		})
-
-		this.config = scene.config
 	}
 
 	fire(direction: number) {
 		const balls = this.getChildren() as Ball[]
-		const { speed, delayBetweenBalls } = this.config.ball
+		const { speed, delayBetweenBalls } = config.ball
 
 		balls.forEach((ball, index) => {
 			this.scene.time.addEvent({
@@ -32,7 +29,7 @@ export class Balls extends Phaser.Physics.Arcade.Group {
 		})
 	}
 
-	regroup() {}
+	regroup() { }
 
 	isRunning(): boolean {
 		const children = this.getChildren() as Ball[]

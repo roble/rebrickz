@@ -1,17 +1,69 @@
-import { GameConfigType } from "@config"
-import { MainScene } from "@scenes/MainScene"
+import { GameConfig as config } from "@config"
 
+export interface Sides {
+	top: Phaser.Geom.Line,
+	right: Phaser.Geom.Line,
+	bottom: Phaser.Geom.Line,
+	left: Phaser.Geom.Line,
+}
 export class World {
-	scene: MainScene
-	config: GameConfigType
-	bounds: any
-	collisionHandler: Function
+	scene: Phaser.Scene
+	bounds!: Phaser.Geom.Rectangle
+	collisionHandler!: Function
 
-	constructor(scene: MainScene, collisionHandler: Function) {
+	constructor(scene: Phaser.Scene) {
 		this.scene = scene
-		this.config = scene.config
-		this.collisionHandler = collisionHandler
 		this.create()
+	}
+
+	setCollisionHandler(handler: Function) {
+		this.collisionHandler = handler
+		// lister for collision with world bounds
+		this.scene.physics.world.on("worldbounds",
+			this.collisionHandler,
+			this.scene)
+	}
+
+	static get origin(): Phaser.Geom.Point {
+		let x, y
+
+		x = (config.width - config.world.width) / 2
+		y = (config.height - config.world.height) / 2
+
+		return new Phaser.Geom.Point(x, y)
+	}
+
+	static get lastRowIndex(): number {
+		return config.rows - 1
+	}
+
+	static get lastColIndex(): number {
+		return config.cols - 1
+	}
+
+	static isValidRow(row: number): boolean {
+		return (row >= 0 && row <= World.lastRowIndex)
+	}
+
+	static isValidCol(col: number): boolean {
+		return (col >= 0 && col <= World.lastColIndex)
+	}
+
+	static canMove(row?: number | undefined, col?: number | undefined): boolean {
+
+		if (!row && !col) return false
+
+		let flag = false
+
+		if (row !== undefined && World.isValidRow(row))
+			flag = true
+		else flag = false
+
+		if (col !== undefined && World.isValidCol(col))
+			flag = true
+		else flag = false
+
+		return flag
 	}
 
 	getBounds(): Phaser.Geom.Rectangle {
@@ -19,26 +71,62 @@ export class World {
 	}
 
 	getBoundsBottom(): number {
-		return this.bounds.bottom + this.config.block.size
+		return this.bounds.bottom + config.block.size
+	}
+
+	getSides(): Sides {
+		return {
+			top: this.bounds.getLineA(),
+			right: this.bounds.getLineB(),
+			bottom: this.bounds.getLineC(),
+			left: this.bounds.getLineD(),
+		}
+	}
+
+	createWorldTiles() {
+
+		let isOdd = false
+
+		for (let col = 0; col < config.cols; col++) {
+
+			isOdd = !isOdd
+			const blockSize = config.block.size
+
+			for (let row = 0; row < config.rows; row++) {
+				const [x, y] = [
+					this.bounds.left + col * blockSize,
+					this.bounds.top + row * blockSize
+				]
+				const sprite = this.scene.add.sprite(x, y, 'ground_tile')
+					.setOrigin(0, 0)
+					.setAlpha(isOdd ? 0.03 : 0.05)
+
+				sprite.displayWidth = blockSize
+				sprite.displayHeight = blockSize
+				isOdd = !isOdd
+			}
+		}
 	}
 
 	create() {
-		const mainCamera = this.scene.cameras.main
 
 		const ground = this.scene.add.sprite(
-			mainCamera.worldView.x + mainCamera.width / 2,
-			mainCamera.worldView.y + mainCamera.height / 2,
+			config.width / 2,
+			config.height / 2,
 			"ground"
 		)
 
 		ground.setOrigin(0.5)
-		ground.setDisplaySize(this.config.world.width, this.config.world.height)
+		ground.setDisplaySize(
+			config.world.width,
+			config.world.height - config.block.size
+		)
 
 		const worldBounds = ground.getBounds()
 		const { x, y, width, height } = worldBounds
 
 		// set the world bounds
-		this.scene.physics.world.setBounds(x, y, width, height + height / this.config.rows, true, true, true, true)
+		this.scene.physics.world.setBounds(x, y, width, height + height / config.rows, true, true, true, true)
 
 		// save the world bounds in a variable
 		this.bounds = worldBounds
@@ -46,8 +134,9 @@ export class World {
 		// enable collision
 		this.scene.physics.world.setBoundsCollision(true, true, true, true)
 
-		// lister for collision with world bounds
-		this.scene.physics.world.on("worldbounds", this.collisionHandler, this.scene)
+
+
+		this.createWorldTiles()
 
 		/**
 		 * Debug

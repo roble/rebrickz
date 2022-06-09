@@ -1,4 +1,4 @@
-import { GameConfigType } from "@config"
+import { GameConfig as config } from "@config"
 import { applyMixins } from "@helpers"
 import { MainScene } from "@scenes/MainScene"
 
@@ -23,7 +23,6 @@ export type RowColPosition = {
 }
 
 interface BlockInterface {
-	_config: GameConfigType
 	col: number
 	row: number
 }
@@ -33,7 +32,6 @@ abstract class BlockBase extends Phaser.Physics.Arcade.Sprite {
 	protected _row = 0
 	protected _col = 0
 	protected _text!: Phaser.GameObjects.Text
-	protected _config: GameConfigType
 	protected _emitter!: Phaser.GameObjects.Particles.ParticleEmitter
 	protected _particle!: Phaser.GameObjects.Particles.ParticleEmitterManager
 	protected _level: number | undefined
@@ -45,7 +43,6 @@ abstract class BlockBase extends Phaser.Physics.Arcade.Sprite {
 
 		super(scene, row, col, texture, frame)
 
-		this._config = scene.config
 		this._row = row
 		this._col = col
 		this._level = level
@@ -64,7 +61,7 @@ abstract class BlockBase extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	get blockSize(): number {
-		return this._config.block.size
+		return config.block.size
 	}
 
 	get row(): number {
@@ -96,11 +93,11 @@ abstract class BlockBase extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	get lastRowIndex(): number {
-		return this._config.rows - 1
+		return config.rows - 1
 	}
 
 	get lastColIndex(): number {
-		return this._config.cols - 1
+		return config.cols - 1
 	}
 
 	// Private Methods
@@ -328,11 +325,11 @@ export class Block extends BlockBase {
 	}
 }
 
-export class Moveable {}
+export class Moveable { }
 
-export class Emittable {}
+export class Emittable { }
 
-export interface Block extends Moveable, Emittable {}
+export interface Block extends Moveable, Emittable { }
 
 applyMixins(Block, [Moveable, Emittable])
 

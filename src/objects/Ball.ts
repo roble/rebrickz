@@ -1,4 +1,4 @@
-import { BallConfigType, GameConfig } from "@config"
+import { BallConfigType, GameConfig as config } from "@config"
 import { MainScene } from "@scenes/MainScene"
 
 /**
@@ -24,9 +24,9 @@ export class Ball extends Phaser.Physics.Arcade.Sprite {
 	constructor(scene: MainScene) {
 		super(scene, 0, 0, "ball")
 
-		this.config = scene.config.ball
+		this.config = config.ball
 		this.state = BallState.STOPPED
-		this.size = GameConfig.ball.size
+		this.size = config.ball.size
 		this.createEmitter()
 		this.init()
 	}

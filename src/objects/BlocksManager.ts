@@ -1,4 +1,4 @@
-import { GameConfigType } from "@config"
+import { GameConfig as config } from "@config"
 import { MainScene } from "@scenes/MainScene"
 import { Block, BlockType } from "./Block"
 import { Blocks } from "./Blocks"
@@ -10,7 +10,6 @@ export type BlockGroup = {
 export class BlocksManager {
 	private scene: MainScene
 	public groups: BlockGroup
-	public config: GameConfigType
 
 	constructor(scene: MainScene) {
 		this.scene = scene
@@ -19,19 +18,18 @@ export class BlocksManager {
 			[BlockType.SPECIAL_BALL]: new Blocks(scene),
 			[BlockType.EXTRA_BALL]: new Blocks(scene),
 		}
-		this.config = scene.config
 	}
 
 	get lastRowIndex(): number {
-		return this.config.rows - 1
+		return config.rows - 1
 	}
 
 	get lastColIndex(): number {
-		return this.config.cols - 1
+		return config.cols - 1
 	}
 
 	getSlots(): boolean[][] {
-		const { rows, cols } = this.config
+		const { rows, cols } = config
 
 		const slots: boolean[][] = []
 
@@ -62,7 +60,7 @@ export class BlocksManager {
 	}
 
 	getFreeSlots(rowStart: number = 0, rowEnd: number = -1): boolean[][] {
-		const { rows } = this.config
+		const { rows } = config
 
 		if (rowStart < 0) rowStart = 0
 		if (rowEnd < 0) rowEnd = this.lastRowIndex

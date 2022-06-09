@@ -1,18 +1,15 @@
-import { GameConfigType } from "@config"
+import { GameConfig as config } from "@config"
 import { Block, BlockType } from "@objects/Block"
 import { MainScene } from "@scenes/MainScene"
 
 export class Blocks extends Phaser.Physics.Arcade.Group {
-	private config: GameConfigType
 
 	constructor(scene: MainScene) {
 		super(scene.physics.world, scene, {
 			immovable: true,
 			classType: Block,
-			maxSize: scene.config.block.max,
+			maxSize: config.block.max,
 		})
-
-		this.config = scene.config
 	}
 
 	get blocks(): Block[] {
