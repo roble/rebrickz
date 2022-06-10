@@ -61,9 +61,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         this.addEventListeners()
         this.createGraphics()
         this.createCollisionPoint()
-
-        // TODO: remove
-        this.setActive(true)
     }
 
     private createGraphics(): void {
