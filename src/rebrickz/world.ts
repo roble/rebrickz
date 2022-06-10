@@ -1,10 +1,10 @@
 import { GameConfig as config } from "@config"
 
 export interface Sides {
-	top: Phaser.Geom.Line,
-	right: Phaser.Geom.Line,
-	bottom: Phaser.Geom.Line,
-	left: Phaser.Geom.Line,
+	top: Phaser.Geom.Line
+	right: Phaser.Geom.Line
+	bottom: Phaser.Geom.Line
+	left: Phaser.Geom.Line
 }
 export class World {
 	scene: Phaser.Scene
@@ -19,9 +19,7 @@ export class World {
 	setCollisionHandler(handler: Function) {
 		this.collisionHandler = handler
 		// lister for collision with world bounds
-		this.scene.physics.world.on("worldbounds",
-			this.collisionHandler,
-			this.scene)
+		this.scene.physics.world.on("worldbounds", this.collisionHandler, this.scene)
 	}
 
 	static get origin(): Phaser.Geom.Point {
@@ -42,25 +40,22 @@ export class World {
 	}
 
 	static isValidRow(row: number): boolean {
-		return (row >= 0 && row <= World.lastRowIndex)
+		return row >= 0 && row <= World.lastRowIndex
 	}
 
 	static isValidCol(col: number): boolean {
-		return (col >= 0 && col <= World.lastColIndex)
+		return col >= 0 && col <= World.lastColIndex
 	}
 
 	static canMove(row?: number | undefined, col?: number | undefined): boolean {
-
 		if (!row && !col) return false
 
 		let flag = false
 
-		if (row !== undefined && World.isValidRow(row))
-			flag = true
+		if (row !== undefined && World.isValidRow(row)) flag = true
 		else flag = false
 
-		if (col !== undefined && World.isValidCol(col))
-			flag = true
+		if (col !== undefined && World.isValidCol(col)) flag = true
 		else flag = false
 
 		return flag
@@ -84,20 +79,16 @@ export class World {
 	}
 
 	createWorldTiles() {
-
 		let isOdd = false
 
 		for (let col = 0; col < config.cols; col++) {
-
 			isOdd = !isOdd
 			const blockSize = config.block.size
 
 			for (let row = 0; row < config.rows; row++) {
-				const [x, y] = [
-					this.bounds.left + col * blockSize,
-					this.bounds.top + row * blockSize
-				]
-				const sprite = this.scene.add.sprite(x, y, 'ground_tile')
+				const [x, y] = [this.bounds.left + col * blockSize, this.bounds.top + row * blockSize]
+				const sprite = this.scene.add
+					.sprite(x, y, "ground_tile")
 					.setOrigin(0, 0)
 					.setAlpha(isOdd ? 0.03 : 0.05)
 
@@ -109,18 +100,10 @@ export class World {
 	}
 
 	create() {
-
-		const ground = this.scene.add.sprite(
-			config.width / 2,
-			config.height / 2,
-			"ground"
-		)
+		const ground = this.scene.add.sprite(config.width / 2, config.height / 2, "ground")
 
 		ground.setOrigin(0.5)
-		ground.setDisplaySize(
-			config.world.width,
-			config.world.height - config.block.size
-		)
+		ground.setDisplaySize(config.world.width, config.world.height - config.block.size)
 
 		const worldBounds = ground.getBounds()
 		const { x, y, width, height } = worldBounds
@@ -133,8 +116,6 @@ export class World {
 
 		// enable collision
 		this.scene.physics.world.setBoundsCollision(true, true, true, true)
-
-
 
 		this.createWorldTiles()
 

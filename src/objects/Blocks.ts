@@ -3,7 +3,6 @@ import { Block, BlockType } from "@objects/Block"
 import { MainScene } from "@scenes/MainScene"
 
 export class Blocks extends Phaser.Physics.Arcade.Group {
-
 	constructor(scene: MainScene) {
 		super(scene.physics.world, scene, {
 			immovable: true,

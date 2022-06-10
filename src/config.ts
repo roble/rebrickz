@@ -12,7 +12,6 @@ const WORLD_HEIGHT = GAME_ROWS * BLOCK_SIZE + BLOCK_SIZE
 const WORLD_WIDTH = GAME_COLS * BLOCK_SIZE
 const BALL_SIZE = 16
 
-
 /**
  * Game Config
  */

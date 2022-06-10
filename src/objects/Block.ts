@@ -325,11 +325,11 @@ export class Block extends BlockBase {
 	}
 }
 
-export class Moveable { }
+export class Moveable {}
 
-export class Emittable { }
+export class Emittable {}
 
-export interface Block extends Moveable, Emittable { }
+export interface Block extends Moveable, Emittable {}
 
 applyMixins(Block, [Moveable, Emittable])
 

@@ -14,7 +14,6 @@ export enum GameState {
 }
 
 export class MainScene extends Phaser.Scene {
-
 	public world!: Rebrickz.World
 	public trajectory!: Rebrickz.Trajectory
 
@@ -40,12 +39,9 @@ export class MainScene extends Phaser.Scene {
 
 		this.state = GameState.WAITING_PLAYER
 		this.gameOver = false
-
-
 	}
 
 	create() {
-
 		/**
 		 * World
 		 */
@@ -60,7 +56,7 @@ export class MainScene extends Phaser.Scene {
 		 */
 		this.trajectory = new Rebrickz.Trajectory(this, this.world, firstBallX, firstBallY)
 
-		this.trajectory.on('fire', this.fireBalls, this)
+		this.trajectory.on("fire", this.fireBalls, this)
 
 		// init groups
 		this.balls = new Balls(this)
@@ -111,6 +107,9 @@ export class MainScene extends Phaser.Scene {
 
 		if (this.state === GameState.WAITING_PLAYER) {
 			this.trajectory.setActive(true)
+			const blocksBounds = this.blocks.groups[BlockType.NORMAL].getBlocksBounds()
+
+			this.trajectory.setBlockBounds(blocksBounds)
 		}
 
 		if (this.state === GameState.UPDATING) {
@@ -126,11 +125,10 @@ export class MainScene extends Phaser.Scene {
 	}
 
 	fireBalls(direction: number) {
-		console.log('fireBalls', direction)
+		console.log("fireBalls", direction)
 
 		this.firstBallToLand = undefined
 		this.state = GameState.RUNNING
-
 
 		this.balls.fire(direction)
 	}
@@ -177,7 +175,6 @@ export class MainScene extends Phaser.Scene {
 			add(BlockType.NORMAL)
 		}
 
-		this.blocks.getFreeSlots()
 	}
 
 	moveBlockRow() {
@@ -212,7 +209,6 @@ export class MainScene extends Phaser.Scene {
 		// 	},
 		// 	callbackScope: this
 		// })
-
 	}
 
 	addBall(x: number, y: number, type: BallType = BallType.NORMAL): Ball | boolean {
@@ -256,7 +252,6 @@ export class MainScene extends Phaser.Scene {
 				ball.move(x)
 			}
 		}, 100)
-
 
 		if (!this.balls.isRunning()) {
 			// Wait ball animations before allow next move

@@ -1,9 +1,8 @@
-import { GameConfig as config } from '@config';
-import { applyMixins } from '@helpers';
-import Rebrickz from '@rebrickz';
+import { GameConfig as config } from "@config"
+import { applyMixins } from "@helpers"
+import Rebrickz from "@rebrickz"
 
 export namespace Block {
-
 	type Options = {
 		texture?: string
 		row: number
@@ -92,8 +91,7 @@ export namespace Block {
 		}
 
 		move(row?: number, col?: number): this {
-			let targetRow,
-				targetCol
+			let targetRow, targetCol
 
 			if (row !== undefined && !Rebrickz.World.canMove(row))
 				targetRow = row < 0 ? Rebrickz.World.lastRowIndex : Math.min(row, Rebrickz.World.lastRowIndex)
@@ -200,7 +198,7 @@ export namespace Block {
 		blockType!: Type
 
 		constructor(scene: Phaser.Scene, options: Options) {
-			const { row, col, texture = 'block' } = options
+			const { row, col, texture = "block" } = options
 
 			super(scene, 0, 0, texture)
 			this.fixPosition(row, col)
@@ -285,8 +283,8 @@ export namespace Block {
 
 	// Export as an interface to extends other classes and
 	// then merge the classes applying the mixins
-	export interface BaseBlock extends Moveable { }
-	export interface Normal extends Moveable, Damageable { }
+	export interface BaseBlock extends Moveable {}
+	export interface Normal extends Moveable, Damageable {}
 
 	applyMixins(BaseBlock, [Moveable])
 	applyMixins(Normal, [Moveable, Damageable])

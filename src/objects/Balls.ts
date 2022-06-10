@@ -4,7 +4,6 @@ import { Ball, BallState } from "@objects/Ball"
 import { MainScene } from "@scenes/MainScene"
 
 export class Balls extends Phaser.Physics.Arcade.Group {
-
 	constructor(scene: MainScene) {
 		super(scene.physics.world, scene, {
 			bounceX: 1,
@@ -29,7 +28,7 @@ export class Balls extends Phaser.Physics.Arcade.Group {
 		})
 	}
 
-	regroup() { }
+	regroup() {}
 
 	isRunning(): boolean {
 		const children = this.getChildren() as Ball[]
