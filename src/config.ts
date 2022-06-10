@@ -10,6 +10,7 @@ const GAME_COLS = 6
 const BLOCK_SIZE = GAME_HEIGHT / (GAME_ROWS + 4)
 const WORLD_HEIGHT = GAME_ROWS * BLOCK_SIZE + BLOCK_SIZE
 const WORLD_WIDTH = GAME_COLS * BLOCK_SIZE
+const BALL_SIZE = 16
 
 
 /**
@@ -28,6 +29,7 @@ export type GameConfigType = {
 
 export type BallConfigType = {
 	size: number
+	radius: number
 	speed: number
 	max: number
 	delayBetweenBalls: number
@@ -83,8 +85,9 @@ export const GameConfig: GameConfigType = {
 	height: GAME_HEIGHT,
 	trajectoryDistance: 10000,
 	ball: {
-		size: 16,
-		speed: 750,
+		size: BALL_SIZE,
+		radius: BALL_SIZE / 2,
+		speed: 500,
 		max: 48,
 		delayBetweenBalls: 50,
 	},

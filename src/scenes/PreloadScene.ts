@@ -18,6 +18,7 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.image("block", "block.png")
 		this.load.image("collision", "collision.png")
 		this.load.image("aim", "aim.png")
+		this.load.image("arrow_ball", "arrow_ball.png")
 
 		// listeners
 		this.load.on("progress", this.handleOnProgress, this)

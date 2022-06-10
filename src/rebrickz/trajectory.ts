@@ -29,6 +29,8 @@ export class Trajectory extends Phaser.Events.EventEmitter {
     world!: Rebrickz.World
     blockBounds!: Phaser.Geom.Rectangle[]
     collisionPoint!: Phaser.GameObjects.Sprite
+    arrowBall!: Phaser.GameObjects.Sprite
+    trajectoryRectangle!: Phaser.GameObjects.Rectangle
 
     constructor(
         scene: Phaser.Scene,
@@ -43,10 +45,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         this.create()
     }
 
-    getCollisionPoint() {
-        return this.collisionPoint
-    }
-
     setActive(value?: boolean): this {
         this.active = value === undefined ? !this.active : value
         if (!this.active) {
@@ -57,14 +55,42 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
     setPosition(x: number): this {
         this.x = x
+        this.arrowBall.x = x
+        this.trajectoryRectangle.x = x
         return this
     }
 
-    create() {
+    private create() {
         this.emit('created')
         this.addEventListeners()
         this.createGraphics()
         this.createCollisionPoint()
+        this.createArrowBall()
+        this.createTrajectoryRectangle()
+    }
+
+    private createTrajectoryRectangle() {
+        this.trajectoryRectangle = this.scene.add.rectangle(this.x, this.y, config.ball.size, config.height, 0xffffff, 0.15)
+        this.trajectoryRectangle.setOrigin(0.5, 1)
+        this.trajectoryRectangle.visible = false
+
+        const shape = this.scene.add.graphics();
+
+        //  Create a hash shape Graphics object
+        // shape.fillStyle(0xffffff);
+        shape.alpha = 0
+
+        //  You have to begin a path for a Geometry mask to work
+        shape.beginPath();
+
+        const { bounds } = this.world
+
+        shape.fillRect(bounds.left, bounds.top, bounds.width, this.world.getBoundsBottom());
+
+        const mask = shape.createGeometryMask()
+
+        this.trajectoryRectangle.setMask(mask)
+
     }
 
     private createGraphics(): void {
@@ -74,7 +100,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         this.graphPivotBall = this.scene.add.graphics()
     }
 
-    addEventListeners() {
+    private addEventListeners() {
         /**
          *  Input listeners
          */
@@ -83,22 +109,20 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         this.scene.input.on("pointermove", this.mouseMove, this)
     }
 
-    mouseUp(event: PointerEvent) {
-        
-        // this.clearTrajectory()
+    private mouseUp(event: PointerEvent) {
+
+        this.clearTrajectory()
 
         if (!this.direction || this.state !== State.AIMING) {
             this.state = State.WAITING
             return
         }
 
-
-
         this.state = State.WAITING
         this.emit('fire', this.direction)
     }
 
-    mouseDown(event: PointerEvent) {
+    private mouseDown(event: PointerEvent) {
         if (!this.active || this.state !== State.WAITING) return
 
         this.state = State.AIMING
@@ -106,7 +130,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
     }
 
 
-    mouseMove(event: any) {
+    private mouseMove(event: any) {
 
         if (this.state !== State.AIMING) return
 
@@ -150,11 +174,13 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
         this.showCollisionPoint()
 
+        this.showArrowBall()
+
         this.showTrajectory()
 
     }
 
-    canAdjustAim(event: any): boolean {
+    private canAdjustAim(event: any): boolean {
         return this.scene.input.activePointer.leftButtonDown() && event.y < this.world.getBoundsBottom()
     }
 
@@ -173,6 +199,25 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         })
 
     }
+    private createArrowBall(): void {
+
+        this.arrowBall = this.scene.add.sprite(this.x, this.y - config.ball.size, "arrow_ball")
+        this.arrowBall.visible = false
+        this.arrowBall.setOrigin(0.5, 1)
+        this.scene.tweens.add({
+            targets: this.arrowBall,
+            duration: 600,
+            alpha: { from: 0.3, to: 0.7 },
+            scale: { from: 0.9, to: 1.1 },
+            onUpdate: (tween => {
+                this.arrowBall.rotation = this.direction + Math.PI / 2
+            }),
+            yoyo: true,
+            repeat: -1,
+            ease: "Power1",
+        })
+
+    }
 
     private showCollisionPoint(): void {
 
@@ -182,29 +227,29 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         const size = this.collisionPoint.width
         const radius = size / 2
 
-        const collideLeft = this.getWorldIntersection(this.trajectoryLineLeft)
-        const collideCenter = this.getWorldIntersection(this.trajectoryLine)
-        const collideRight = this.getWorldIntersection(this.trajectoryLineRight)
-
-        const cTop = collideCenter.side === 'top'
-        const cLeft = collideCenter.side === 'top'
-        const cRight = collideCenter.side === 'top'
-
+        // adjusted for top world side
         let x = this.trajectoryLine.x2 - cos * radius
         let y = this.trajectoryLine.y2 - sin * radius
-
-        if (collideLeft.side && collideLeft.side !== 'top') {
-            x = this.trajectoryLineLeft.x2 + radius
-            console.log(cos, sin)
-            y = this.trajectoryLineLeft.y2 + radius
-
-        }
-
 
 
         this.collisionPoint.visible = true
         this.collisionPoint.x = x
         this.collisionPoint.y = y
+    }
+
+    private showArrowBall(): void {
+
+        let cos = Math.cos(this.direction)
+        let sin = Math.sin(this.direction)
+
+        let x = this.trajectoryLine.x1 + cos * config.ball.size
+        let y = this.trajectoryLine.y1 + sin * config.ball.size
+
+
+        this.arrowBall.visible = true
+        this.arrowBall.rotation = this.direction + Math.PI / 2
+        this.arrowBall.x = x
+        this.arrowBall.y = y
     }
 
     private fixDirection(): void {
@@ -278,8 +323,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         )
     }
 
-
-
     private getWorldIntersection(line: Phaser.Geom.Line): CollisionSide {
         const { left, top, right } = this.world.getSides()
 
@@ -309,13 +352,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         return result
     }
 
-    getPivotLine(): Phaser.Geom.Line {
-        const ballSize = config.ball.size
-        const ballRadius = ballSize / 2
+    private getPivotLine(): Phaser.Geom.Line {
         const pivot = new Phaser.Geom.Line(
-            this.x - ballRadius,
+            this.x - config.ball.radius,
             this.y,
-            this.x + ballRadius,
+            this.x + config.ball.radius,
             this.y)
 
         return Phaser.Geom.Line.Rotate(pivot, this.direction + Math.PI / 2)
@@ -323,6 +364,15 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
     private showTrajectory() {
 
+
+        this.trajectoryRectangle.visible = true
+        this.trajectoryRectangle.rotation = this.direction + Math.PI / 2
+
+        return
+
+        /**
+         * Debug 
+         */
         let pivotLine = this.getPivotLine()
 
         this.graphPivotBall
@@ -369,6 +419,8 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
     private clearTrajectory() {
         this.collisionPoint.visible = false
+        this.arrowBall.visible = false
+        this.trajectoryRectangle.visible = false
         this.graphTrajectory.clear()
         this.graphTrajectoryLeft.clear()
         this.graphTrajectoryRight.clear()
