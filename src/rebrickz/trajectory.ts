@@ -1,12 +1,16 @@
 import { GameConfig as config } from "@config"
 import * as Rebrickz from "@rebrickz"
-import { Sides } from "./world"
 
 enum State {
     AIMING,
     WAITING
 }
 
+type SideNames = 'left' | 'top' | 'right'
+interface CollisionSide {
+    point: Phaser.Math.Vector3 | undefined,
+    side: SideNames | undefined
+}
 export class Trajectory extends Phaser.Events.EventEmitter {
     scene: Phaser.Scene
     direction!: number
@@ -165,17 +169,24 @@ export class Trajectory extends Phaser.Events.EventEmitter {
             repeat: -1,
             ease: "Linear",
         })
-        this.collisionPoint.setSize(1, 1)
-        this.scene.physics.add.existing(this.collisionPoint)
-        //@ts-ignore
-        this.collisionPoint.body.setCollideWorldBounds(true);
+        // this.collisionPoint.setSize(1, 1)
+        // this.scene.physics.add.existing(this.collisionPoint)
+        // //@ts-ignore
+        // this.collisionPoint.body.setCollideWorldBounds(true);
 
     }
 
     private showCollisionPoint(): void {
+
+        const cos = Math.cos(this.direction)
+        const sin = Math.sin(this.direction)
+        const size = this.collisionPoint.width / 2
+
+        console.log(cos, sin)
+
         this.collisionPoint.visible = true
-        this.collisionPoint.x = this.trajectoryLine.x2
-        this.collisionPoint.y = this.trajectoryLine.y2
+        this.collisionPoint.x = this.trajectoryLine.x2 - cos * size
+        this.collisionPoint.y = this.trajectoryLine.y2 - sin * size
     }
 
     private fixDirection(): void {
@@ -189,20 +200,18 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         const lineCenter = this.getWorldIntersection(this.trajectoryLine)
         const lineRight = this.getWorldIntersection(this.trajectoryLineRight)
 
-        if (typeof lineLeft !== "boolean") {
-            this.trajectoryLineLeft.x2 = lineLeft.x
-            this.trajectoryLineLeft.y2 = lineLeft.y
+        if (lineLeft.point) {
+            this.trajectoryLineLeft.x2 = lineLeft.point.x
+            this.trajectoryLineLeft.y2 = lineLeft.point.y
         }
-        if (typeof lineCenter !== "boolean") {
-            this.trajectoryLine.x2 = lineCenter.x
-            this.trajectoryLine.y2 = lineCenter.y
+        if (lineCenter.point) {
+            this.trajectoryLine.x2 = lineCenter.point.x
+            this.trajectoryLine.y2 = lineCenter.point.y
         }
-        if (typeof lineRight !== "boolean") {
-            this.trajectoryLineRight.x2 = lineRight.x
-            this.trajectoryLineRight.y2 = lineRight.y
+        if (lineRight.point) {
+            this.trajectoryLineRight.x2 = lineRight.point.x
+            this.trajectoryLineRight.y2 = lineRight.point.y
         }
-
-
     }
 
     private checkDummyArea(): void {
@@ -251,23 +260,35 @@ export class Trajectory extends Phaser.Events.EventEmitter {
         )
     }
 
-    private getWorldIntersection(line: Phaser.Geom.Line): boolean | Phaser.Math.Vector3 {
+
+
+    private getWorldIntersection(line: Phaser.Geom.Line): CollisionSide {
         const { left, top, right } = this.world.getSides()
 
+        const result: CollisionSide = {
+            point: undefined,
+            side: undefined
+        }
+
         const collideLeft = Phaser.Geom.Intersects.GetLineToLine(line, left)
-        if (collideLeft)
-            return collideLeft
+        if (collideLeft) {
+            result.point = collideLeft
+            result.side = 'left'
+        }
 
         const collideTop = Phaser.Geom.Intersects.GetLineToLine(line, top)
-        if (collideTop)
-            return collideTop
+        if (collideTop) {
+            result.point = collideTop
+            result.side = 'top'
+        }
 
         const collideRight = Phaser.Geom.Intersects.GetLineToLine(line, right)
-        if (collideRight)
-            return collideRight
+        if (collideRight) {
+            result.point = collideRight
+            result.side = 'right'
+        }
 
-
-        return false
+        return result
     }
 
     getPivotLine(): Phaser.Geom.Line {
