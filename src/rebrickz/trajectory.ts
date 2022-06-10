@@ -84,13 +84,15 @@ export class Trajectory extends Phaser.Events.EventEmitter {
     }
 
     mouseUp(event: PointerEvent) {
-
-        this.clearTrajectory()
+        
+        // this.clearTrajectory()
 
         if (!this.direction || this.state !== State.AIMING) {
             this.state = State.WAITING
             return
         }
+
+
 
         this.state = State.WAITING
         this.emit('fire', this.direction)
@@ -169,24 +171,40 @@ export class Trajectory extends Phaser.Events.EventEmitter {
             repeat: -1,
             ease: "Linear",
         })
-        // this.collisionPoint.setSize(1, 1)
-        // this.scene.physics.add.existing(this.collisionPoint)
-        // //@ts-ignore
-        // this.collisionPoint.body.setCollideWorldBounds(true);
 
     }
 
     private showCollisionPoint(): void {
 
-        const cos = Math.cos(this.direction)
-        const sin = Math.sin(this.direction)
-        const size = this.collisionPoint.width / 2
+        let cos = Math.cos(this.direction)
+        let sin = Math.sin(this.direction)
 
-        console.log(cos, sin)
+        const size = this.collisionPoint.width
+        const radius = size / 2
+
+        const collideLeft = this.getWorldIntersection(this.trajectoryLineLeft)
+        const collideCenter = this.getWorldIntersection(this.trajectoryLine)
+        const collideRight = this.getWorldIntersection(this.trajectoryLineRight)
+
+        const cTop = collideCenter.side === 'top'
+        const cLeft = collideCenter.side === 'top'
+        const cRight = collideCenter.side === 'top'
+
+        let x = this.trajectoryLine.x2 - cos * radius
+        let y = this.trajectoryLine.y2 - sin * radius
+
+        if (collideLeft.side && collideLeft.side !== 'top') {
+            x = this.trajectoryLineLeft.x2 + radius
+            console.log(cos, sin)
+            y = this.trajectoryLineLeft.y2 + radius
+
+        }
+
+
 
         this.collisionPoint.visible = true
-        this.collisionPoint.x = this.trajectoryLine.x2 - cos * size
-        this.collisionPoint.y = this.trajectoryLine.y2 - sin * size
+        this.collisionPoint.x = x
+        this.collisionPoint.y = y
     }
 
     private fixDirection(): void {
