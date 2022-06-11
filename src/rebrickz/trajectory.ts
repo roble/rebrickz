@@ -118,7 +118,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		if (!this.active || this.state !== State.WAITING) return
 
 		this.state = State.AIMING
-		console.log("start aim")
 	}
 
 	private mouseMove(event: any) {
@@ -185,28 +184,57 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 				// bottom is closer then the sides
 				if (arr[1] && closest[1] && arr[1].y > closest[1].y) closest = arr
 			}
-			if (closest)
+			if (closest && closest.length > 1)
 				return closest[0].y > closest[1].y ? closest[0] : closest[1]
+			else if (closest)
+				return closest[0]
 
 			return false
 		}
 
-		const center = getClosestCollision(this.trajectoryLine)
-		const left = getClosestCollision(this.trajectoryLineLeft)
-		const right = getClosestCollision(this.trajectoryLineRight)
+		const isCloser = (p1: Phaser.Geom.Point, p2: Phaser.Geom.Point): boolean => p1.y > p2.y
 
-		if (!center && !left && !right) {
+
+		const points = {
+			'center': getClosestCollision(this.trajectoryLine),
+			'left': getClosestCollision(this.trajectoryLineLeft),
+			'right': getClosestCollision(this.trajectoryLineRight),
+		}
+
+		if (!points.center && !points.left && !points.right) {
 			this.collisionPoint = undefined
 			return
 		}
 
-		let closest = [center, left, right]
-			.reduce((prev, current) => (prev.y > current.y) ? prev : current, [])
+		let closest
 
-		console.log(center, left, right)
-		console.log(closest)
+		// just collide center		
+		if (points.center && !points.left && !points.right)
+			closest = points.center
+		// just collide left		
+		if (!points.center && points.left && !points.right)
+			closest = points.left
+		// just collide right
+		if (!points.center && !points.left && points.right)
+			closest = points.right
+		// all colliding, define center
+		if (points.center && points.left && points.right) {
+			closest = points.center
+			// left is closer then center and right
+			if (isCloser(points.left, points.center) && isCloser(points.left, points.right))
+				closest = points.left
+			// center is closer then left and right
+			else if (isCloser(points.center, points.left) && isCloser(points.center, points.right))
+				closest = points.center
+			// right is closer then center and left
+			else if (isCloser(points.right, points.left) && isCloser(points.right, points.center))
+				closest = points.right
+		}
 
-		this.collisionPoint = new Phaser.Geom.Point(closest.x, closest.y)
+
+		if (closest) {
+			this.collisionPoint = new Phaser.Geom.Point(closest.x, closest.y)
+		}
 
 	}
 
@@ -374,7 +402,8 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private getPivotLine(): Phaser.Geom.Line {
-		const pivot = new Phaser.Geom.Line(this.x - config.ball.radius, this.y, this.x + config.ball.radius, this.y)
+		const increase = 1.5
+		const pivot = new Phaser.Geom.Line(this.x - config.ball.radius + increase, this.y, this.x + config.ball.radius + increase, this.y)
 
 		return Phaser.Geom.Line.Rotate(pivot, this.direction + Math.PI / 2)
 	}
