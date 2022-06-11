@@ -13,7 +13,6 @@ export enum GameState {
 }
 
 export class MainScene extends Phaser.Scene {
-
 	public world!: Rebrickz.World
 	public trajectory!: Rebrickz.Trajectory
 
@@ -70,13 +69,9 @@ export class MainScene extends Phaser.Scene {
 		}
 
 		if (this.state === GameState.WAITING_PLAYER) {
-
 			this.trajectory.setActive(true)
 
-			const lines = [
-				...this.blocks.groups[BlockType.NORMAL].getCollidableLines(),
-				...this.world.getCollidableLines()
-			]
+			const lines = [...this.blocks.groups[BlockType.NORMAL].getCollidableLines(), ...this.world.getCollidableLines()]
 
 			this.trajectory.setCollidableLines(lines)
 		}
@@ -143,7 +138,6 @@ export class MainScene extends Phaser.Scene {
 		for (let i = 0; i < blocks; i++) {
 			add(BlockType.NORMAL)
 		}
-
 	}
 
 	moveBlockRow() {

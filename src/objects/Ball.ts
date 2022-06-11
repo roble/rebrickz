@@ -37,11 +37,13 @@ export class Ball extends Phaser.Physics.Arcade.Sprite {
 		this.displayWidth = size
 		this.displayHeight = size
 
-		this.on('addedtoscene', () => {
-			if (this.isCircle)
-				this.body?.setCircle(radius)
-		}, this)
-
+		this.on(
+			"addedtoscene",
+			() => {
+				if (this.isCircle) this.body?.setCircle(radius)
+			},
+			this
+		)
 	}
 
 	start(x: number, y?: number) {

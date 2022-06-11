@@ -6,8 +6,8 @@ enum State {
 	WAITING,
 }
 interface Collision {
-	'collision': Phaser.Math.Vector3,
-	'line': Phaser.Geom.Line
+	collision: Phaser.Math.Vector3
+	line: Phaser.Geom.Line
 }
 interface Vertices {
 	[key: string]: Phaser.Geom.Point
@@ -68,7 +68,14 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private createTrajectoryRectangle() {
-		this.trajectoryRectangle = this.scene.add.rectangle(this.x, this.y, config.ball.size + 2, config.height, 0xffffff, 0.15)
+		this.trajectoryRectangle = this.scene.add.rectangle(
+			this.x,
+			this.y,
+			config.ball.size + 2,
+			config.height,
+			0xffffff,
+			0.15
+		)
 		this.trajectoryRectangle.setOrigin(0.5, 1)
 		this.trajectoryRectangle.visible = false
 
@@ -96,7 +103,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private mouseUp(event: PointerEvent) {
-
 		this.clearTrajectory()
 
 		if (!this.direction || this.state !== State.AIMING) {
@@ -148,7 +154,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 			return
 		}
 
-
 		this.fixDirection()
 		this.checkBlocksCollisions()
 		this.showCollisionPoint()
@@ -161,18 +166,17 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private checkBlocksCollisions() {
-
 		const lines = this.getLinesFromVertices()
 		const closest: any = {
 			distance: Number.MAX_SAFE_INTEGER,
 			point: new Phaser.Geom.Point(-1, -1),
-			vertex: undefined
+			vertex: undefined,
 		}
 
 		this.collisionPoint = new Phaser.Geom.Point(-100, -100)
 
-		lines.forEach(vertex => {
-			this.collidableLines.forEach(line => {
+		lines.forEach((vertex) => {
+			this.collidableLines.forEach((line) => {
 				const point = new Phaser.Geom.Point(-1, -1)
 
 				Phaser.Geom.Intersects.LineToLine(line, vertex.line, point)
@@ -185,41 +189,38 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 						closest.distance = distance
 						closest.vertex = vertex.pos
 					}
-
 				}
 			})
 		})
 		if (closest.vertex) {
-
 			const { radius } = config.ball
 
 			switch (closest.vertex) {
-				case 'top_left':
+				case "top_left":
 					this.trajectoryLine.x2 = closest.point.x + radius
 					this.trajectoryLine.y2 = closest.point.y + radius
-					break;
-				case 'top_right':
+					break
+				case "top_right":
 					this.trajectoryLine.x2 = closest.point.x - radius
 					this.trajectoryLine.y2 = closest.point.y + radius
 					break
-				case 'bottom_right':
+				case "bottom_right":
 					this.trajectoryLine.x2 = closest.point.x - radius
 					this.trajectoryLine.y2 = closest.point.y - radius
 					break
-				case 'bottom_left':
+				case "bottom_left":
 					this.trajectoryLine.x2 = closest.point.x + radius
 					this.trajectoryLine.y2 = closest.point.y - radius
 					break
 			}
 
-			const points = Phaser.Geom.Line.BresenhamPoints(this.trajectoryLine, 2);
+			const points = Phaser.Geom.Line.BresenhamPoints(this.trajectoryLine, 2)
 			if (points.length) {
 				const newPoint = points[points.length - 1]
 				this.collisionPoint = new Phaser.Geom.Point(newPoint.x, newPoint.y)
 				this.trajectoryLine.x2 = newPoint.x || 0
 				this.trajectoryLine.y2 = newPoint.y || 0
 			}
-
 		}
 	}
 
@@ -262,13 +263,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private showCollisionPoint(): void {
-
 		if (!this.collisionPoint || this.collisionPoint.x < 0) return
 
 		this.collisionPointSprite.visible = true
 		this.collisionPointSprite.x = this.collisionPoint.x
 		this.collisionPointSprite.y = this.collisionPoint.y
-
 	}
 
 	private showArrowBall(): void {
@@ -288,7 +287,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		this.angle = Phaser.Math.Angle.Between(this.x, this.y, this.trajectoryLine.x2, this.trajectoryLine.y2)
 		this.direction = Phaser.Math.Angle.Wrap(this.angle)
 	}
-
 
 	private checkDummyArea(): void {
 		const bounds = this.world.getBounds()
@@ -338,26 +336,46 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		}
 	}
 
-	private getLinesFromVertices(): { pos: string, line: Phaser.Geom.Line }[] {
+	private getLinesFromVertices(): { pos: string; line: Phaser.Geom.Line }[] {
 		const { radius } = config.ball
 		const vertices = this.getVertices()
 
 		return [
 			{
-				pos: 'top_left',
-				line: new Phaser.Geom.Line(vertices.top_left.x, vertices.top_left.y, this.trajectoryLine.x2 - radius, this.trajectoryLine.y2 - radius)
+				pos: "top_left",
+				line: new Phaser.Geom.Line(
+					vertices.top_left.x,
+					vertices.top_left.y,
+					this.trajectoryLine.x2 - radius,
+					this.trajectoryLine.y2 - radius
+				),
 			},
 			{
-				pos: 'top_right',
-				line: new Phaser.Geom.Line(vertices.top_right.x, vertices.top_right.y, this.trajectoryLine.x2 + radius, this.trajectoryLine.y2 - radius)
+				pos: "top_right",
+				line: new Phaser.Geom.Line(
+					vertices.top_right.x,
+					vertices.top_right.y,
+					this.trajectoryLine.x2 + radius,
+					this.trajectoryLine.y2 - radius
+				),
 			},
 			{
-				pos: 'bottom_left',
-				line: new Phaser.Geom.Line(vertices.bottom_left.x, vertices.bottom_left.y, this.trajectoryLine.x2 - radius, this.trajectoryLine.y2 + radius)
+				pos: "bottom_left",
+				line: new Phaser.Geom.Line(
+					vertices.bottom_left.x,
+					vertices.bottom_left.y,
+					this.trajectoryLine.x2 - radius,
+					this.trajectoryLine.y2 + radius
+				),
 			},
 			{
-				pos: 'bottom_right',
-				line: new Phaser.Geom.Line(vertices.bottom_right.x, vertices.bottom_right.y, this.trajectoryLine.x2 + radius, this.trajectoryLine.y2 + radius)
+				pos: "bottom_right",
+				line: new Phaser.Geom.Line(
+					vertices.bottom_right.x,
+					vertices.bottom_right.y,
+					this.trajectoryLine.x2 + radius,
+					this.trajectoryLine.y2 + radius
+				),
 			},
 		]
 	}
@@ -373,10 +391,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
 		if (!this.scene.game.config.physics.arcade?.debug) return
 
-		this.graphics
-			.lineStyle(1, 0x00ff00)
-			.fillStyle(0xff1111)
-			.setDepth(100)
+		this.graphics.lineStyle(1, 0x00ff00).fillStyle(0xff1111).setDepth(100)
 
 		this.graphics.lineBetween(
 			this.trajectoryLine.x1,
@@ -384,7 +399,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 			this.trajectoryLine.x2,
 			this.trajectoryLine.y2
 		)
-		this.getLinesFromVertices().forEach(e => {
+		this.getLinesFromVertices().forEach((e) => {
 			const { x1, y1, x2, y2 } = e.line
 			this.graphics.lineBetween(x1, y1, x2, y2)
 		})
