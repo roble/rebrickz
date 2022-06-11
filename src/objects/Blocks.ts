@@ -35,4 +35,17 @@ export class Blocks extends Phaser.Physics.Arcade.Group {
 
 		return bounds
 	}
+
+	getCollidableLines(): Phaser.Geom.Line[] {
+		const lines: Phaser.Geom.Line[] = []
+
+		this.blocks.forEach((block) => {
+			const bounds = block.getBounds()
+			lines.push(bounds.getLineB())
+			lines.push(bounds.getLineC())
+			lines.push(bounds.getLineD())
+		})
+
+		return lines
+	}
 }

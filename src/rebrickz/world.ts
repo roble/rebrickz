@@ -69,6 +69,16 @@ export class World {
 		return this.bounds.bottom + config.block.size
 	}
 
+	getCollidableLines(): Phaser.Geom.Line[] {
+		const lines: Phaser.Geom.Line[] = []
+
+		lines.push(this.bounds.getLineA()) //top
+		lines.push(this.bounds.getLineB()) //right
+		lines.push(this.bounds.getLineD()) //left
+
+		return lines
+	}
+
 	getSides(): Sides {
 		return {
 			top: this.bounds.getLineA(),

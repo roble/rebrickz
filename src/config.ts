@@ -82,7 +82,7 @@ export const GameConfig: GameConfigType = {
 	cols: GAME_COLS,
 	width: GAME_WIDTH,
 	height: GAME_HEIGHT,
-	trajectoryDistance: 10000,
+	trajectoryDistance: 1000000,
 	ball: {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
@@ -153,7 +153,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
-			debug: true,
+			debug: false,
 			debugShowBody: true,
 			debugShowStaticBody: true,
 			gravity: {

@@ -8,30 +8,20 @@ import { BlocksManager } from "@objects/BlocksManager"
 
 export enum GameState {
 	WAITING_PLAYER,
-	AIMING,
 	RUNNING,
 	UPDATING,
 }
 
 export class MainScene extends Phaser.Scene {
+
 	public world!: Rebrickz.World
 	public trajectory!: Rebrickz.Trajectory
 
 	private balls!: Balls
 	private blocks!: BlocksManager
 	private state: GameState
-	private direction!: number
-	private trajectoryGraphics!: {
-		x1: Phaser.GameObjects.Graphics
-		x2: Phaser.GameObjects.Graphics
-		y1: Phaser.GameObjects.Graphics
-		y2: Phaser.GameObjects.Graphics
-		center: Phaser.GameObjects.Graphics
-	}
-
-	private collision!: Phaser.GameObjects.Image
 	private firstBallToLand!: Ball | undefined
-	trajectoryRectangle!: Phaser.GameObjects.Rectangle
+
 	gameOver: boolean
 
 	constructor() {
@@ -68,32 +58,6 @@ export class MainScene extends Phaser.Scene {
 		// Add block
 		this.addBlocks()
 
-		// create the trajectory element
-		this.trajectoryGraphics = {
-			x1: this.add.graphics(),
-			y1: this.add.graphics(),
-			x2: this.add.graphics(),
-			y2: this.add.graphics(),
-			center: this.add.graphics(),
-		}
-
-		this.trajectoryRectangle = this.add.rectangle(0, 50, config.ball.size, 1000)
-		this.trajectoryRectangle.setOrigin(0.5, 1)
-		this.trajectoryRectangle.visible = false
-
-		// create element to show collision
-		this.collision = this.add.sprite(-50, -50, "collision")
-
-		this.tweens.add({
-			targets: this.collision,
-			props: {
-				angle: { value: "+=360" },
-			},
-			duration: 3000,
-			repeat: -1,
-			ease: "Linear",
-		})
-
 		// const b = new Rebrickz.Block.Normal(this, { row: 3, col: 2 })
 
 		this.handleBallCollision()
@@ -106,10 +70,15 @@ export class MainScene extends Phaser.Scene {
 		}
 
 		if (this.state === GameState.WAITING_PLAYER) {
-			this.trajectory.setActive(true)
-			const blocksBounds = this.blocks.groups[BlockType.NORMAL].getBlocksBounds()
 
-			this.trajectory.setBlockBounds(blocksBounds)
+			this.trajectory.setActive(true)
+
+			const lines = [
+				...this.blocks.groups[BlockType.NORMAL].getCollidableLines(),
+				...this.world.getCollidableLines()
+			]
+
+			this.trajectory.setCollidableLines(lines)
 		}
 
 		if (this.state === GameState.UPDATING) {

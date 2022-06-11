@@ -20,6 +20,7 @@ export class Ball extends Phaser.Physics.Arcade.Sprite {
 	config: BallConfigType
 	state: BallState
 	size: number
+	isCircle = false
 
 	constructor(scene: MainScene) {
 		super(scene, 0, 0, "ball")
@@ -33,11 +34,12 @@ export class Ball extends Phaser.Physics.Arcade.Sprite {
 
 	init() {
 		const { size, radius } = this.config
+		this.displayWidth = size
+		this.displayHeight = size
 
 		this.on('addedtoscene', () => {
-			this.displayWidth = size
-			this.displayHeight = size
-			this.body?.setCircle(radius)
+			if (this.isCircle)
+				this.body?.setCircle(radius)
 		}, this)
 
 	}
@@ -67,13 +69,14 @@ export class Ball extends Phaser.Physics.Arcade.Sprite {
 		this._emitter = this._particle.createEmitter({
 			x: this.x,
 			y: this.y,
-			angle: 0,
-			speed: { min: 100, max: 0 },
-			gravityY: 300,
-			scale: { start: 0.2, end: 0.0 },
+			// angle: 0,
+			speed: { min: 50, max: 0 },
+			gravityY: 0,
+			gravityX: 0,
+			scale: { start: 0.3, end: 0.0 },
 			active: false,
-			lifespan: 1000,
-			blendMode: "ADD",
+			lifespan: 300,
+			// blendMode: "ADD",
 		})
 		this._emitter.startFollow(this)
 	}
