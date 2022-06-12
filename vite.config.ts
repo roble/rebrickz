@@ -5,7 +5,6 @@ import path from "path"
 export default defineConfig({
 	resolve: {
 		alias: {
-			"@src": path.resolve(__dirname, "./src/"),
 			"@rebrickz": path.resolve(__dirname, "./src/rebrickz/"),
 			"@config": path.resolve(__dirname, "./src/config.ts"),
 			"@helpers": path.resolve(__dirname, "./src/helpers.ts"),
