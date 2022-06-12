@@ -14,15 +14,15 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"baseUrl": ".",
+		"baseUrl": "src",
 		"paths": {
-			"@src/*": ["src/*"],
-			"@rebrickz": ["src/rebrickz/"],
-			"@config": ["src/config.ts"],
-			"@helpers": ["src/helpers.ts"],
-			"@scenes/*": ["src/scenes/*"],
-			"@objects/*": ["src/objects/*"],
-			"@assets/*": ["src/assets/*"]
+			"@rebrickz/*": ["rebrickz/*"],
+			"@rebrickz": ["rebrickz"],
+			"@config": ["config.ts"],
+			"@helpers": ["helpers.ts"],
+			"@scenes/*": ["scenes/*"],
+			"@objects/*": ["objects/*"],
+			"@assets/*": ["assets/*"]
 		},
 		"outDir": "dist"
 	},
