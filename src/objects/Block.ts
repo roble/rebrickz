@@ -128,10 +128,12 @@ abstract class BlockBase extends Phaser.Physics.Arcade.Sprite {
 
 		const { x } = this.getPositionFromRowAndCol()
 		const text = this.scene.add.text(x, 0, this.health.toString(), {
-			font: "bold 12px Arial",
+			font: "bold 14px Arial Black",
 			align: "center",
-			color: "#000000",
+			color: "#000",
 		})
+		text.setShadow(0, 0, "#ccc", 10)
+		text.setStroke("#fff", 5)
 		text.setScale(2)
 		text.setOrigin(0.5)
 		text.setAlpha(0)

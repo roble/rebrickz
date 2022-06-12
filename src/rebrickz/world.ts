@@ -113,6 +113,7 @@ export class World {
 		const ground = this.scene.add.sprite(config.width / 2, config.height / 2, "ground")
 
 		ground.setOrigin(0.5)
+		ground.setBlendMode(Phaser.BlendModes.MULTIPLY)
 		ground.setDisplaySize(config.world.width, config.world.height - config.block.size)
 
 		const worldBounds = ground.getBounds()

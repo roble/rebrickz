@@ -143,7 +143,8 @@ export const GameConfig: GameConfigType = {
 export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	parent: "game",
-	backgroundColor: "#673ab7",
+	// backgroundColor: "#673ab7",
+	backgroundColor: "#272b33",
 	scale: {
 		width: GameConfig.width,
 		height: GameConfig.height,

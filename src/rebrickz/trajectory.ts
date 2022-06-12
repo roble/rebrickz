@@ -74,10 +74,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 			config.ball.size + 2,
 			config.height,
 			0xffffff,
-			0.15
+			0.025
 		)
 		this.trajectoryRectangle.setOrigin(0.5, 1)
 		this.trajectoryRectangle.visible = false
+		this.trajectoryRectangle.setBlendMode(Phaser.BlendModes.ADD)
 
 		const shape = this.scene.add.graphics()
 
