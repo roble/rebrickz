@@ -36,7 +36,12 @@ export type BallConfigType = {
 
 export type BlockConfigType = {
 	size: number
-	max: number
+	max: {
+		normal: number
+		special: number
+		extra: number
+	}
+	maxPerRow: number
 	text: {
 		style: Phaser.Types.GameObjects.Text.TextStyle
 	}
@@ -45,11 +50,11 @@ export type BlockConfigType = {
 	initialAlpha: number
 	initialDepth: number
 	defaultTexture: string
-	emitters: {
-		move: {}
-		fall: {}
-		destroy: {}
-	}
+	// emitters: {
+	// 	move: {}
+	// 	fall: {}
+	// 	destroy: {}
+	// }
 	tweens: {
 		move: {
 			delay: {
@@ -67,7 +72,7 @@ export type BlockConfigType = {
 			duration: number
 			ease: string
 		}
-		destroy: {}
+		// destroy: {}
 	}
 }
 
@@ -92,7 +97,12 @@ export const GameConfig: GameConfigType = {
 	},
 	block: {
 		size: BLOCK_SIZE,
-		max: 48,
+		max: {
+			normal: 30,
+			special: 2,
+			extra: 2,
+		},
+		maxPerRow: GAME_COLS - 2,
 		text: {
 			style: {
 				font: "bold 12px Arial",
@@ -105,11 +115,11 @@ export const GameConfig: GameConfigType = {
 		initialAlpha: 0,
 		initialDepth: 0,
 		defaultTexture: "block",
-		emitters: {
-			move: {},
-			fall: {},
-			destroy: {},
-		},
+		// emitters: {
+		// 	move: {},
+		// 	fall: {},
+		// 	destroy: {},
+		// },
 		tweens: {
 			move: {
 				delay: {
@@ -127,7 +137,7 @@ export const GameConfig: GameConfigType = {
 				duration: 500,
 				ease: "Bounce",
 			},
-			destroy: {},
+			// destroy: {},
 		},
 	},
 	world: {

@@ -1,6 +1,8 @@
 import { GameConfig as config } from "@config"
 import { applyMixins } from "@helpers"
-import Rebrickz from "@rebrickz"
+
+import { Position } from "./position"
+import { World } from "./world"
 
 type Options = {
 	texture?: string
@@ -10,14 +12,14 @@ type Options = {
 	frame?: string | number | undefined
 }
 
-export enum Type {
+export enum BlockType {
 	NORMAL,
 	SPECIAL_BALL,
 	EXTRA_BALL,
 }
 
-interface Interface {
-	blockType: Type
+interface BlockInterface {
+	blockType: BlockType
 	col: number
 	row: number
 	boot(): this
@@ -26,37 +28,7 @@ interface Interface {
 	getBody(): Phaser.Physics.Arcade.Body
 }
 
-interface MoveableInterface {
-	row: number
-	col: number
-	followPosition: any[]
-	move(row?: number, col?: number): this
-	moveDown(rows: number): this
-	moveLeft(cols: number): this
-	moveRight(cols: number): this
-	canMove(row?: number, col?: number): boolean
-	fall(): this
-}
-interface EmittableInterface {
-	emitter: Phaser.GameObjects.Particles.ParticleEmitter
-	startParticleEmitter(): this
-	stopParticleEmitter(): this
-}
-interface DamageableInterface {
-	_level: number
-	readonly health: number
-	readonly maxHealth: number
-	textObject: Phaser.GameObjects.Text
-
-	get level(): number
-	set level(value: number)
-
-	render(): this
-	damage(): this
-	heal(): this
-	kill(): this
-}
-class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface {
+class Moveable extends Phaser.Physics.Arcade.Sprite {
 	row!: number
 	col!: number
 	followPosition: any[] = []
@@ -92,11 +64,11 @@ class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface
 	move(row?: number, col?: number): this {
 		let targetRow, targetCol
 
-		if (row !== undefined && !Rebrickz.World.canMove(row))
-			targetRow = row < 0 ? Rebrickz.World.lastRowIndex : Math.min(row, Rebrickz.World.lastRowIndex)
+		if (row !== undefined && !World.canMove(row))
+			targetRow = row < 0 ? World.lastRowIndex : Math.min(row, World.lastRowIndex)
 
-		if (col !== undefined && !Rebrickz.World.canMove(undefined, col))
-			targetCol = col < 0 ? Rebrickz.World.lastColIndex : Math.min(col, Rebrickz.World.lastColIndex)
+		if (col !== undefined && !World.canMove(undefined, col))
+			targetCol = col < 0 ? World.lastColIndex : Math.min(col, World.lastColIndex)
 
 		if (targetRow !== undefined) this.row = targetRow
 
@@ -114,8 +86,8 @@ class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface
 					scale: 1,
 					ease: tweens.fall.ease,
 					duration: tweens.fall.duration,
-					x: Rebrickz.Position.getXByCol(targetCol ?? this.col),
-					y: Rebrickz.Position.getYByRow(targetRow ?? this.row),
+					x: Position.getXByCol(targetCol ?? this.col),
+					y: Position.getYByRow(targetRow ?? this.row),
 				},
 			],
 		})
@@ -126,14 +98,13 @@ class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface
 	canMove(row?: number | undefined, col?: number | undefined): boolean {
 		if (!row && !col) return false
 		let flag = false
-		if (row !== undefined && (row < 0 || row + 1 >= Rebrickz.World.lastRowIndex)) flag = true
-		if (col !== undefined && (col < 0 || col + 1 >= Rebrickz.World.lastColIndex)) flag = true
+		if (row !== undefined && (row < 0 || row + 1 >= World.lastRowIndex)) flag = true
+		if (col !== undefined && (col < 0 || col + 1 >= World.lastColIndex)) flag = true
 
 		return flag
 	}
 
 	fall(): this {
-		console.log("fall")
 		const { initialPositionY, tweens } = config.block
 
 		const finalY = this.y
@@ -156,10 +127,10 @@ class Moveable extends Phaser.Physics.Arcade.Sprite implements MoveableInterface
 		return this
 	}
 }
-class Damageable extends Phaser.Physics.Arcade.Sprite implements DamageableInterface {
+class Damageable extends Phaser.Physics.Arcade.Sprite {
 	_level!: number
-	health: number = 0
-	maxHealth: number = 0
+	health = 0
+	maxHealth = 0
 	textObject!: Phaser.GameObjects.Text
 
 	get level(): number {
@@ -171,8 +142,6 @@ class Damageable extends Phaser.Physics.Arcade.Sprite implements DamageableInter
 	}
 
 	render(): this {
-		console.log("render damageable")
-		// this.textObject.setDepth(this.depth + 2)
 		this.textObject.text = this.health?.toString() ?? "1"
 
 		return this
@@ -190,11 +159,11 @@ class Damageable extends Phaser.Physics.Arcade.Sprite implements DamageableInter
 		return this
 	}
 }
-export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface {
+export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements BlockInterface {
 	col!: number
 	row!: number
 	level!: number
-	blockType!: Type
+	blockType!: BlockType
 
 	constructor(scene: Phaser.Scene, options: Options) {
 		const { row, col, texture = "block" } = options
@@ -206,15 +175,14 @@ export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface
 
 	private fixPosition(row: number, col: number) {
 		this.setOrigin(0.5, 0)
-		this.row = Rebrickz.World.isValidRow(row) ? row : 0
-		this.col = Rebrickz.World.isValidCol(col) ? col : 0
+		this.row = World.isValidRow(row) ? row : 0
+		this.col = World.isValidCol(col) ? col : 0
 
-		this.x = Rebrickz.Position.getXByCol(this.col)
-		this.y = Rebrickz.Position.getYByRow(this.row)
+		this.x = Position.getXByCol(this.col)
+		this.y = Position.getYByRow(this.row)
 	}
 
 	boot(): this {
-		console.log("boot base")
 		this.on("addedtoscene", this.create, this)
 		return this
 	}
@@ -224,7 +192,6 @@ export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface
 	}
 
 	create() {
-		console.log("added to scene")
 		const { initialAlpha, initialDepth, initialScale } = config.block
 		this.setScale(initialScale)
 		this.setAlpha(initialAlpha)
@@ -234,21 +201,19 @@ export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements Interface
 	}
 
 	destroy(fromScene?: boolean | undefined): void {
-		console.log("destroy")
 		super.destroy(fromScene)
 	}
 }
 
-export class Normal extends BaseBlock {
+export class Normal extends BaseBlock implements Moveable, Damageable {
 	constructor(scene: Phaser.Scene, options: Options) {
 		super(scene, { ...options, texture: "block" })
-		this.blockType = Type.NORMAL
+		this.blockType = BlockType.NORMAL
 		this.boot()
 	}
 
 	boot(): this {
 		super.boot()
-		console.log("boot normal")
 		this.createTextObject()
 		this.render()
 		return this
@@ -261,31 +226,41 @@ export class Normal extends BaseBlock {
 			this.health?.toString(),
 			config.block.text.style
 		)
-		this.textObject.setAlpha(0)
-		this.textObject.setDepth(this.depth + 1)
-		this.textObject.setOrigin(0.5, -1.5)
+		this.textObject
+			.setShadow(0, 0, "#000", 5)
+			.setStroke("#fff", 5)
+			.setAlpha(0)
+			.setDepth(this.depth + 1)
+			.setOrigin(0.5, -0.8)
 		this.followPosition.push(this.textObject)
 	}
 }
 
-export class SpecialBall extends BaseBlock {
+export class SpecialBall extends BaseBlock implements Moveable {
 	constructor(scene: Phaser.Scene, options: Options) {
 		super(scene, { ...options, texture: "special_ball" })
-		this.blockType = Type.SPECIAL_BALL
+		this.blockType = BlockType.SPECIAL_BALL
 	}
 }
 
-export class ExtraBall extends BaseBlock {
+export class ExtraBall extends BaseBlock implements Moveable {
 	constructor(scene: Phaser.Scene, options: Options) {
 		super(scene, { ...options, texture: "extra_ball" })
-		this.blockType = Type.EXTRA_BALL
+		this.blockType = BlockType.EXTRA_BALL
 	}
 }
 
 // Export as an interface to extends other classes and
 // then merge the classes applying the mixins
-export interface BaseBlock extends Moveable {}
+export interface BaseBlock extends Moveable, Phaser.Physics.Arcade.Sprite {}
 export interface Normal extends Moveable, Damageable {}
 
 applyMixins(BaseBlock, [Moveable])
 applyMixins(Normal, [Moveable, Damageable])
+
+export default {
+	Normal,
+	SpecialBall,
+	ExtraBall,
+	BlockType,
+}

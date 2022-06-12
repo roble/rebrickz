@@ -1,10 +1,8 @@
-import * as Rebrickz from "@rebrickz"
-
 import { GameConfig as config } from "@config"
 import { Ball, BallType } from "@objects/Ball"
 import { Balls } from "@objects/Balls"
 import { Block, BlockType } from "@objects/Block"
-import { BlocksManager } from "@objects/BlocksManager"
+import { Trajectory, Blocks, World } from "@rebrickz"
 
 export enum GameState {
 	WAITING_PLAYER,
@@ -13,11 +11,11 @@ export enum GameState {
 }
 
 export class MainScene extends Phaser.Scene {
-	public world!: Rebrickz.World
-	public trajectory!: Rebrickz.Trajectory
+	public world!: World
+	public trajectory!: Trajectory
 
 	private balls!: Balls
-	private blocks!: BlocksManager
+	private blocks!: Blocks
 	private state: GameState
 	private firstBallToLand!: Ball | undefined
 
@@ -34,7 +32,7 @@ export class MainScene extends Phaser.Scene {
 		/**
 		 * World
 		 */
-		this.world = new Rebrickz.World(this)
+		this.world = new World(this)
 		this.world.setCollisionHandler(this.handleWorldCollision)
 
 		const firstBallX = this.world.getBounds().centerX
@@ -43,21 +41,27 @@ export class MainScene extends Phaser.Scene {
 		/**
 		 * Trajectory
 		 */
-		this.trajectory = new Rebrickz.Trajectory(this, this.world, firstBallX, firstBallY)
+		this.trajectory = new Trajectory(this, this.world, firstBallX, firstBallY)
 
 		this.trajectory.on("fire", this.fireBalls, this)
 
 		// init groups
 		this.balls = new Balls(this)
-		this.blocks = new BlocksManager(this)
+		this.blocks = new Blocks(this)
+		this.blocks.addBlock(BlockType.NORMAL)
+		this.blocks.addBlock(BlockType.NORMAL)
+		this.blocks.addBlock(BlockType.NORMAL)
+		this.blocks.addBlock(BlockType.NORMAL)
+		this.blocks.addBlock(BlockType.SPECIAL_BALL)
+		this.blocks.addBlock(BlockType.SPECIAL_BALL)
+		this.blocks.addBlock(BlockType.EXTRA_BALL)
+		this.blocks.addBlock(BlockType.EXTRA_BALL)
 
 		// Add first ball
 		this.addBall(firstBallX, firstBallY)
 
 		// Add block
-		this.addBlocks()
-
-		// const b = new Rebrickz.Block.Normal(this, { row: 3, col: 2 })
+		// this.addBlocks()
 
 		this.handleBallCollision()
 	}
@@ -89,8 +93,6 @@ export class MainScene extends Phaser.Scene {
 	}
 
 	fireBalls(direction: number) {
-		console.log("fireBalls", direction)
-
 		this.firstBallToLand = undefined
 		this.state = GameState.RUNNING
 
@@ -105,7 +107,7 @@ export class MainScene extends Phaser.Scene {
 
 		block.on("destroy", this.handleOnBlockDestroy, this)
 
-		this.blocks.groups[type].add(block, true)
+		// this.blocks.groups[type].add(block, true)
 
 		return block
 	}
@@ -124,9 +126,9 @@ export class MainScene extends Phaser.Scene {
 			const row = Phaser.Math.Between(1, rows - 1)
 			const col = Phaser.Math.Between(0, cols - 1)
 
-			if (this.blocks.isSlotEmpty(row, col)) {
-				this.addBlock(row, col, type)
-			}
+			// if (this.blocks.isSlotEmpty(row, col)) {
+			// 	this.addBlock(row, col, type)
+			// }
 		}
 
 		// if (dropSpecialBall)
@@ -143,7 +145,7 @@ export class MainScene extends Phaser.Scene {
 	moveBlockRow() {
 		this.state = GameState.UPDATING
 		// we will move blocks with a tween
-		const blocks = this.blocks.getChildren() as Block[]
+		const blocks = this.blocks.getChildren() as any
 		// const balls = this.extraBallGroup.getChildren() as Block[]
 		// const extraBalls = this.extraBallGroup.getChildren() as Block[]
 		const children = [...blocks] as Block[]
