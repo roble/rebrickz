@@ -1,4 +1,4 @@
-import { Block } from "./block"
+import * as Block from "./block"
 import { Position } from "./position"
 import { Trajectory } from "./trajectory"
 import { World } from "./world"
