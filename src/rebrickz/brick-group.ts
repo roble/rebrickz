@@ -1,16 +1,8 @@
-import { GameConfig as config } from "@config"
-import { ExtraBall, Normal, SpecialBall } from "./block"
+import { Brick, ExtraBall, SpecialBall } from "./brick"
 
-export type BlockTypeClass = Normal | SpecialBall | ExtraBall
+export type BlockTypeClass = Brick | SpecialBall | ExtraBall
 
-interface GroupInterface {
-	get blocks(): BlockTypeClass[]
-	add(child: BlockTypeClass, addToScene?: boolean | undefined): this
-	getBlocksBounds(): Phaser.Geom.Rectangle[]
-	getCollidableLines(): Phaser.Geom.Line[]
-}
-
-export class Group extends Phaser.Physics.Arcade.Group implements GroupInterface {
+export class BrickGroup extends Phaser.Physics.Arcade.Group {
 	constructor(
 		scene: Phaser.Scene,
 		children?:

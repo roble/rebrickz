@@ -1,10 +1,26 @@
-import Block from "./block"
-import { Blocks } from "./blocks"
-import { Group } from "./group"
+import { BallsGroup } from "./balls-group"
+import { Ball, BallType, BallState } from "./ball"
+import { Balls } from "./balls"
+import { Brick, BrickType, ExtraBall, SpecialBall } from "./brick"
+import { BrickGroup } from "./brick-group"
+import { Blocks } from "./bricks"
 import { Position } from "./position"
 import { Trajectory } from "./trajectory"
 import { World } from "./world"
-import { Events } from "./events"
 
-export { Block, Blocks, Group, Events, Position, Trajectory, World }
-export default { Block, Blocks, Group, Events, Position, Trajectory, World }
+export {
+	Ball,
+	BallType,
+	BallState,
+	Balls,
+	Brick,
+	BrickType,
+	ExtraBall,
+	SpecialBall,
+	Blocks,
+	BrickGroup,
+	BallsGroup,
+	Position,
+	Trajectory,
+	World,
+}

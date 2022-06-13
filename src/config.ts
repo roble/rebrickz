@@ -164,7 +164,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
-			debug: false,
+			debug: true,
 			debugShowBody: true,
 			debugShowStaticBody: true,
 			gravity: {

@@ -1,17 +1,16 @@
 import { GameConfig as config } from "@config"
-import { Block } from "."
-import { BlockType, ExtraBall, Normal, SpecialBall } from "./block"
-import { BlockTypeClass, Group } from "./group"
+import { BrickType, ExtraBall, Brick, SpecialBall } from "./brick"
+import { BlockTypeClass, BrickGroup } from "./brick-group"
 import { World } from "./world"
 
 export type BlockGroup = {
-	[key in BlockType]: Group
+	[key in BrickType]: BrickGroup
 }
 
 export class Blocks {
 	private scene: Phaser.Scene
-	public groups!: BlockGroup
 	private slots!: boolean[][]
+	groups!: BlockGroup
 
 	constructor(scene: Phaser.Scene) {
 		this.scene = scene
@@ -21,12 +20,15 @@ export class Blocks {
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
 		this.updateSlots()
-	}
-	removeCallback(obj: Phaser.GameObjects.GameObject) {
-		this.updateSlots()
+		return obj //TODO: remove
 	}
 
-	getChildrenByType(type: BlockType) {
+	removeCallback(obj: Phaser.GameObjects.GameObject) {
+		this.updateSlots()
+		return obj //TODO: remove
+	}
+
+	getChildrenByType(type: BrickType) {
 		return this.groups[type].blocks as BlockTypeClass[]
 	}
 
@@ -38,7 +40,7 @@ export class Blocks {
 		return children
 	}
 
-	addBlock(type: BlockType): this {
+	add(type: BrickType): this {
 		const { row, col } = this.getRandomFreeSlot(1, 2)
 
 		if (row === -1) {
@@ -47,14 +49,14 @@ export class Blocks {
 		}
 
 		switch (type) {
-			case BlockType.NORMAL:
-				this.groups[BlockType.NORMAL].add(new Normal(this.scene, { row: row, col: col }), true)
+			case BrickType.BRICK:
+				this.groups[BrickType.BRICK].add(new Brick(this.scene, { row: row, col: col }), true)
 				break
-			case BlockType.SPECIAL_BALL:
-				this.groups[BlockType.NORMAL].add(new SpecialBall(this.scene, { row: row, col: col }), true)
+			case BrickType.SPECIAL_BALL:
+				this.groups[BrickType.SPECIAL_BALL].add(new SpecialBall(this.scene, { row: row, col: col }), true)
 				break
-			case BlockType.EXTRA_BALL:
-				this.groups[BlockType.NORMAL].add(new ExtraBall(this.scene, { row: row, col: col }), true)
+			case BrickType.EXTRA_BALL:
+				this.groups[BrickType.EXTRA_BALL].add(new ExtraBall(this.scene, { row: row, col: col }), true)
 				break
 
 			default:
@@ -73,23 +75,31 @@ export class Blocks {
 				this.createCallback(obj)
 			},
 		}
+		const groupNormal = new BrickGroup(scene, {
+			immovable: true,
+			classType: Brick,
+			maxSize: config.block.max.normal,
+			...callbacks,
+		})
+
+		const groupSpecial = new BrickGroup(scene, {
+			immovable: true,
+			classType: SpecialBall,
+			maxSize: config.block.max.special,
+			...callbacks,
+		})
+
+		const groupExtra = new BrickGroup(scene, {
+			immovable: true,
+			classType: ExtraBall,
+			maxSize: config.block.max.extra,
+			...callbacks,
+		})
+
 		this.groups = {
-			[BlockType.NORMAL]: new Group(scene, {
-				immovable: true,
-				classType: Normal,
-				maxSize: config.block.max.normal,
-				...callbacks,
-			}),
-			[BlockType.SPECIAL_BALL]: new Group(scene, {
-				classType: SpecialBall,
-				maxSize: config.block.max.special,
-				...callbacks,
-			}),
-			[BlockType.EXTRA_BALL]: new Group(scene, {
-				classType: ExtraBall,
-				maxSize: config.block.max.extra,
-				...callbacks,
-			}),
+			[BrickType.BRICK]: groupNormal,
+			[BrickType.SPECIAL_BALL]: groupSpecial,
+			[BrickType.EXTRA_BALL]: groupExtra,
 		}
 
 		return this
@@ -110,7 +120,7 @@ export class Blocks {
 
 	updateSlots(): this {
 		for (const type of this.getBlockTypes()) {
-			const t = type as BlockType
+			const t = type as BrickType
 			this.groups[t].blocks.forEach((block: BlockTypeClass) => {
 				this.slots[block.row][block.col] = true
 			})
@@ -124,7 +134,7 @@ export class Blocks {
 	}
 
 	private getBlockTypes() {
-		return Object.values(BlockType)
+		return Object.values(BrickType)
 			.filter((e) => !isNaN(Number(e)))
 			.map((e) => Number(e))
 	}

@@ -1,5 +1,5 @@
 import { GameConfig as config } from "@config"
-import Rebrickz from "@rebrickz"
+import * as Rebrickz from "@rebrickz"
 
 export type RowColPosition = {
 	row: number

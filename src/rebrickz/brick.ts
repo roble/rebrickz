@@ -1,10 +1,9 @@
 import { GameConfig as config } from "@config"
-import { applyMixins } from "@helpers"
 
 import { Position } from "./position"
 import { World } from "./world"
 
-type Options = {
+interface BlockOptions {
 	texture?: string
 	row: number
 	col: number
@@ -12,32 +11,23 @@ type Options = {
 	frame?: string | number | undefined
 }
 
-export enum BlockType {
-	NORMAL,
+export enum BrickType {
+	BRICK,
 	SPECIAL_BALL,
 	EXTRA_BALL,
 }
 
-interface BlockInterface {
-	blockType: BlockType
-	col: number
-	row: number
-	boot(): this
-	destroy(fromScene?: boolean | undefined): void
-	create(): this
-	getBody(): Phaser.Physics.Arcade.Body
-}
-
 class Moveable extends Phaser.Physics.Arcade.Sprite {
+	followPosition: unknown[] = []
 	row!: number
 	col!: number
-	followPosition: any[] = []
 
-	private animate(args: object) {
+	animate(args: object): this {
 		this.scene?.tweens.add({
 			targets: [this, ...this.followPosition],
 			...args,
 		})
+		return this
 	}
 
 	/**
@@ -45,6 +35,13 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 	 */
 	moveDown(rows = 1): this {
 		return this.move(rows > 0 ? this.row + rows : -1, undefined)
+	}
+
+	/**
+	 * @param rows rows to move up or use -1 to move to very first row
+	 */
+	moveUp(rows = 1): this {
+		return this.move(rows > 0 ? this.row - rows : 0, undefined)
 	}
 
 	/**
@@ -127,11 +124,15 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 		return this
 	}
 }
-class Damageable extends Phaser.Physics.Arcade.Sprite {
+class Health {
 	_level!: number
-	health = 0
-	maxHealth = 0
-	textObject!: Phaser.GameObjects.Text
+	health: number
+	maxHealth: number
+
+	constructor() {
+		this.health = 0
+		this.maxHealth = 0
+	}
 
 	get level(): number {
 		return this._level
@@ -142,7 +143,7 @@ class Damageable extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	render(): this {
-		this.textObject.text = this.health?.toString() ?? "1"
+		// this.textObject.text = this.health?.toString() ?? "1"
 
 		return this
 	}
@@ -159,18 +160,16 @@ class Damageable extends Phaser.Physics.Arcade.Sprite {
 		return this
 	}
 }
-export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements BlockInterface {
-	col!: number
-	row!: number
-	level!: number
-	blockType!: BlockType
+abstract class Block extends Moveable {
+	abstract blockType: BrickType
+	emitter!: Phaser.GameObjects.Particles.ParticleEmitter
+	particle!: Phaser.GameObjects.Particles.ParticleEmitterManager
 
-	constructor(scene: Phaser.Scene, options: Options) {
+	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		const { row, col, texture = "block" } = options
-
 		super(scene, 0, 0, texture)
 		this.fixPosition(row, col)
-		this.followPosition = []
+		this.on("addedtoscene", this.onCreate, this)
 	}
 
 	private fixPosition(row: number, col: number) {
@@ -182,85 +181,79 @@ export class BaseBlock extends Phaser.Physics.Arcade.Sprite implements BlockInte
 		this.y = Position.getYByRow(this.row)
 	}
 
-	boot(): this {
-		this.on("addedtoscene", this.create, this)
+	createEmitter(): this {
+		this.particle = this.scene.add.particles("ground_tile")
+		this.emitter = this.particle.createEmitter({
+			x: this.x,
+			y: this.y,
+			gravityY: 100,
+			scale: {
+				start: 0.2,
+				end: 0,
+			},
+			speed: {
+				min: 50,
+				max: 100,
+			},
+			alpha: {
+				min: 0.25,
+				max: 0.75,
+			},
+			active: false,
+			lifespan: 1000,
+			quantity: 150,
+			blendMode: Phaser.BlendModes.COLOR_DODGE,
+		})
+		this.emitter.startFollow(this)
 		return this
 	}
 
-	getBody(): Phaser.Physics.Arcade.Body {
-		return this.body as Phaser.Physics.Arcade.Body
-	}
-
-	create() {
+	private onCreate(): this {
 		const { initialAlpha, initialDepth, initialScale } = config.block
-		this.setScale(initialScale)
-		this.setAlpha(initialAlpha)
-		this.setDepth(initialDepth)
-		this.fall()
+		this.setScale(initialScale).setAlpha(initialAlpha).setDepth(initialDepth).createEmitter().fall()
 		return this
 	}
 
-	destroy(fromScene?: boolean | undefined): void {
-		super.destroy(fromScene)
+	destroy(): void {
+		this.emitter.active = true
+		this.emitter.explode(20, 0, 0)
+		// destroy and remove from scene
+		super.destroy(true)
 	}
 }
 
-export class Normal extends BaseBlock implements Moveable, Damageable {
-	constructor(scene: Phaser.Scene, options: Options) {
+export class Brick extends Block {
+	readonly blockType: BrickType
+
+	health: Health
+	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "block" })
-		this.blockType = BlockType.NORMAL
-		this.boot()
-	}
-
-	boot(): this {
-		super.boot()
-		this.createTextObject()
-		this.render()
-		return this
-	}
-
-	private createTextObject(): void {
-		this.textObject = this.scene.add.text(
-			this.x,
-			config.block.initialPositionY,
-			this.health?.toString(),
-			config.block.text.style
-		)
-		this.textObject
-			.setShadow(0, 0, "#000", 5)
-			.setStroke("#fff", 5)
-			.setAlpha(0)
-			.setDepth(this.depth + 1)
-			.setOrigin(0.5, -0.8)
-		this.followPosition.push(this.textObject)
+		this.blockType = BrickType.BRICK
+		this.health = new Health()
 	}
 }
 
-export class SpecialBall extends BaseBlock implements Moveable {
-	constructor(scene: Phaser.Scene, options: Options) {
+export class SpecialBall extends Block {
+	readonly blockType: BrickType
+
+	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "special_ball" })
-		this.blockType = BlockType.SPECIAL_BALL
+		this.blockType = BrickType.SPECIAL_BALL
 	}
 }
 
-export class ExtraBall extends BaseBlock implements Moveable {
-	constructor(scene: Phaser.Scene, options: Options) {
+export class ExtraBall extends Block {
+	readonly blockType: BrickType
+
+	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "extra_ball" })
-		this.blockType = BlockType.EXTRA_BALL
+		this.blockType = BrickType.EXTRA_BALL
 	}
 }
-
-// Export as an interface to extends other classes and
-// then merge the classes applying the mixins
-export interface BaseBlock extends Moveable, Phaser.Physics.Arcade.Sprite {}
-export interface Normal extends Moveable, Damageable {}
-
-applyMixins(BaseBlock, [Moveable])
-applyMixins(Normal, [Moveable, Damageable])
 
 export default {
-	Normal,
+	Brick,
 	SpecialBall,
 	ExtraBall,
-	BlockType,
+	BrickType,
 }
