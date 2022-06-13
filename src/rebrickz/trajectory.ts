@@ -5,10 +5,6 @@ enum State {
 	AIMING,
 	WAITING,
 }
-interface Collision {
-	collision: Phaser.Math.Vector3
-	line: Phaser.Geom.Line
-}
 interface Vertices {
 	[key: string]: Phaser.Geom.Point
 }
@@ -18,8 +14,8 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	private angle!: number
 	private state = State.WAITING
 	private active = false
-	private x: number
-	private y: number
+	private x!: number
+	private y!: number
 	private trajectoryLine!: Phaser.Geom.Line
 	private graphics!: Phaser.GameObjects.Graphics
 	private world!: Rebrickz.World
@@ -29,12 +25,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	private arrowBallSprite!: Phaser.GameObjects.Sprite
 	private trajectoryRectangle!: Phaser.GameObjects.Rectangle
 
-	constructor(scene: Phaser.Scene, world: Rebrickz.World, x: number, y: number) {
+	constructor(scene: Phaser.Scene, world: Rebrickz.World) {
 		super()
 		this.scene = scene
 		this.world = world
-		this.x = x
-		this.y = y
+
 		this.create()
 	}
 
@@ -60,11 +55,20 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
 	private create() {
 		this.emit("created")
+		this.moveToInitialPosition()
 		this.addEventListeners()
 		this.createGraphics()
 		this.createCollisionPointSprite()
 		this.createArrowBallSprite()
 		this.createTrajectoryRectangle()
+	}
+
+	private moveToInitialPosition() {
+		const x = this.world.getBounds().centerX
+		const y = this.world.getBoundsBottom() - config.ball.radius
+
+		this.x = x
+		this.y = y
 	}
 
 	private createTrajectoryRectangle() {
@@ -103,7 +107,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		this.scene.input.on("pointermove", this.mouseMove, this)
 	}
 
-	private mouseUp(event: PointerEvent) {
+	private mouseUp() {
 		this.clearTrajectory()
 
 		if (!this.direction || this.state !== State.AIMING) {
@@ -115,13 +119,13 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		this.emit("fire", this.direction)
 	}
 
-	private mouseDown(event: PointerEvent) {
+	private mouseDown() {
 		if (!this.active || this.state !== State.WAITING) return
 
 		this.state = State.AIMING
 	}
 
-	private mouseMove(event: any) {
+	private mouseMove(event: Phaser.Input.Pointer) {
 		if (this.state !== State.AIMING) return
 
 		this.clearTrajectory()
@@ -132,10 +136,10 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 			return
 		}
 
-		const { trajectoryDistance, ball } = config
+		const { trajectoryDistance } = config
 
-		let distX = event.worldX
-		let distY = event.worldY
+		const distX = event.worldX
+		const distY = event.worldY
 
 		this.angle = Phaser.Math.Angle.Between(this.x, this.y, event.worldX, event.worldY)
 		this.direction = Phaser.Math.Angle.Wrap(this.angle)
@@ -168,7 +172,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
 	private checkBlocksCollisions() {
 		const lines = this.getLinesFromVertices()
-		const closest: any = {
+		const closest: {
+			distance: number
+			point: Phaser.Geom.Point
+			vertex: string | undefined
+		} = {
 			distance: Number.MAX_SAFE_INTEGER,
 			point: new Phaser.Geom.Point(-1, -1),
 			vertex: undefined,
@@ -225,7 +233,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		}
 	}
 
-	private canAdjustAim(event: any): boolean {
+	private canAdjustAim(event: Phaser.Input.Pointer): boolean {
 		return this.scene.input.activePointer.leftButtonDown() && event.y < this.world.getBoundsBottom()
 	}
 
@@ -254,7 +262,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 			duration: 600,
 			alpha: { from: 0.3, to: 0.7 },
 			scale: { from: 0.9, to: 1.1 },
-			onUpdate: (tween) => {
+			onUpdate: () => {
 				this.arrowBallSprite.rotation = this.getDirectionRotated()
 			},
 			yoyo: true,
@@ -272,11 +280,11 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private showArrowBall(): void {
-		let cos = Math.cos(this.direction)
-		let sin = Math.sin(this.direction)
+		const cos = Math.cos(this.direction)
+		const sin = Math.sin(this.direction)
 
-		let x = this.trajectoryLine.x1 + cos * config.ball.size
-		let y = this.trajectoryLine.y1 + sin * config.ball.size
+		const x = this.trajectoryLine.x1 + cos * config.ball.size
+		const y = this.trajectoryLine.y1 + sin * config.ball.size
 
 		this.arrowBallSprite.visible = true
 		this.arrowBallSprite.rotation = this.getDirectionRotated()

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { GameConfig as config } from "@config"
 
 export interface Sides {
@@ -23,10 +24,8 @@ export class World {
 	}
 
 	static get origin(): Phaser.Geom.Point {
-		let x, y
-
-		x = (config.width - config.world.width) / 2
-		y = (config.height - config.world.height) / 2
+		const x = (config.width - config.world.width) / 2
+		const y = (config.height - config.world.height) / 2
 
 		return new Phaser.Geom.Point(x, y)
 	}
@@ -59,6 +58,10 @@ export class World {
 		else flag = false
 
 		return flag
+	}
+
+	getStartPosition(): Phaser.Geom.Point {
+		return new Phaser.Geom.Point(this.getBounds().centerX, this.getBoundsBottom() - config.ball.radius)
 	}
 
 	getBounds(): Phaser.Geom.Rectangle {
