@@ -93,7 +93,7 @@ export const GameConfig: GameConfigType = {
 		radius: BALL_SIZE / 2,
 		speed: 500,
 		max: 48,
-		delayBetweenBalls: 50,
+		delayBetweenBalls: 100,
 	},
 	block: {
 		size: BLOCK_SIZE,
@@ -124,7 +124,7 @@ export const GameConfig: GameConfigType = {
 			move: {
 				delay: {
 					min: 0,
-					max: 200,
+					max: 300,
 				},
 				ease: "Quart.easeOut",
 				duration: 200,
