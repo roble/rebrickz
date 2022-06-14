@@ -3,7 +3,7 @@ import { Ball, BallType, BallState } from "./ball"
 import { Balls } from "./balls"
 import { Brick, BrickType, ExtraBall, SpecialBall } from "./brick"
 import { BrickGroup } from "./brick-group"
-import { Blocks } from "./bricks"
+import { Bricks } from "./bricks"
 import { Position } from "./position"
 import { Trajectory } from "./trajectory"
 import { World } from "./world"
@@ -17,7 +17,7 @@ export {
 	BrickType,
 	ExtraBall,
 	SpecialBall,
-	Blocks,
+	Bricks,
 	BrickGroup,
 	BallsGroup,
 	Position,

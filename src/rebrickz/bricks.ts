@@ -1,4 +1,5 @@
 import { GameConfig as config } from "@config"
+import { Balls } from "./balls"
 import { BrickType, ExtraBall, Brick, SpecialBall } from "./brick"
 import { BlockTypeClass, BrickGroup } from "./brick-group"
 import { World } from "./world"
@@ -7,29 +8,62 @@ export type BlockGroup = {
 	[key in BrickType]: BrickGroup
 }
 
-export class Blocks {
+export class Bricks {
 	private scene: Phaser.Scene
 	private slots!: boolean[][]
 	groups!: BlockGroup
+	balls: Balls
 
-	constructor(scene: Phaser.Scene) {
+	constructor(scene: Phaser.Scene, balls: Balls) {
 		this.scene = scene
+		this.balls = balls
 		this.createGroups(scene)
 		this.initSlots()
+		this.setCollisionHandler()
 	}
 
-	createCallback(obj: Phaser.GameObjects.GameObject) {
+	setCollisionHandler(): this {
+		const overlap = [this.groups[BrickType.EXTRA_BALL], this.groups[BrickType.SPECIAL_BALL]]
+		const collide = this.groups[BrickType.BRICK]
+
+		// collectables bricks
+		this.scene.physics.add.overlap(this.balls.group, overlap, (ball, _brick) => {
+			// console.log(ball, _brick)
+			_brick.destroy(true)
+		})
+
+		// collidables bricks
+		this.scene.physics.add.collider(this.balls.group, collide, (ball, _brick) => {
+			const brick = _brick as Brick
+			brick.health.damage()
+			// const maxHealth = brick.maxHealth
+			_brick.destroy(true)
+		})
+
+		return this
+	}
+
+	private createCallback(obj: Phaser.GameObjects.GameObject) {
 		this.updateSlots()
 		return obj //TODO: remove
 	}
 
-	removeCallback(obj: Phaser.GameObjects.GameObject) {
+	private removeCallback(obj: Phaser.GameObjects.GameObject) {
+		console.log("remove")
 		this.updateSlots()
 		return obj //TODO: remove
+	}
+
+	getCollidableLines(): Phaser.Geom.Line[] {
+		const lines = []
+
+		lines.push(...this.groups[BrickType.BRICK].getCollidableLines())
+
+		return lines
 	}
 
 	getChildrenByType(type: BrickType) {
-		return this.groups[type].blocks as BlockTypeClass[]
+		return this.groups[type].bricks as BlockTypeClass[]
 	}
 
 	getChildren() {
@@ -38,6 +72,32 @@ export class Blocks {
 			children = [...children, ...this.getChildrenByType(type)]
 		}
 		return children
+	}
+
+	async move(): Promise<this> {
+		this.getChildren().forEach(async (brick) => {
+			await brick.move()
+		})
+		return this
+	}
+
+	async createRandom(): Promise<this> {
+		const total = Phaser.Math.Between(1, config.block.maxPerRow)
+		const dropExtraBall = Phaser.Math.Between(0, 100) < 30
+		const dropSpecialBall = Phaser.Math.Between(0, 100) < 10
+
+		for (let i = 0; i < total; i++) {
+			this.add(BrickType.BRICK)
+		}
+
+		if (dropExtraBall) this.add(BrickType.EXTRA_BALL)
+		if (dropSpecialBall) this.add(BrickType.SPECIAL_BALL)
+
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(this)
+			}, 300)
+		})
 	}
 
 	add(type: BrickType): this {
@@ -72,7 +132,7 @@ export class Blocks {
 				this.createCallback(obj)
 			},
 			removeCallback: (obj: Phaser.GameObjects.GameObject) => {
-				this.createCallback(obj)
+				this.removeCallback(obj)
 			},
 		}
 		const groupNormal = new BrickGroup(scene, {
@@ -119,12 +179,15 @@ export class Blocks {
 	}
 
 	updateSlots(): this {
+		this.initSlots()
 		for (const type of this.getBlockTypes()) {
 			const t = type as BrickType
-			this.groups[t].blocks.forEach((block: BlockTypeClass) => {
+			this.groups[t].bricks.forEach((block: BlockTypeClass) => {
 				this.slots[block.row][block.col] = true
 			})
 		}
+
+		console.log(this.slots)
 
 		return this
 	}

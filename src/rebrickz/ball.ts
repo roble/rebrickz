@@ -27,7 +27,6 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 
 		this.displayWidth = size
 		this.displayHeight = size
-		console.log("wasdasd")
 		this.enableCollision(true)
 		this.createEmitter()
 		return this
@@ -38,14 +37,15 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		this.emitter = this.particle.createEmitter({
 			x: this.x,
 			y: this.y,
-			speed: { min: 50, max: 0 },
+			speed: { min: 40, max: 0 },
 			gravityY: 0,
 			gravityX: 0,
-			scale: { start: 0.3, end: 0.0 },
-			active: false,
-			lifespan: 300,
+			scale: { start: 0.8, end: 0.0 },
+			alpha: { start: 0.3, end: 0.0 },
+			lifespan: 100,
 		})
 		this.emitter.startFollow(this)
+		this.emitter.stop()
 	}
 
 	private animate(args: object) {
@@ -59,6 +59,11 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		//@ts-ignore
 		this.body.onWorldBounds = value
+	}
+
+	afterMove() {
+		this.state = BallState.STOPPED
+		this.hide()
 	}
 
 	move(x: number, y: number): this {
@@ -80,9 +85,8 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 					duration: 500,
 					x: x ?? this.x,
 					y: y ?? this.y,
-					callback: () => {
-						this.state = BallState.STOPPED
-					},
+					onComplete: this.afterMove,
+					onCompleteScope: this,
 				},
 			],
 		})
@@ -91,16 +95,15 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	start(x: number, y?: number) {
-		this.emitter.active = true
-		this.emitter.visible = true
+		this.show()
+		this.emitter.start()
 		this.state = BallState.RUNNING
 		this.setVelocity(x, y)
 	}
 
 	stop(): this {
 		super.stop()
-		this.emitter.active = false
-		this.emitter.visible = false
+		this.emitter.stop()
 		this.state = BallState.STOPPED
 		this.setVelocity(0)
 		return this
@@ -113,6 +116,14 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		}
 		// destroy and remove from scene
 		super.destroy(true)
+	}
+
+	hide() {
+		this.visible = false
+	}
+
+	show() {
+		this.visible = true
 	}
 }
 

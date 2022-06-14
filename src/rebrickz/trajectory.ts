@@ -9,6 +9,11 @@ interface Vertices {
 	[key: string]: Phaser.Geom.Point
 }
 export class Trajectory extends Phaser.Events.EventEmitter {
+	static readonly EVENTS = {
+		FIRE: "fire",
+		CREATED: "created",
+	}
+
 	private scene: Phaser.Scene
 	private direction!: number
 	private angle!: number
@@ -54,7 +59,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private create() {
-		this.emit("created")
+		this.emit(Trajectory.EVENTS.CREATED)
 		this.moveToInitialPosition()
 		this.addEventListeners()
 		this.createGraphics()
@@ -116,7 +121,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		}
 
 		this.state = State.WAITING
-		this.emit("fire", this.direction)
+		this.emit(Trajectory.EVENTS.FIRE, this.direction)
 	}
 
 	private mouseDown() {

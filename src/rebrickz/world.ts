@@ -1,26 +1,28 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { GameConfig as config } from "@config"
-
 export interface Sides {
 	top: Phaser.Geom.Line
 	right: Phaser.Geom.Line
 	bottom: Phaser.Geom.Line
 	left: Phaser.Geom.Line
 }
-export class World {
-	scene: Phaser.Scene
-	bounds!: Phaser.Geom.Rectangle
-	collisionHandler!: Function
-
-	constructor(scene: Phaser.Scene) {
-		this.scene = scene
-		this.create()
+export class World extends Phaser.Events.EventEmitter {
+	static readonly EVENTS = {
+		BALL_COLLIDED: "ball_collided",
 	}
 
-	setCollisionHandler(handler: Function) {
-		this.collisionHandler = handler
+	scene: Phaser.Scene
+	bounds!: Phaser.Geom.Rectangle
+
+	constructor(scene: Phaser.Scene) {
+		super()
+		this.scene = scene
+		this.create()
+		this.setCollisionHandler()
+	}
+
+	setCollisionHandler() {
 		// lister for collision with world bounds
-		this.scene.physics.world.on("worldbounds", this.collisionHandler, this.scene)
+		this.scene.physics.world.on("worldbounds", this.handleCollision, this)
 	}
 
 	static get origin(): Phaser.Geom.Point {
@@ -149,5 +151,10 @@ export class World {
 		graphics.lineStyle(thickness, color, alpha)
 
 		graphics.strokeRect(_worldBounds.x, _worldBounds.y, _worldBounds.width, _worldBounds.height)
+	}
+
+	handleCollision(ball: Phaser.Physics.Arcade.Body, up: boolean, down: boolean) {
+		if (!down) return
+		this.emit(World.EVENTS.BALL_COLLIDED, ball)
 	}
 }

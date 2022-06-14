@@ -14,13 +14,13 @@ export class BrickGroup extends Phaser.Physics.Arcade.Group {
 		super(scene.physics.world, scene, children, config)
 	}
 
-	get blocks(): BlockTypeClass[] {
+	get bricks(): BlockTypeClass[] {
 		return this.getChildren() as BlockTypeClass[]
 	}
 
 	add(child: BlockTypeClass, addToScene?: boolean | undefined): this {
 		if (this.getTotalFree() === 0) {
-			console.warn(`No more empty slots`)
+			console.warn(`No more empty slots - group`)
 			return this
 		}
 
@@ -32,7 +32,7 @@ export class BrickGroup extends Phaser.Physics.Arcade.Group {
 	getBlocksBounds(): Phaser.Geom.Rectangle[] {
 		const bounds: Phaser.Geom.Rectangle[] = []
 
-		this.blocks.forEach((block) => {
+		this.bricks.forEach((block) => {
 			bounds.push(block.getBounds())
 		})
 
@@ -42,7 +42,7 @@ export class BrickGroup extends Phaser.Physics.Arcade.Group {
 	getCollidableLines(): Phaser.Geom.Line[] {
 		const lines: Phaser.Geom.Line[] = []
 
-		this.blocks.forEach((block) => {
+		this.bricks.forEach((block) => {
 			const bounds = block.getBounds()
 			lines.push(bounds.getLineB())
 			lines.push(bounds.getLineC())

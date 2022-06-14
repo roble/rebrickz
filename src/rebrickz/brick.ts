@@ -33,33 +33,33 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 	/**
 	 * @param rows rows to move down or use -1 to move to very last row
 	 */
-	moveDown(rows = 1): this {
+	async moveDown(rows = 1): Promise<this> {
 		return this.move(rows > 0 ? this.row + rows : -1, undefined)
 	}
 
 	/**
 	 * @param rows rows to move up or use -1 to move to very first row
 	 */
-	moveUp(rows = 1): this {
+	async moveUp(rows = 1): Promise<this> {
 		return this.move(rows > 0 ? this.row - rows : 0, undefined)
 	}
 
 	/**
 	 * @param cols cols to move down or use -1 to move to very last col
 	 */
-	moveLeft(cols = 1): this {
+	async moveLeft(cols = 1): Promise<this> {
 		return this.move(undefined, cols > 0 && this.col > 0 ? this.col - cols : 0)
 	}
 
 	/**
 	 * @param cols cols to move down or use -1 to move to very last col
 	 */
-	moveRight(cols = 1): this {
+	async moveRight(cols = 1): Promise<this> {
 		return this.move(undefined, cols > 0 ? this.col + cols : -1)
 	}
 
-	move(row?: number, col?: number): this {
-		let targetRow, targetCol
+	async move(row?: number, col?: number): Promise<this> {
+		let targetRow: number | undefined, targetCol: number | undefined
 
 		if (row !== undefined && !World.canMove(row))
 			targetRow = row < 0 ? World.lastRowIndex : Math.min(row, World.lastRowIndex)
@@ -68,28 +68,31 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 			targetCol = col < 0 ? World.lastColIndex : Math.min(col, World.lastColIndex)
 
 		if (targetRow !== undefined) this.row = targetRow
+		else targetRow = this.row + 1
 
 		if (targetCol !== undefined) this.col = targetCol
 
 		const { tweens } = config.block
 
-		this.scene.time.addEvent({
-			delay: Phaser.Math.Between(tweens.move.delay.min, tweens.move.delay.max),
-			callback: this.animate,
-			callbackScope: this,
-			args: [
-				{
-					alpha: 1,
-					scale: 1,
-					ease: tweens.fall.ease,
-					duration: tweens.fall.duration,
-					x: Position.getXByCol(targetCol ?? this.col),
-					y: Position.getYByRow(targetRow ?? this.row),
-				},
-			],
+		return new Promise((resolve) => {
+			this.scene.time.addEvent({
+				delay: Phaser.Math.Between(tweens.move.delay.min, tweens.move.delay.max),
+				callback: this.animate,
+				callbackScope: this,
+				args: [
+					{
+						alpha: 1,
+						scale: 1,
+						ease: tweens.fall.ease,
+						duration: tweens.fall.duration,
+						x: Position.getXByCol(targetCol ?? this.col),
+						y: Position.getYByRow(targetRow ?? this.row),
+						onComplete: () => resolve(this),
+						onCompleteContext: this,
+					},
+				],
+			})
 		})
-
-		return this
 	}
 
 	canMove(row?: number | undefined, col?: number | undefined): boolean {
