@@ -10,7 +10,6 @@ export type BlockGroup = {
 
 export class Bricks {
 	private scene: Phaser.Scene
-	private slots!: boolean[][]
 	groups!: BlockGroup
 	balls: Balls
 
@@ -18,7 +17,6 @@ export class Bricks {
 		this.scene = scene
 		this.balls = balls
 		this.createGroups(scene)
-		this.initSlots()
 		this.setCollisionHandler()
 	}
 
@@ -44,13 +42,13 @@ export class Bricks {
 	}
 
 	private createCallback(obj: Phaser.GameObjects.GameObject) {
-		this.updateSlots()
+		console.log("create")
 		return obj //TODO: remove
 	}
 
 	private removeCallback(obj: Phaser.GameObjects.GameObject) {
 		console.log("remove")
-		this.updateSlots()
+
 		return obj //TODO: remove
 	}
 
@@ -75,32 +73,33 @@ export class Bricks {
 	}
 
 	async move(): Promise<this> {
-		this.getChildren().forEach(async (brick) => {
-			await brick.move()
-		})
-		return this
+		const bricks = this.getChildren()
+			.filter((brick) => {
+				return this.isSlotEmpty(brick.row + 1, brick.col, this.getSlots())
+			})
+			.map((brick) => brick.moveDown())
+
+		return Promise.all(bricks).then(() => this)
 	}
 
 	async createRandom(): Promise<this> {
 		const total = Phaser.Math.Between(1, config.block.maxPerRow)
-		const dropExtraBall = Phaser.Math.Between(0, 100) < 30
-		const dropSpecialBall = Phaser.Math.Between(0, 100) < 10
+		const dropExtraBall = Phaser.Math.Between(0, 100) < 10
+		const dropSpecialBall = Phaser.Math.Between(0, 100) < 5
+
+		const bricks = []
 
 		for (let i = 0; i < total; i++) {
-			this.add(BrickType.BRICK)
+			bricks.push(this.add(BrickType.BRICK))
 		}
 
 		if (dropExtraBall) this.add(BrickType.EXTRA_BALL)
 		if (dropSpecialBall) this.add(BrickType.SPECIAL_BALL)
 
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				resolve(this)
-			}, 300)
-		})
+		return Promise.all(bricks).then(() => this)
 	}
 
-	add(type: BrickType): this {
+	async add(type: BrickType): Promise<this> {
 		const { row, col } = this.getRandomFreeSlot(1, 2)
 
 		if (row === -1) {
@@ -123,7 +122,14 @@ export class Bricks {
 				console.warn("Unknown block type ")
 				break
 		}
-		return this
+
+		const { delay, duration } = config.block.tweens.fall
+
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(this)
+			}, delay.max + duration)
+		})
 	}
 
 	private createGroups(scene: Phaser.Scene): this {
@@ -165,7 +171,7 @@ export class Bricks {
 		return this
 	}
 
-	private initSlots(): this {
+	private createSlots() {
 		const { rows, cols } = config
 		const slots: boolean[][] = []
 		for (let row = 0; row < rows; row++) {
@@ -174,26 +180,25 @@ export class Bricks {
 				slots[row][col] = false
 			}
 		}
-		this.slots = slots
-		return this
+
+		return slots
 	}
 
-	updateSlots(): this {
-		this.initSlots()
+	getSlots(): boolean[][] {
+		const slots = this.createSlots()
+
 		for (const type of this.getBlockTypes()) {
 			const t = type as BrickType
 			this.groups[t].bricks.forEach((block: BlockTypeClass) => {
-				this.slots[block.row][block.col] = true
+				slots[block.row][block.col] = true
 			})
 		}
 
-		console.log(this.slots)
-
-		return this
+		return slots
 	}
 
-	private isSlotEmpty(row: number, col: number) {
-		return !this.slots[row][col]
+	private isSlotEmpty(row: number, col: number, slots: boolean[][]) {
+		return slots[row] && slots[row][col] === false
 	}
 
 	private getBlockTypes() {
@@ -210,14 +215,15 @@ export class Bricks {
 		rowEnd = Math.min(rowEnd, World.lastRowIndex)
 
 		const free = []
+		const slots = this.getSlots()
 
 		for (let row = rowStart; row <= rowEnd; row++) {
-			const usedInRow = this.slots[row].filter((e) => e).length
+			const usedInRow = slots[row].filter((e) => e).length
 
 			if (usedInRow >= config.block.maxPerRow) continue
 
-			for (let col = 0; col < this.slots[row].length; col++) {
-				if (this.isSlotEmpty(row, col)) free.push({ row: row, col: col })
+			for (let col = 0; col < slots[row].length; col++) {
+				if (this.isSlotEmpty(row, col, slots)) free.push({ row: row, col: col })
 			}
 		}
 
