@@ -10,43 +10,49 @@ export class Balls extends Phaser.Events.EventEmitter {
 	private scene: Phaser.Scene
 	group!: BallsGroup
 	firstBallToLand: Ball | undefined
+	ballsTotal: number
 	ballsLanded: number
+	fireOrigin: Phaser.Geom.Point | undefined
 
 	constructor(scene: Phaser.Scene) {
 		super()
 		this.scene = scene
 		this.firstBallToLand = undefined
+		this.ballsTotal = 0
 		this.ballsLanded = 0
+		this.fireOrigin = undefined
 		this.createGroup(scene)
 	}
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
+		this.ballsTotal = this.group.getLength()
 		return obj //TODO: remove
 	}
 
 	removeCallback(obj: Phaser.GameObjects.GameObject) {
+		this.ballsTotal = this.group.getLength()
 		return obj //TODO: remove
 	}
 
-	add(type: BallType, x: number, y: number): this {
+	add(type: BallType, x: number, y: number): Ball {
 		switch (type) {
-			case BallType.NORMAL:
-				this.group.add(new Ball(this.scene, x, y), true)
-				break
+			case BallType.NORMAL: {
+				const ball = new Ball(this.scene, x, y)
+				this.group.add(ball, true)
+				return ball
+			}
 			default:
-				console.warn("Unknown block type ")
-				break
+				throw new Error("Unknown block type")
 		}
-		return this
-	}
-
-	isRunning(): boolean {
-		return this.group.balls.some((ball) => ball.state === BallState.RUNNING)
 	}
 
 	fire(direction: number): void {
 		const { speed, delayBetweenBalls } = config.ball
+		const firstBall = this.getFirstBall()
 		this.firstBallToLand = undefined
+		this.ballsLanded = 0
+
+		this.fireOrigin = new Phaser.Geom.Point(firstBall.x, firstBall.y)
 		this.group.balls.forEach((ball, index) => {
 			this.scene.time.addEvent({
 				delay: delayBetweenBalls * index,
@@ -59,19 +65,18 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 	collideWorldBottom(ball: Ball) {
 		ball.stop()
+		this.ballsLanded++
 
 		if (!this.firstBallToLand) this.firstBallToLand = ball
 
-		// wait 10ms to the next frame
-		this.scene.time.addEvent({
-			delay: 10,
-			callback: () => {
-				if (ball != this.firstBallToLand) this.moveToTheFirstBallPosition(ball)
-				if (!this.isRunning()) {
-					this.emit(Balls.EVENTS.BALLS_STOPPED)
-				}
-			},
-		})
+		if (ball != this.firstBallToLand) this.moveToTheFirstBallPosition(ball)
+
+		if (this.ballsLanded === this.ballsTotal) {
+			this.scene.time.delayedCall(config.ball.tweens.move.duration, () => {
+				this.emit(Balls.EVENTS.BALLS_STOPPED)
+				this.ballsLanded = 0
+			})
+		}
 	}
 
 	moveToTheFirstBallPosition(ball: Ball): this {

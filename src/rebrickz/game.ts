@@ -1,4 +1,4 @@
-import { Ball, Balls, BallType, Bricks, Trajectory, World } from "."
+import { Ball, Balls, BallType, Brick, Bricks, BrickType, Trajectory, World } from "."
 
 export enum GameState {
 	WAITING_PLAYER,
@@ -16,6 +16,7 @@ export class Game extends Phaser.Events.EventEmitter {
 	private scene: Phaser.Scene
 	private gameOver: boolean
 	private level: number
+	private collected: Brick[]
 
 	constructor(scene: Phaser.Scene) {
 		super()
@@ -28,13 +29,16 @@ export class Game extends Phaser.Events.EventEmitter {
 		this.balls = new Balls(scene)
 		this.bricks = new Bricks(scene, this.balls)
 		this.level = 1
+		this.collected = []
 
 		this.create()
 	}
 
 	create() {
 		this.addEventListeners()
+		// for (let i = 0; i < 50; i++) {
 		this.addFirstBall()
+		// }
 		this.bricks.createRandom()
 		this.trajectory.setCollidableLines(this.world.getCollidableLines())
 		this.trajectory.setActive(true)
@@ -82,18 +86,35 @@ export class Game extends Phaser.Events.EventEmitter {
 	}
 
 	private async nextRound(): Promise<this> {
-		const firstBallPosition = this.balls.getFirstBall().x
-		this.trajectory.setPosition(firstBallPosition)
-		console.time("move")
-		await this.bricks.move()
+		console.log("NEXT ROUND!")
 
-		await this.bricks.createRandom()
+		const firstBall = this.balls.getFirstBall()
+		this.trajectory.setPosition(firstBall.x)
 
-		console.timeEnd("move")
+		this.collected.forEach((brick) => {
+			switch (brick.brickType) {
+				case BrickType.SPECIAL_BALL:
+				case BrickType.EXTRA_BALL: {
+					const ball = this.balls.add(BallType.NORMAL, firstBall.x, firstBall.y)
+					ball.hide()
+					break
+				}
+
+				default:
+					break
+			}
+		})
+
+		await this.bricks.move().then(async () => {
+			await this.bricks.createRandom()
+		})
 
 		this.state = GameState.WAITING_PLAYER
+		this.collected = []
 
-		return this
+		return new Promise((resolve) => {
+			return resolve(this)
+		})
 	}
 
 	private addEventListeners(): this {
@@ -108,7 +129,22 @@ export class Game extends Phaser.Events.EventEmitter {
 		 * Handle all balls stopped running
 		 */
 		this.balls.on(Balls.EVENTS.BALLS_STOPPED, () => {
+			console.warn("BALLS STOPPED")
 			this.nextRound()
+		})
+		/**
+		 * On brick collided world's bottom
+		 */
+		this.bricks.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
+			console.log("COLLIDED_WORLD_DOWN")
+			this.bricks.destroyRow(World.lastRowIndex)
+		})
+		/**
+		 * On brick has collected
+		 */
+		this.bricks.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
+			console.warn("COLLECTED", brick)
+			this.collected.push(brick)
 		})
 		return this
 	}

@@ -15,6 +15,7 @@ export enum BrickType {
 	BRICK,
 	SPECIAL_BALL,
 	EXTRA_BALL,
+	EXTRA_LIFE,
 }
 
 class Moveable extends Phaser.Physics.Arcade.Sprite {
@@ -75,23 +76,17 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 		const { tweens } = config.block
 
 		return new Promise((resolve) => {
-			this.scene.time.addEvent({
-				delay: Phaser.Math.Between(tweens.move.delay.min, tweens.move.delay.max),
-				callback: this.animate,
-				callbackScope: this,
-				args: [
-					{
-						alpha: 1,
-						scale: 1,
-						ease: tweens.fall.ease,
-						duration: tweens.fall.duration,
-						x: Position.getXByCol(targetCol ?? this.col),
-						y: Position.getYByRow(targetRow ?? this.row),
-						onComplete: () => resolve(this),
-						onCompleteContext: this,
-					},
-				],
-			})
+			const args = {
+				alpha: 1,
+				scale: 1,
+				ease: tweens.fall.ease,
+				duration: tweens.fall.duration,
+				x: Position.getXByCol(targetCol ?? this.col),
+				y: Position.getYByRow(targetRow ?? this.row),
+				onComplete: () => resolve(this),
+				onCompleteContext: this,
+			}
+			this.animate(args)
 		})
 	}
 
@@ -164,9 +159,8 @@ class Health {
 	}
 }
 abstract class Block extends Moveable {
-	abstract blockType: BrickType
+	abstract brickType: BrickType
 	emitter!: Phaser.GameObjects.Particles.ParticleEmitter
-	particle!: Phaser.GameObjects.Particles.ParticleEmitterManager
 
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		const { row, col, texture = "block" } = options
@@ -185,8 +179,7 @@ abstract class Block extends Moveable {
 	}
 
 	createEmitter(): this {
-		this.particle = this.scene.add.particles("ground_tile")
-		this.emitter = this.particle.createEmitter({
+		this.emitter = this.scene.add.particles("ground_tile").createEmitter({
 			x: this.x,
 			y: this.y,
 			gravityY: 100,
@@ -226,31 +219,40 @@ abstract class Block extends Moveable {
 }
 
 export class Brick extends Block {
-	readonly blockType: BrickType
+	readonly brickType: BrickType
 
 	health: Health
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "block" })
-		this.blockType = BrickType.BRICK
+		this.brickType = BrickType.BRICK
 		this.health = new Health()
 	}
 }
 
 export class SpecialBall extends Block {
-	readonly blockType: BrickType
+	readonly brickType: BrickType
 
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "special_ball" })
-		this.blockType = BrickType.SPECIAL_BALL
+		this.brickType = BrickType.SPECIAL_BALL
 	}
 }
 
 export class ExtraBall extends Block {
-	readonly blockType: BrickType
+	readonly brickType: BrickType
 
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "extra_ball" })
-		this.blockType = BrickType.EXTRA_BALL
+		this.brickType = BrickType.EXTRA_BALL
+	}
+}
+
+export class ExtraLife extends Block {
+	readonly brickType: BrickType
+
+	constructor(scene: Phaser.Scene, options: BlockOptions) {
+		super(scene, { ...options, texture: "life" })
+		this.brickType = BrickType.EXTRA_LIFE
 	}
 }
 
@@ -258,5 +260,6 @@ export default {
 	Brick,
 	SpecialBall,
 	ExtraBall,
+	ExtraLife,
 	BrickType,
 }

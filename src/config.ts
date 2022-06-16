@@ -32,6 +32,16 @@ export type BallConfigType = {
 	speed: number
 	max: number
 	delayBetweenBalls: number
+	tweens: {
+		move: {
+			delay: {
+				min: number
+				max: number
+			}
+			ease: "Quart.easeOut"
+			duration: number
+		}
+	}
 }
 
 export type BlockConfigType = {
@@ -40,6 +50,12 @@ export type BlockConfigType = {
 		normal: number
 		special: number
 		extra: number
+		life: number
+	}
+	dropProbability: {
+		special: number
+		extra: number
+		life: number
 	}
 	maxPerRow: number
 	text: {
@@ -91,9 +107,19 @@ export const GameConfig: GameConfigType = {
 	ball: {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
-		speed: 500,
+		speed: 600,
 		max: 48,
 		delayBetweenBalls: 100,
+		tweens: {
+			move: {
+				delay: {
+					min: 0,
+					max: 300,
+				},
+				ease: "Quart.easeOut",
+				duration: 200,
+			},
+		},
 	},
 	block: {
 		size: BLOCK_SIZE,
@@ -101,6 +127,12 @@ export const GameConfig: GameConfigType = {
 			normal: 30,
 			special: 2,
 			extra: 2,
+			life: 1,
+		},
+		dropProbability: {
+			special: 15,
+			extra: 50,
+			life: 50,
 		},
 		maxPerRow: GAME_COLS - 2,
 		text: {
@@ -164,7 +196,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
-			debug: false,
+			debug: true,
 			debugShowBody: true,
 			debugShowStaticBody: true,
 			gravity: {

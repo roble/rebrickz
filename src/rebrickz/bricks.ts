@@ -1,6 +1,6 @@
 import { GameConfig as config } from "@config"
 import { Balls } from "./balls"
-import { BrickType, ExtraBall, Brick, SpecialBall } from "./brick"
+import { BrickType, ExtraBall, Brick, SpecialBall, ExtraLife } from "./brick"
 import { BlockTypeClass, BrickGroup } from "./brick-group"
 import { World } from "./world"
 
@@ -8,12 +8,18 @@ export type BlockGroup = {
 	[key in BrickType]: BrickGroup
 }
 
-export class Bricks {
+export class Bricks extends Phaser.Events.EventEmitter {
+	static readonly EVENTS = {
+		COLLIDED_WORLD_DOWN: "collided_world_down",
+		COLLECTED: "collected",
+	}
+
 	private scene: Phaser.Scene
 	groups!: BlockGroup
 	balls: Balls
 
 	constructor(scene: Phaser.Scene, balls: Balls) {
+		super()
 		this.scene = scene
 		this.balls = balls
 		this.createGroups(scene)
@@ -21,17 +27,22 @@ export class Bricks {
 	}
 
 	setCollisionHandler(): this {
-		const overlap = [this.groups[BrickType.EXTRA_BALL], this.groups[BrickType.SPECIAL_BALL]]
+		const overlap = [
+			this.groups[BrickType.EXTRA_BALL],
+			this.groups[BrickType.SPECIAL_BALL],
+			this.groups[BrickType.EXTRA_LIFE],
+		]
 		const collide = this.groups[BrickType.BRICK]
 
 		// collectables bricks
-		this.scene.physics.add.overlap(this.balls.group, overlap, (ball, _brick) => {
+		this.scene.physics.overlap(this.balls.group, overlap, (ball, brick) => {
 			// console.log(ball, _brick)
-			_brick.destroy(true)
+			brick.destroy(true)
+			this.emit(Bricks.EVENTS.COLLECTED, brick)
 		})
 
 		// collidables bricks
-		this.scene.physics.add.collider(this.balls.group, collide, (ball, _brick) => {
+		this.scene.physics.collide(this.balls.group, collide, (ball, _brick) => {
 			const brick = _brick as Brick
 			brick.health.damage()
 			// const maxHealth = brick.maxHealth
@@ -41,14 +52,19 @@ export class Bricks {
 		return this
 	}
 
+	destroyRow(rowIndex: number) {
+		const bricks = this.getChildren().filter((brick) => brick.row === rowIndex)
+		console.log("destroy brick", bricks)
+		bricks.forEach((brick) => {
+			brick.destroy()
+		})
+	}
+
 	private createCallback(obj: Phaser.GameObjects.GameObject) {
-		console.log("create")
 		return obj //TODO: remove
 	}
 
 	private removeCallback(obj: Phaser.GameObjects.GameObject) {
-		console.log("remove")
-
 		return obj //TODO: remove
 	}
 
@@ -74,18 +90,20 @@ export class Bricks {
 
 	async move(): Promise<this> {
 		const bricks = this.getChildren()
-			.filter((brick) => {
-				return this.isSlotEmpty(brick.row + 1, brick.col, this.getSlots())
-			})
-			.map((brick) => brick.moveDown())
+		const inLastRow = bricks.filter((brick) => brick.row === World.lastRowIndex)
+		const bricksToMove = bricks.filter((brick) => brick.row < World.lastRowIndex)
+		if (inLastRow.length) this.emit(Bricks.EVENTS.COLLIDED_WORLD_DOWN)
 
-		return Promise.all(bricks).then(() => this)
+		return Promise.all(bricksToMove.map((brick) => brick.moveDown())).then(() => {
+			return this
+		})
 	}
 
 	async createRandom(): Promise<this> {
 		const total = Phaser.Math.Between(1, config.block.maxPerRow)
-		const dropExtraBall = Phaser.Math.Between(0, 100) < 10
-		const dropSpecialBall = Phaser.Math.Between(0, 100) < 5
+		const dropExtraBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.extra
+		const dropSpecialBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.special
+		const dropLife = Phaser.Math.Between(0, 100) < config.block.dropProbability.life
 
 		const bricks = []
 
@@ -95,6 +113,7 @@ export class Bricks {
 
 		if (dropExtraBall) this.add(BrickType.EXTRA_BALL)
 		if (dropSpecialBall) this.add(BrickType.SPECIAL_BALL)
+		if (dropLife) this.add(BrickType.EXTRA_LIFE)
 
 		return Promise.all(bricks).then(() => this)
 	}
@@ -104,7 +123,7 @@ export class Bricks {
 
 		if (row === -1) {
 			console.warn("No more slots available")
-			return this
+			return new Promise((resolve) => resolve(this))
 		}
 
 		switch (type) {
@@ -116,6 +135,9 @@ export class Bricks {
 				break
 			case BrickType.EXTRA_BALL:
 				this.groups[BrickType.EXTRA_BALL].add(new ExtraBall(this.scene, { row: row, col: col }), true)
+				break
+			case BrickType.EXTRA_LIFE:
+				this.groups[BrickType.EXTRA_LIFE].add(new ExtraLife(this.scene, { row: row, col: col }), true)
 				break
 
 			default:
@@ -162,10 +184,18 @@ export class Bricks {
 			...callbacks,
 		})
 
+		const groupLife = new BrickGroup(scene, {
+			immovable: true,
+			classType: ExtraBall,
+			maxSize: config.block.max.life,
+			...callbacks,
+		})
+
 		this.groups = {
 			[BrickType.BRICK]: groupNormal,
 			[BrickType.SPECIAL_BALL]: groupSpecial,
 			[BrickType.EXTRA_BALL]: groupExtra,
+			[BrickType.EXTRA_LIFE]: groupLife,
 		}
 
 		return this

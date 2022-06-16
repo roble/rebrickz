@@ -69,7 +69,7 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	move(x: number, y: number): this {
 		if (this.state !== BallState.STOPPED) {
 			console.warn("The ball is not stopped to be moved")
-			return this
+			// return this
 		}
 
 		this.state = BallState.ANIMATING
@@ -81,8 +81,8 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 				{
 					alpha: 1,
 					scale: 1,
-					ease: "Quart.easeOut",
-					duration: 500,
+					ease: config.ball.tweens.move.ease,
+					duration: config.ball.tweens.move.duration,
 					x: x ?? this.x,
 					y: y ?? this.y,
 					onComplete: this.afterMove,
@@ -98,6 +98,7 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		this.show()
 		this.emitter.start()
 		this.state = BallState.RUNNING
+		this.enableCollision(true)
 		this.setVelocity(x, y)
 	}
 
