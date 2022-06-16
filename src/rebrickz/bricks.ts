@@ -45,8 +45,6 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		this.scene.physics.collide(this.balls.group, collide, (ball, _brick) => {
 			const brick = _brick as Brick
 			brick.health.damage()
-			// const maxHealth = brick.maxHealth
-			_brick.destroy(true)
 		})
 
 		return this
@@ -99,7 +97,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		})
 	}
 
-	async createRandom(): Promise<this> {
+	async createRandom(level: number): Promise<this> {
 		const total = Phaser.Math.Between(1, config.block.maxPerRow)
 		const dropExtraBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.extra
 		const dropSpecialBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.special
@@ -108,7 +106,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		const bricks = []
 
 		for (let i = 0; i < total; i++) {
-			bricks.push(this.add(BrickType.BRICK))
+			bricks.push(this.add(BrickType.BRICK, level))
 		}
 
 		if (dropExtraBall) this.add(BrickType.EXTRA_BALL)
@@ -118,7 +116,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		return Promise.all(bricks).then(() => this)
 	}
 
-	async add(type: BrickType): Promise<this> {
+	async add(type: BrickType, level?: number): Promise<this> {
 		const { row, col } = this.getRandomFreeSlot(1, 2)
 
 		if (row === -1) {
@@ -128,7 +126,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		switch (type) {
 			case BrickType.BRICK:
-				this.groups[BrickType.BRICK].add(new Brick(this.scene, { row: row, col: col }), true)
+				this.groups[BrickType.BRICK].add(new Brick(this.scene, { row: row, col: col, level: level }), true)
 				break
 			case BrickType.SPECIAL_BALL:
 				this.groups[BrickType.SPECIAL_BALL].add(new SpecialBall(this.scene, { row: row, col: col }), true)

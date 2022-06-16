@@ -122,14 +122,19 @@ class Moveable extends Phaser.Physics.Arcade.Sprite {
 		return this
 	}
 }
-class Health {
+class Health extends Phaser.Events.EventEmitter {
+	static readonly EVENTS = {
+		DIED: "died",
+	}
+
 	_level!: number
 	health: number
 	maxHealth: number
 
-	constructor() {
-		this.health = 0
-		this.maxHealth = 0
+	constructor(health: number) {
+		super()
+		this.health = health
+		this.maxHealth = health
 	}
 
 	get level(): number {
@@ -147,6 +152,8 @@ class Health {
 	}
 
 	damage(): this {
+		if (this.health - 1 > 0) this.health--
+		else this.emit(Health.EVENTS.DIED)
 		return this
 	}
 
@@ -167,6 +174,16 @@ abstract class Block extends Moveable {
 		super(scene, 0, 0, texture)
 		this.fixPosition(row, col)
 		this.on("addedtoscene", this.onCreate, this)
+	}
+
+	private onCreate(): this {
+		const { initialAlpha, initialDepth, initialScale } = config.block
+		this.setScale(initialScale)
+		this.setAlpha(initialAlpha)
+		this.setDepth(initialDepth)
+		this.createEmitter()
+		this.fall()
+		return this
 	}
 
 	private fixPosition(row: number, col: number) {
@@ -204,12 +221,6 @@ abstract class Block extends Moveable {
 		return this
 	}
 
-	private onCreate(): this {
-		const { initialAlpha, initialDepth, initialScale } = config.block
-		this.setScale(initialScale).setAlpha(initialAlpha).setDepth(initialDepth).createEmitter().fall()
-		return this
-	}
-
 	destroy(): void {
 		this.emitter.active = true
 		this.emitter.explode(20, 0, 0)
@@ -222,10 +233,12 @@ export class Brick extends Block {
 	readonly brickType: BrickType
 
 	health: Health
+
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "block" })
 		this.brickType = BrickType.BRICK
-		this.health = new Health()
+		this.health = new Health(options.level || 1)
+		this.health.on(Health.EVENTS.DIED, () => this.destroy())
 	}
 }
 

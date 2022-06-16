@@ -35,16 +35,23 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	private createEmitter() {
 		this.particle = this.scene.add.particles("ball")
 		this.emitter = this.particle.createEmitter({
+			angle: 0,
 			x: this.x,
 			y: this.y,
-			speed: { min: 40, max: 0 },
-			gravityY: 0,
+			speed: { min: 0, max: 100 },
+			accelerationX: {
+				min: 100,
+				max: 500,
+			},
+			gravityY: 1000,
 			gravityX: 0,
+			visible: false,
 			scale: { start: 0.8, end: 0.0 },
-			alpha: { start: 0.3, end: 0.0 },
+			alpha: { min: 0.3, max: 0.9 },
 			lifespan: 100,
+			blendMode: "ADD",
 		})
-		this.emitter.startFollow(this)
+		// this.emitter.startFollow(this)
 		this.emitter.stop()
 	}
 
@@ -96,7 +103,7 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 
 	start(x: number, y?: number) {
 		this.show()
-		this.emitter.start()
+		// this.emitter.start()
 		this.state = BallState.RUNNING
 		this.enableCollision(true)
 		this.setVelocity(x, y)

@@ -25,7 +25,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 	}
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
-		this.ballsTotal = this.group.getLength()
+		// this.ballsTotal = this.group.getLength()
 		return obj //TODO: remove
 	}
 
@@ -51,6 +51,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 		const firstBall = this.getFirstBall()
 		this.firstBallToLand = undefined
 		this.ballsLanded = 0
+		this.ballsTotal = this.group.getLength()
 
 		this.fireOrigin = new Phaser.Geom.Point(firstBall.x, firstBall.y)
 		this.group.balls.forEach((ball, index) => {
@@ -72,11 +73,17 @@ export class Balls extends Phaser.Events.EventEmitter {
 		if (ball != this.firstBallToLand) this.moveToTheFirstBallPosition(ball)
 
 		if (this.ballsLanded === this.ballsTotal) {
-			this.scene.time.delayedCall(config.ball.tweens.move.duration, () => {
-				this.emit(Balls.EVENTS.BALLS_STOPPED)
-				this.ballsLanded = 0
+			this.scene.time.addEvent({
+				delay: 500,
+				callback: this.emitBallsStopped,
+				callbackScope: this,
 			})
 		}
+	}
+
+	private emitBallsStopped() {
+		this.emit(Balls.EVENTS.BALLS_STOPPED)
+		this.ballsLanded = 0
 	}
 
 	moveToTheFirstBallPosition(ball: Ball): this {

@@ -39,7 +39,7 @@ export class Game extends Phaser.Events.EventEmitter {
 		// for (let i = 0; i < 50; i++) {
 		this.addFirstBall()
 		// }
-		this.bricks.createRandom()
+		this.bricks.createRandom(this.level)
 		this.trajectory.setCollidableLines(this.world.getCollidableLines())
 		this.trajectory.setActive(true)
 	}
@@ -91,6 +91,8 @@ export class Game extends Phaser.Events.EventEmitter {
 		const firstBall = this.balls.getFirstBall()
 		this.trajectory.setPosition(firstBall.x)
 
+		this.level++
+
 		this.collected.forEach((brick) => {
 			switch (brick.brickType) {
 				case BrickType.SPECIAL_BALL:
@@ -106,7 +108,7 @@ export class Game extends Phaser.Events.EventEmitter {
 		})
 
 		await this.bricks.move().then(async () => {
-			await this.bricks.createRandom()
+			await this.bricks.createRandom(this.level)
 		})
 
 		this.state = GameState.WAITING_PLAYER
