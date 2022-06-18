@@ -86,6 +86,7 @@ export class Game extends Phaser.Events.EventEmitter {
 	}
 
 	private async nextRound(): Promise<this> {
+		this.state = GameState.WAITING_PLAYER
 		console.log("NEXT ROUND!")
 
 		const firstBall = this.balls.getFirstBall()
@@ -111,7 +112,6 @@ export class Game extends Phaser.Events.EventEmitter {
 			await this.bricks.createRandom(this.level)
 		})
 
-		this.state = GameState.WAITING_PLAYER
 		this.collected = []
 
 		return new Promise((resolve) => {
@@ -131,8 +131,7 @@ export class Game extends Phaser.Events.EventEmitter {
 		 * Handle all balls stopped running
 		 */
 		this.balls.on(Balls.EVENTS.BALLS_STOPPED, () => {
-			console.warn("BALLS STOPPED")
-			this.nextRound()
+			if (this.state === GameState.RUNNING) this.nextRound()
 		})
 		/**
 		 * On brick collided world's bottom

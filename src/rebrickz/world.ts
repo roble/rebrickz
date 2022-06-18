@@ -140,13 +140,13 @@ export class World extends Phaser.Events.EventEmitter {
 		 * TODO: REMOVE
 		 **/
 
-		if (!this.scene.game.config.physics.arcade?.debug) return
+		// if (!this.scene.game.config.physics.arcade?.debug) return
 
 		const graphics = this.scene.add.graphics()
 		const _worldBounds = this.scene.physics.world.bounds
 		const thickness = 1
-		const color = Phaser.Display.Color.HexStringToColor("bea3f6").color
-		const alpha = 0.5
+		const color = Phaser.Display.Color.HexStringToColor("ffffff").color
+		const alpha = 0.1
 
 		graphics.lineStyle(thickness, color, alpha)
 
