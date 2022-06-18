@@ -28,7 +28,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
 		this.ballsTotal = this.group.getLength()
-		this.updateText()
+		this.updateText(this.ballsTotal)
 		return obj //TODO: remove
 	}
 
@@ -37,15 +37,32 @@ export class Balls extends Phaser.Events.EventEmitter {
 		return obj //TODO: remove
 	}
 
-	private updateText() {
-		const { x, y } = this.getFirstBall()
-		this.totalBallsText.setText(`x${this.ballsTotal}`)
-		this.totalBallsText.setPosition(x, y + config.ball.size + 10)
+	private updateText(total: number) {
+		this.totalBallsText.setText(`x${total}`)
 	}
 
 	private createText() {
 		this.totalBallsText = this.scene.add.text(-100, -100, "x1")
+		this.totalBallsText.setFontFamily("Arial Black")
 		this.totalBallsText.setOrigin(0.5)
+	}
+
+	private showText() {
+		this.scene.tweens.add({
+			targets: this.totalBallsText,
+			alpha: 1,
+			duration: 200,
+			ease: "Linear",
+		})
+	}
+
+	private hideText() {
+		this.scene.tweens.add({
+			targets: this.totalBallsText,
+			alpha: 0,
+			duration: 200,
+			ease: "Linear",
+		})
 	}
 
 	add(type: BallType, x: number, y: number): Ball {
@@ -73,6 +90,8 @@ export class Balls extends Phaser.Events.EventEmitter {
 				delay: delayBetweenBalls * index,
 				callback: () => {
 					ball.start(speed * Math.cos(direction), speed * Math.sin(direction))
+					this.updateText(this.ballsTotal - (index + 1))
+					if (index + 1 == this.ballsTotal) this.hideText()
 				},
 			})
 		})
@@ -86,7 +105,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 		if (ball != this.firstBallToLand) this.moveToTheFirstBallPosition(ball)
 
-		this.updateText()
+		this.updateText(this.ballsTotal)
 
 		if (this.ballsLanded === this.ballsTotal) {
 			this.scene.time.addEvent({
@@ -101,6 +120,9 @@ export class Balls extends Phaser.Events.EventEmitter {
 		this.emit(Balls.EVENTS.BALLS_STOPPED)
 		this.ballsLanded = 0
 		this.ballsTotal = this.group.getLength()
+
+		this.showText()
+		this.totalBallsText.setPosition(this.getFirstBall().x, this.getFirstBall().y + config.ball.size + 10)
 	}
 
 	moveToTheFirstBallPosition(ball: Ball): this {
