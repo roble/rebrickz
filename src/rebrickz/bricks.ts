@@ -36,7 +36,6 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		// collectables bricks
 		this.scene.physics.overlap(this.balls.group, overlap, (ball, brick) => {
-			// console.log(ball, _brick)
 			brick.destroy(true)
 			this.emit(Bricks.EVENTS.COLLECTED, brick)
 		})

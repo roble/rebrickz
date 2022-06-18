@@ -19,16 +19,22 @@ export enum BrickType {
 }
 
 class Moveable extends Phaser.Physics.Arcade.Sprite {
-	followPosition: unknown[] = []
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	followPosition: any[] = []
 	row!: number
 	col!: number
 
 	animate(args: object): this {
 		this.scene?.tweens.add({
 			targets: [this, ...this.followPosition],
+			onUpdate: () => this.emit("move"),
 			...args,
 		})
 		return this
+	}
+
+	addToFollow(element: Phaser.GameObjects.Text | Phaser.GameObjects.Graphics) {
+		this.followPosition.push(element)
 	}
 
 	/**
@@ -130,11 +136,99 @@ class Health extends Phaser.Events.EventEmitter {
 	_level!: number
 	health: number
 	maxHealth: number
+	bar: Phaser.GameObjects.Graphics
+	text: Phaser.GameObjects.Text
+	scene: Phaser.Scene
+	parent: Brick
+	_x: number
+	_y: number
+	offsetY = -config.block.size + 5
+	width = 30
+	height = 6
 
-	constructor(health: number) {
+	constructor(scene: Phaser.Scene, parent: Brick, health: number) {
 		super()
+		this.scene = scene
 		this.health = health
 		this.maxHealth = health
+		this.parent = parent
+
+		this.bar = scene.add.graphics()
+		this.bar.alpha = 1
+		this._x = this.parent.x - this.width / 2
+		this._y = this.parent.y - this.offsetY
+		this.bar.x = this._x
+		this.bar.y = this._y
+
+		this.text = scene.add.text(this._x + this.width / 2, this._y, this.health.toString(), {
+			fixedWidth: this.width,
+			fontSize: "10px",
+			color: "#3F3F3F",
+			fontFamily: "Arial Black",
+			stroke: "#fff",
+			strokeThickness: 4,
+		})
+		this.text.alpha = 0
+		this.parent.addToFollow(this.bar)
+		this.parent.addToFollow(this.text)
+
+		// this.draw()
+	}
+
+	update() {
+		this.x = this.parent.x
+		this.y = this.parent.y
+		this.draw()
+	}
+
+	get x() {
+		return this._x - this.width / 2
+	}
+
+	set x(value: number) {
+		this._x = value
+	}
+
+	get y() {
+		return this._y - this.offsetY
+	}
+
+	set y(value: number) {
+		this._y = value
+	}
+
+	draw() {
+		this.text.alpha = 1
+		this.text
+			.setDepth(1)
+			.setOrigin(0.5)
+			.setAlign("center")
+			.setText(this.health.toString())
+			.setPosition(this.x + this.width / 2, this.y + 2)
+
+		this.bar.clear().setPosition(0)
+
+		//  BG
+		this.bar
+			.fillStyle(0x3f3f3f)
+			.fillRect(this.x, this.y, this.width, this.height)
+			.setDepth(1)
+			.fillStyle(0xffffff)
+			.fillRect(this.x + 1, this.y + 1, this.width - 2, this.height - 2)
+
+		if (this.percentage * 100 < 30) {
+			this.bar.fillStyle(0xff6464)
+		} else {
+			this.bar.fillStyle(0x59dc66)
+		}
+
+		this.bar.fillRect(this.x + 1, this.y + 1, (this.width - 2) * this.percentage, this.height - 2)
+
+		return this
+	}
+
+	get percentage(): number {
+		return this.health / this.maxHealth
 	}
 
 	get level(): number {
@@ -145,23 +239,18 @@ class Health extends Phaser.Events.EventEmitter {
 		this._level = value
 	}
 
-	render(): this {
-		// this.textObject.text = this.health?.toString() ?? "1"
-
-		return this
+	set alpha(value: number) {
+		// this.bar.alpha = value
 	}
 
 	damage(): this {
-		if (this.health - 1 > 0) this.health--
-		else this.emit(Health.EVENTS.DIED)
-		return this
-	}
+		if (this.health - 1 > 0) {
+			this.health--
+			this.draw()
+		} else {
+			this.emit(Health.EVENTS.DIED)
+		}
 
-	heal(): this {
-		return this
-	}
-
-	kill(): this {
 		return this
 	}
 }
@@ -224,6 +313,13 @@ abstract class Block extends Moveable {
 	destroy(): void {
 		this.emitter.active = true
 		this.emitter.explode(20, 0, 0)
+
+		if (this.followPosition.length) {
+			this.followPosition.forEach((e) => {
+				if (e && e.destroy) e.destroy()
+			})
+		}
+
 		// destroy and remove from scene
 		super.destroy(true)
 	}
@@ -237,8 +333,10 @@ export class Brick extends Block {
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		super(scene, { ...options, texture: "block" })
 		this.brickType = BrickType.BRICK
-		this.health = new Health(options.level || 1)
+		this.health = new Health(scene, this, options.level || 1)
 		this.health.on(Health.EVENTS.DIED, () => this.destroy())
+		this.on("move", this.health.update, this.health)
+		this.on("destroy", this.health.destroy, this)
 	}
 }
 

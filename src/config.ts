@@ -108,7 +108,7 @@ export const GameConfig: GameConfigType = {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
 		speed: 500,
-		max: 3,
+		max: 30,
 		delayBetweenBalls: 100,
 		tweens: {
 			move: {
