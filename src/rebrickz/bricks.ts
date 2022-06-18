@@ -105,13 +105,21 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		const bricks = []
 
+		if (dropExtraBall) {
+			this.add(BrickType.EXTRA_BALL)
+		}
+
+		if (dropSpecialBall) {
+			this.add(BrickType.SPECIAL_BALL)
+		}
+
+		if (dropLife) {
+			this.add(BrickType.EXTRA_LIFE)
+		}
+
 		for (let i = 0; i < total; i++) {
 			bricks.push(this.add(BrickType.BRICK, level))
 		}
-
-		if (dropExtraBall) this.add(BrickType.EXTRA_BALL)
-		if (dropSpecialBall) this.add(BrickType.SPECIAL_BALL)
-		if (dropLife) this.add(BrickType.EXTRA_LIFE)
 
 		return Promise.all(bricks).then(() => this)
 	}
