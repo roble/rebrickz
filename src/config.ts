@@ -131,7 +131,7 @@ export const GameConfig: GameConfigType = {
 		},
 		dropProbability: {
 			special: 15,
-			extra: 35,
+			extra: 50,
 			life: 3,
 		},
 		maxPerRow: GAME_COLS - 2,
@@ -196,7 +196,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
-			debug: true,
+			debug: false,
 			debugShowBody: true,
 			debugShowStaticBody: true,
 			gravity: {
