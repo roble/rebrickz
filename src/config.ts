@@ -108,7 +108,7 @@ export const GameConfig: GameConfigType = {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
 		speed: 500,
-		max: 48,
+		max: 3,
 		delayBetweenBalls: 100,
 		tweens: {
 			move: {
@@ -124,14 +124,14 @@ export const GameConfig: GameConfigType = {
 	block: {
 		size: BLOCK_SIZE,
 		max: {
-			normal: 30,
+			normal: 32,
 			special: 2,
 			extra: 2,
 			life: 1,
 		},
 		dropProbability: {
 			special: 15,
-			extra: 50,
+			extra: 35,
 			life: 3,
 		},
 		maxPerRow: GAME_COLS - 2,

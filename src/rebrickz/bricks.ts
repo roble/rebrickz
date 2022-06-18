@@ -105,12 +105,14 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		const bricks = []
 
-		if (dropExtraBall) {
-			this.add(BrickType.EXTRA_BALL)
-		}
+		if (this.balls.group.getTotalFree()) {
+			if (dropExtraBall) {
+				this.add(BrickType.EXTRA_BALL)
+			}
 
-		if (dropSpecialBall) {
-			this.add(BrickType.SPECIAL_BALL)
+			if (dropSpecialBall) {
+				this.add(BrickType.SPECIAL_BALL)
+			}
 		}
 
 		if (dropLife) {

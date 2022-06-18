@@ -1,5 +1,5 @@
 import { GameConfig as config } from "@config"
-import { Ball, BallState, BallType } from "./ball"
+import { Ball, BallType } from "./ball"
 import { BallsGroup } from "./balls-group"
 
 export class Balls extends Phaser.Events.EventEmitter {
@@ -129,7 +129,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 			bounceY: 1,
 			classType: Ball,
 			collideWorldBounds: true,
-			maxSize: config.block.max.normal,
+			maxSize: config.ball.max,
 			...callbacks,
 		})
 
