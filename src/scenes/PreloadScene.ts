@@ -23,6 +23,10 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.image("collision", "collision.png")
 		this.load.image("aim", "aim.png")
 		this.load.image("arrow_ball", "arrow_ball.png")
+		this.load.image("heart_filled", "heart_filled.png")
+		this.load.image("heart_outlined", "heart_outlined.png")
+
+		this.load.multiatlas("heart", "heart.json")
 
 		// listeners
 		this.load.on("progress", this.handleOnProgress, this)

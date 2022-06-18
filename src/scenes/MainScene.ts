@@ -14,6 +14,9 @@ export class MainScene extends Phaser.Scene {
 
 	create() {
 		this.rebrickz = new Rebrickz(this)
+		this.rebrickz.on("gameover", () => {
+			console.warn("GAME OVER")
+		})
 	}
 
 	update() {

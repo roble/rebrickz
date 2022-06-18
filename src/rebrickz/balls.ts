@@ -10,7 +10,6 @@ export class Balls extends Phaser.Events.EventEmitter {
 	private scene: Phaser.Scene
 	group!: BallsGroup
 	firstBallToLand: Ball | undefined
-	ballsTotal: number
 	ballsLanded: number
 	fireOrigin: Phaser.Geom.Point | undefined
 	totalBallsText!: Phaser.GameObjects.Text
@@ -19,7 +18,6 @@ export class Balls extends Phaser.Events.EventEmitter {
 		super()
 		this.scene = scene
 		this.firstBallToLand = undefined
-		this.ballsTotal = 0
 		this.ballsLanded = 0
 		this.fireOrigin = undefined
 		this.createGroup(scene)
@@ -27,24 +25,26 @@ export class Balls extends Phaser.Events.EventEmitter {
 	}
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
-		this.ballsTotal = this.group.getLength()
-		this.updateText(this.ballsTotal)
+		this.updateText(this.group.getLength())
 		return obj //TODO: remove
 	}
 
 	removeCallback(obj: Phaser.GameObjects.GameObject) {
-		this.ballsTotal = this.group.getLength()
 		return obj //TODO: remove
 	}
 
 	private updateText(total: number) {
+		if (total < 2) {
+			this.hideText()
+			return
+		}
+		this.showText()
 		this.totalBallsText.setText(`x${total}`)
 	}
 
 	private createText() {
 		this.totalBallsText = this.scene.add.text(-100, -100, "x1")
-		this.totalBallsText.setFontFamily("Arial Black")
-		this.totalBallsText.setOrigin(0.5)
+		this.totalBallsText.setFontFamily("Arial Black").setOrigin(0.5).setFontSize(12)
 	}
 
 	private showText() {
@@ -65,6 +65,16 @@ export class Balls extends Phaser.Events.EventEmitter {
 		})
 	}
 
+	restart() {
+		this.group.destroy(true)
+		this.createGroup(this.scene)
+		// this.group.getChildren().forEach(e => {
+		// 	e.destroy(true)
+		// 	this.group.remove(e, true)
+		// })
+		this.updateText(0)
+	}
+
 	add(type: BallType, x: number, y: number): Ball {
 		switch (type) {
 			case BallType.NORMAL: {
@@ -82,7 +92,6 @@ export class Balls extends Phaser.Events.EventEmitter {
 		const firstBall = this.getFirstBall()
 		this.firstBallToLand = undefined
 		this.ballsLanded = 0
-		this.ballsTotal = this.group.getLength()
 
 		this.fireOrigin = new Phaser.Geom.Point(firstBall.x, firstBall.y)
 		this.group.balls.forEach((ball, index) => {
@@ -90,8 +99,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 				delay: delayBetweenBalls * index,
 				callback: () => {
 					ball.start(speed * Math.cos(direction), speed * Math.sin(direction))
-					this.updateText(this.ballsTotal - (index + 1))
-					if (index + 1 == this.ballsTotal) this.hideText()
+					this.updateText(this.group.getLength() - (index + 1))
 				},
 			})
 		})
@@ -105,9 +113,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 		if (ball != this.firstBallToLand) this.moveToTheFirstBallPosition(ball)
 
-		this.updateText(this.ballsTotal)
-
-		if (this.ballsLanded === this.ballsTotal) {
+		if (this.ballsLanded === this.group.getLength()) {
 			this.scene.time.addEvent({
 				delay: 500,
 				callback: this.emitBallsStopped,
@@ -119,10 +125,9 @@ export class Balls extends Phaser.Events.EventEmitter {
 	private emitBallsStopped() {
 		this.emit(Balls.EVENTS.BALLS_STOPPED)
 		this.ballsLanded = 0
-		this.ballsTotal = this.group.getLength()
 
-		this.showText()
 		this.totalBallsText.setPosition(this.getFirstBall().x, this.getFirstBall().y + config.ball.size + 10)
+		this.updateText(this.group.getLength())
 	}
 
 	moveToTheFirstBallPosition(ball: Ball): this {

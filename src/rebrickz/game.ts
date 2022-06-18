@@ -1,4 +1,4 @@
-import { Ball, Balls, BallType, Brick, Bricks, BrickType, Trajectory, World } from "."
+import { Ball, Balls, BallType, Brick, Bricks, BrickType, Trajectory, World, Lives } from "."
 
 export enum GameState {
 	WAITING_PLAYER,
@@ -12,6 +12,7 @@ export class Game extends Phaser.Events.EventEmitter {
 	private trajectory: Trajectory
 	private balls: Balls
 	private bricks: Bricks
+	private lives: Lives
 	private state: GameState
 	private scene: Phaser.Scene
 	private gameOver: boolean
@@ -28,17 +29,16 @@ export class Game extends Phaser.Events.EventEmitter {
 		this.trajectory = new Trajectory(scene, this.world)
 		this.balls = new Balls(scene)
 		this.bricks = new Bricks(scene, this.balls)
+		this.lives = new Lives(scene)
 		this.level = 1
 		this.collected = []
 
 		this.create()
+		this.addEventListeners()
 	}
 
 	create() {
-		this.addEventListeners()
-		// for (let i = 0; i < 50; i++) {
 		this.addFirstBall()
-		// }
 		this.bricks.createRandom(this.level)
 		this.trajectory.setCollidableLines(this.world.getCollidableLines())
 		this.trajectory.setActive(true)
@@ -59,6 +59,18 @@ export class Game extends Phaser.Events.EventEmitter {
 			default:
 				break
 		}
+	}
+
+	restart() {
+		this.gameOver = false
+		this.state = GameState.WAITING_PLAYER
+		this.level = 1
+		this.bricks.restart()
+		this.balls.restart()
+		this.addFirstBall()
+		this.trajectory.setPosition(this.world.getStartPosition().x)
+		this.bricks.createRandom(this.level)
+		this.lives.restart()
 	}
 
 	private addFirstBall(): this {
@@ -125,12 +137,20 @@ export class Game extends Phaser.Events.EventEmitter {
 		 */
 		this.bricks.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
 			this.bricks.destroyRow(World.lastRowIndex)
+			if (!this.lives.decrease()) {
+				this.gameOver = true
+				this.emit("gameover")
+				this.restart()
+			}
 		})
 		/**
 		 * On brick has collected
 		 */
 		this.bricks.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
 			this.collected.push(brick)
+			if (brick.brickType === BrickType.EXTRA_LIFE) {
+				this.lives.increase()
+			}
 		})
 		return this
 	}

@@ -108,7 +108,7 @@ export const GameConfig: GameConfigType = {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
 		speed: 500,
-		max: 30,
+		max: 48,
 		delayBetweenBalls: 100,
 		tweens: {
 			move: {
@@ -124,7 +124,7 @@ export const GameConfig: GameConfigType = {
 	block: {
 		size: BLOCK_SIZE,
 		max: {
-			normal: 32,
+			normal: 48,
 			special: 2,
 			extra: 2,
 			life: 1,
@@ -137,7 +137,7 @@ export const GameConfig: GameConfigType = {
 		maxPerRow: GAME_COLS - 2,
 		text: {
 			style: {
-				font: "bold 12px Arial",
+				font: "bold 12px Arial Black",
 				align: "center",
 				color: "#000000",
 			},

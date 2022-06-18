@@ -7,6 +7,7 @@ import { Bricks } from "./bricks"
 import { Position } from "./position"
 import { Trajectory } from "./trajectory"
 import { World } from "./world"
+import { Lives } from "./lives"
 
 export {
 	Ball,
@@ -23,4 +24,5 @@ export {
 	Position,
 	Trajectory,
 	World,
+	Lives,
 }

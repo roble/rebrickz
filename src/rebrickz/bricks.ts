@@ -26,6 +26,10 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		this.setCollisionHandler()
 	}
 
+	restart() {
+		this.getChildren().forEach((e) => e.destroy())
+	}
+
 	setCollisionHandler(): this {
 		const overlap = [
 			this.groups[BrickType.EXTRA_BALL],
