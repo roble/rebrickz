@@ -131,8 +131,8 @@ export const GameConfig: GameConfigType = {
 		},
 		dropProbability: {
 			special: 15,
-			extra: 35,
-			life: 3,
+			extra: 50,
+			life: 5,
 		},
 		maxPerRow: GAME_COLS - 2,
 		text: {

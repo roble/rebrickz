@@ -138,7 +138,10 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		switch (type) {
 			case BrickType.BRICK:
-				this.groups[BrickType.BRICK].add(new Brick(this.scene, { row: row, col: col, level: level }), true)
+				this.groups[BrickType.BRICK].add(
+					new Brick(this.scene, { row: row, col: col, level: level ? Math.pow(level, 1.25) : 1 }),
+					true
+				)
 				break
 			case BrickType.SPECIAL_BALL:
 				this.groups[BrickType.SPECIAL_BALL].add(new SpecialBall(this.scene, { row: row, col: col }), true)

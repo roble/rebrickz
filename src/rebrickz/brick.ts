@@ -149,8 +149,8 @@ class Health extends Phaser.Events.EventEmitter {
 	constructor(scene: Phaser.Scene, parent: Brick, health: number) {
 		super()
 		this.scene = scene
-		this.health = health
-		this.maxHealth = health
+		this.health = Math.ceil(health)
+		this.maxHealth = this.health
 		this.parent = parent
 
 		this.bar = scene.add.graphics()
