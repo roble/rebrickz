@@ -20,7 +20,7 @@ export class BrickGroup extends Phaser.Physics.Arcade.Group {
 
 	add(child: BlockTypeClass, addToScene?: boolean | undefined): this {
 		if (this.getTotalFree() === 0) {
-			console.warn(`No more empty slots - group`)
+			console.warn(`No more empty slots - ${child}`)
 			return this
 		}
 

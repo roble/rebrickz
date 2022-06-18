@@ -14,7 +14,6 @@ export class MainScene extends Phaser.Scene {
 
 	create() {
 		this.rebrickz = new Rebrickz(this)
-		console.log(this.rebrickz)
 	}
 
 	update() {

@@ -56,18 +56,6 @@ export class Game extends Phaser.Events.EventEmitter {
 				this.trajectory.setActive(true)
 				break
 			}
-			// case GameState.UPDATING: {
-			//     this.state = GameState.ANIMATING
-			//     this.bricks.createRandom()
-			//     this.bricks.move()
-			//     this.bricks.updateSlots()
-			//     this.scene.time.addEvent({
-			//         delay: 500, callback: () => {
-			//             this.state = GameState.WAITING_PLAYER
-			//         }
-			//     })
-			//     break
-			// }
 			default:
 				break
 		}
@@ -87,7 +75,6 @@ export class Game extends Phaser.Events.EventEmitter {
 
 	private async nextRound(): Promise<this> {
 		this.state = GameState.WAITING_PLAYER
-		console.log("NEXT ROUND!")
 
 		const firstBall = this.balls.getFirstBall()
 		this.trajectory.setPosition(firstBall.x)
@@ -137,14 +124,12 @@ export class Game extends Phaser.Events.EventEmitter {
 		 * On brick collided world's bottom
 		 */
 		this.bricks.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
-			console.log("COLLIDED_WORLD_DOWN")
 			this.bricks.destroyRow(World.lastRowIndex)
 		})
 		/**
 		 * On brick has collected
 		 */
 		this.bricks.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
-			console.warn("COLLECTED", brick)
 			this.collected.push(brick)
 		})
 		return this

@@ -51,7 +51,6 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 	destroyRow(rowIndex: number) {
 		const bricks = this.getChildren().filter((brick) => brick.row === rowIndex)
-		console.log("destroy brick", bricks)
 		bricks.forEach((brick) => {
 			brick.destroy()
 		})
