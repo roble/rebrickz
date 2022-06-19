@@ -24,6 +24,7 @@ export type GameConfigType = {
 	ball: BallConfigType
 	block: BlockConfigType
 	world: WorldConfigType
+	lives: number
 }
 
 export type BallConfigType = {
@@ -57,10 +58,15 @@ export type BlockConfigType = {
 		extra: number
 		life: number
 	}
+	dropOnRows: {
+		min: number
+		max: number
+	}
 	maxPerRow: number
 	text: {
 		style: Phaser.Types.GameObjects.Text.TextStyle
 	}
+	levelIncrement: number
 	initialPositionY: number
 	initialScale: number
 	initialAlpha: number
@@ -104,6 +110,7 @@ export const GameConfig: GameConfigType = {
 	width: GAME_WIDTH,
 	height: GAME_HEIGHT,
 	trajectoryDistance: 1000000,
+	lives: 3,
 	ball: {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
@@ -123,16 +130,21 @@ export const GameConfig: GameConfigType = {
 	},
 	block: {
 		size: BLOCK_SIZE,
+		levelIncrement: 1.25,
 		max: {
-			normal: 48,
+			normal: 36,
 			special: 2,
 			extra: 2,
-			life: 1,
+			life: 10,
 		},
 		dropProbability: {
 			special: 15,
 			extra: 50,
-			life: 5,
+			life: 100,
+		},
+		dropOnRows: {
+			min: 1,
+			max: 3,
 		},
 		maxPerRow: GAME_COLS - 2,
 		text: {

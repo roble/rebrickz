@@ -1,4 +1,4 @@
-import { Brick, ExtraBall, SpecialBall } from "./brick"
+import { Brick, BrickType, ExtraBall, SpecialBall } from "./brick"
 
 export type BlockTypeClass = Brick | SpecialBall | ExtraBall
 
@@ -20,10 +20,10 @@ export class BrickGroup extends Phaser.Physics.Arcade.Group {
 
 	add(child: BlockTypeClass, addToScene?: boolean | undefined): this {
 		if (this.getTotalFree() === 0) {
-			console.warn(`No more empty slots - ${child}`)
+			const type = BrickType[child.brickType]
+			console.warn(`No more empty slots - ${type}`)
 			return this
 		}
-
 		super.add(child, addToScene)
 
 		return this

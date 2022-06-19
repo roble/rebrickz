@@ -20,6 +20,45 @@ export class World extends Phaser.Events.EventEmitter {
 		this.setCollisionHandler()
 	}
 
+	create() {
+		const ground = this.scene.add.sprite(config.width / 2, config.height / 2, "ground")
+
+		ground.setOrigin(0.5)
+		ground.setBlendMode(Phaser.BlendModes.MULTIPLY)
+		ground.setDisplaySize(config.world.width, config.world.height - config.block.size)
+
+		const worldBounds = ground.getBounds()
+		const { x, y, width, height } = worldBounds
+
+		// set the world bounds
+		this.scene.physics.world.setBounds(x, y, width, height + height / config.rows, true, true, true, true)
+
+		// save the world bounds in a variable
+		this.bounds = worldBounds
+
+		// enable collision
+		this.scene.physics.world.setBoundsCollision(true, true, true, true)
+
+		this.createWorldTiles()
+
+		/**
+		 * Debug
+		 * TODO: REMOVE
+		 **/
+
+		// if (!this.scene.game.config.physics.arcade?.debug) return
+
+		const graphics = this.scene.add.graphics()
+		const _worldBounds = this.scene.physics.world.bounds
+		const thickness = 1
+		const color = Phaser.Display.Color.HexStringToColor("ffffff").color
+		const alpha = 0.1
+
+		graphics.lineStyle(thickness, color, alpha)
+
+		graphics.strokeRect(_worldBounds.x, _worldBounds.y, _worldBounds.width, _worldBounds.height)
+	}
+
 	setCollisionHandler() {
 		// lister for collision with world bounds
 		this.scene.physics.world.on("worldbounds", this.handleCollision, this)
@@ -112,45 +151,6 @@ export class World extends Phaser.Events.EventEmitter {
 				isOdd = !isOdd
 			}
 		}
-	}
-
-	create() {
-		const ground = this.scene.add.sprite(config.width / 2, config.height / 2, "ground")
-
-		ground.setOrigin(0.5)
-		ground.setBlendMode(Phaser.BlendModes.MULTIPLY)
-		ground.setDisplaySize(config.world.width, config.world.height - config.block.size)
-
-		const worldBounds = ground.getBounds()
-		const { x, y, width, height } = worldBounds
-
-		// set the world bounds
-		this.scene.physics.world.setBounds(x, y, width, height + height / config.rows, true, true, true, true)
-
-		// save the world bounds in a variable
-		this.bounds = worldBounds
-
-		// enable collision
-		this.scene.physics.world.setBoundsCollision(true, true, true, true)
-
-		this.createWorldTiles()
-
-		/**
-		 * Debug
-		 * TODO: REMOVE
-		 **/
-
-		// if (!this.scene.game.config.physics.arcade?.debug) return
-
-		const graphics = this.scene.add.graphics()
-		const _worldBounds = this.scene.physics.world.bounds
-		const thickness = 1
-		const color = Phaser.Display.Color.HexStringToColor("ffffff").color
-		const alpha = 0.1
-
-		graphics.lineStyle(thickness, color, alpha)
-
-		graphics.strokeRect(_worldBounds.x, _worldBounds.y, _worldBounds.width, _worldBounds.height)
 	}
 
 	handleCollision(ball: Phaser.Physics.Arcade.Body, up: boolean, down: boolean) {

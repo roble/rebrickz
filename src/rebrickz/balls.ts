@@ -80,6 +80,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 			case BallType.NORMAL: {
 				const ball = new Ball(this.scene, x, y)
 				this.group.add(ball, true)
+
 				return ball
 			}
 			default:

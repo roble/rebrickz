@@ -142,7 +142,7 @@ class Health extends Phaser.Events.EventEmitter {
 	parent: Brick
 	_x: number
 	_y: number
-	offsetY = -config.block.size + 5
+	offsetY = -config.block.size + 7
 	width = 30
 	height = 6
 
@@ -171,8 +171,6 @@ class Health extends Phaser.Events.EventEmitter {
 		this.text.alpha = 0
 		this.parent.addToFollow(this.bar)
 		this.parent.addToFollow(this.text)
-
-		// this.draw()
 	}
 
 	update() {

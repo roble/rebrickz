@@ -129,7 +129,8 @@ export class Bricks extends Phaser.Events.EventEmitter {
 	}
 
 	async add(type: BrickType, level?: number): Promise<this> {
-		const { row, col } = this.getRandomFreeSlot(1, 2)
+		const { min, max } = config.block.dropOnRows
+		const { row, col } = this.getRandomFreeSlot(min, max)
 
 		if (row === -1) {
 			console.warn("No more slots available")
@@ -139,7 +140,11 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		switch (type) {
 			case BrickType.BRICK:
 				this.groups[BrickType.BRICK].add(
-					new Brick(this.scene, { row: row, col: col, level: level ? Math.pow(level, 1.25) : 1 }),
+					new Brick(this.scene, {
+						row: row,
+						col: col,
+						level: level ? Math.pow(level, config.block.levelIncrement) : 1,
+					}),
 					true
 				)
 				break

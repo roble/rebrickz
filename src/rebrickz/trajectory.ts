@@ -400,7 +400,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 
 		/**
 		 * Debug
-		 * TODO: REMOVE
 		 **/
 
 		if (!this.scene.game.config.physics.arcade?.debug) return
