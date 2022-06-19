@@ -140,7 +140,7 @@ export const GameConfig: GameConfigType = {
 		dropProbability: {
 			special: 15,
 			extra: 50,
-			life: 100,
+			life: 10,
 		},
 		dropOnRows: {
 			min: 1,
