@@ -23,8 +23,10 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.image("collision", "collision.png")
 		this.load.image("aim", "aim.png")
 		this.load.image("arrow_ball", "arrow_ball.png")
-		this.load.image("heart_filled", "heart_filled.png")
-		this.load.image("heart_outlined", "heart_outlined.png")
+
+		// game over screen
+		this.load.image("button_restart", "button_restart.png")
+		this.load.image("gameover_screen", "gameover_screen.png")
 
 		this.load.multiatlas("heart", "heart.json")
 
@@ -50,8 +52,8 @@ export class PreloadScene extends Phaser.Scene {
 
 	handleOnComplete() {
 		this.time.addEvent({
-			delay: 200,
-			callback: () => this.scene.start("MainScene"),
+			delay: 500,
+			callback: () => this.scene.start("Controller"),
 		})
 	}
 
