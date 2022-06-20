@@ -33,6 +33,9 @@ export type BallConfigType = {
 	speed: number
 	max: number
 	delayBetweenBalls: number
+	criticalRate: number
+	criticalHealthPercentage: number
+	instantKillRate: number
 	tweens: {
 		move: {
 			delay: {
@@ -117,6 +120,9 @@ export const GameConfig: GameConfigType = {
 		speed: 500,
 		max: 48,
 		delayBetweenBalls: 100,
+		criticalRate: 0.5, //0.5%
+		criticalHealthPercentage: 0.4, //40%
+		instantKillRate: 0.15, // 0.15%
 		tweens: {
 			move: {
 				delay: {
