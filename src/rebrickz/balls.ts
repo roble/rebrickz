@@ -24,13 +24,12 @@ export class Balls extends Phaser.Events.EventEmitter {
 		this.createText()
 	}
 
-	createCallback(obj: Phaser.GameObjects.GameObject) {
+	createCallback() {
 		this.updateText(this.group.getLength())
-		return obj //TODO: remove
 	}
 
-	removeCallback(obj: Phaser.GameObjects.GameObject) {
-		return obj //TODO: remove
+	removeCallback() {
+		return this
 	}
 
 	private updateText(total: number) {
@@ -68,10 +67,6 @@ export class Balls extends Phaser.Events.EventEmitter {
 	restart() {
 		this.group.destroy(true)
 		this.createGroup(this.scene)
-		// this.group.getChildren().forEach(e => {
-		// 	e.destroy(true)
-		// 	this.group.remove(e, true)
-		// })
 		this.updateText(0)
 	}
 
@@ -116,8 +111,8 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 		if (this.ballsLanded === this.group.getLength()) {
 			this.scene.time.addEvent({
-				delay: 500,
-				callback: this.emitBallsStopped,
+				delay: config.ball.tweens.move.delay.max + config.ball.tweens.move.duration,
+				callback: () => this.emitBallsStopped(),
 				callbackScope: this,
 			})
 		}
@@ -133,7 +128,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 	moveToTheFirstBallPosition(ball: Ball): this {
 		const { x, y } = this.getFirstBall()
-		ball.move(x, y)
+		ball.move(x, y - 1)
 
 		return this
 	}
@@ -144,11 +139,11 @@ export class Balls extends Phaser.Events.EventEmitter {
 
 	private createGroup(scene: Phaser.Scene): this {
 		const callbacks = {
-			createCallback: (obj: Phaser.GameObjects.GameObject) => {
-				this.createCallback(obj)
+			createCallback: () => {
+				this.createCallback()
 			},
-			removeCallback: (obj: Phaser.GameObjects.GameObject) => {
-				this.createCallback(obj)
+			removeCallback: () => {
+				this.createCallback()
 			},
 		}
 

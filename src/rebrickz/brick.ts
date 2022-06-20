@@ -137,7 +137,9 @@ class Health extends Phaser.Events.EventEmitter {
 	health: number
 	maxHealth: number
 	bar: Phaser.GameObjects.Graphics
-	text: Phaser.GameObjects.Text
+	healthText: Phaser.GameObjects.Text
+	criticalText: Phaser.GameObjects.Text
+	instantKillText: Phaser.GameObjects.Text
 	scene: Phaser.Scene
 	parent: Brick
 	_x: number
@@ -152,15 +154,20 @@ class Health extends Phaser.Events.EventEmitter {
 		this.health = Math.ceil(health)
 		this.maxHealth = this.health
 		this.parent = parent
-
-		this.bar = scene.add.graphics()
-		this.bar.alpha = 1
 		this._x = this.parent.x - this.width / 2
 		this._y = this.parent.y - this.offsetY
+
+		/**
+		 * Bar
+		 */
+		this.bar = scene.add.graphics()
+		this.bar.alpha = 1
 		this.bar.x = this._x
 		this.bar.y = this._y
-
-		this.text = scene.add.text(this._x + this.width / 2, this._y, this.health.toString(), {
+		/**
+		 * Health Text
+		 */
+		this.healthText = scene.add.text(this._x + this.width / 2, this._y, this.health.toString(), {
 			fixedWidth: this.width,
 			fontSize: "10px",
 			color: "#3F3F3F",
@@ -168,9 +175,39 @@ class Health extends Phaser.Events.EventEmitter {
 			stroke: "#fff",
 			strokeThickness: 4,
 		})
-		this.text.alpha = 0
+		this.healthText.setAlpha(0).setDepth(1).setOrigin(0.5).setAlign("center")
+		/**
+		 * Critical Text
+		 */
+		this.criticalText = scene.add.text(this._x + this.width / 2, 0, "Critical", {
+			fontSize: "11px",
+			color: "#a31f1e",
+			fontFamily: "Arial Black",
+			stroke: "#FFF",
+			strokeThickness: 6,
+			align: "center",
+		})
+		this.criticalText.setScale(0).setVisible(false).setDepth(10).setOrigin(0.5)
+
+		/**
+		 * Critical Text
+		 */
+		this.instantKillText = scene.add.text(this._x + this.width / 2, 0, "Instant Kill", {
+			fontSize: "11px",
+			color: "#40285e",
+			fontFamily: "Arial Black",
+			stroke: "#FFF",
+			strokeThickness: 6,
+			align: "center",
+		})
+		this.instantKillText.setScale(0).setVisible(false).setDepth(10).setOrigin(0.5)
+
+		/**
+		 * Follow parent animations
+		 */
 		this.parent.addToFollow(this.bar)
-		this.parent.addToFollow(this.text)
+		this.parent.addToFollow(this.healthText)
+		this.parent.addToFollow(this.criticalText)
 	}
 
 	update() {
@@ -196,13 +233,15 @@ class Health extends Phaser.Events.EventEmitter {
 	}
 
 	draw() {
-		this.text.alpha = 1
-		this.text
-			.setDepth(1)
-			.setOrigin(0.5)
-			.setAlign("center")
-			.setText(this.health.toString())
-			.setPosition(this.x + this.width / 2, this.y + 2)
+		this.criticalText.setAlpha(0)
+		this.instantKillText.setAlpha(0)
+
+		if (this.health)
+			this.healthText
+				.setAlpha(1)
+				.setText(this.health.toString())
+				.setPosition(this.x + this.width / 2, this.y + 2)
+		else this.healthText.setVisible(false)
 
 		this.bar.clear().setPosition(0)
 
@@ -241,12 +280,66 @@ class Health extends Phaser.Events.EventEmitter {
 		// this.bar.alpha = value
 	}
 
-	damage(): this {
-		if (this.health - 1 > 0) {
-			this.health--
-			this.draw()
+	private animateText(text: Phaser.GameObjects.Text): Promise<this> {
+		text
+			.setScale(0)
+			.setVisible(true)
+			.setY(this.y + 20)
+
+		return new Promise((resolve) => {
+			this.scene.tweens.timeline({
+				targets: text,
+				ease: "Power3",
+				tweens: [
+					{
+						y: this._y - 5,
+						scale: 1,
+						alpha: { from: 0, to: 1 },
+						duration: 300,
+					},
+					{
+						alpha: { from: 1, to: 0 },
+						duration: 100,
+					},
+				],
+				onComplete: () => {
+					resolve(this)
+				},
+			})
+		})
+	}
+
+	decrease(value = 1, draw = true) {
+		const _value = Math.ceil(value)
+		if (this.health >= _value && this.health - _value > 0) {
+			this.health -= _value
 		} else {
+			this.health = 0
 			this.emit(Health.EVENTS.DIED)
+		}
+
+		if (draw) this.draw()
+	}
+
+	damage(type = Block.DAMAGE_TYPE.NORMAL): this {
+		switch (type) {
+			case Block.DAMAGE_TYPE.NORMAL: {
+				this.decrease()
+				break
+			}
+			case Block.DAMAGE_TYPE.CRITICAL: {
+				this.decrease(Math.max(this.health * config.ball.criticalHealthPercentage, 1))
+				this.animateText(this.criticalText)
+				break
+			}
+			case Block.DAMAGE_TYPE.INSTANT_KILL: {
+				this.decrease(this.health)
+				this.animateText(this.instantKillText)
+				break
+			}
+			default:
+				console.log("DAMAGE", type)
+				break
 		}
 
 		return this
@@ -255,6 +348,12 @@ class Health extends Phaser.Events.EventEmitter {
 abstract class Block extends Moveable {
 	abstract brickType: BrickType
 	emitter!: Phaser.GameObjects.Particles.ParticleEmitter
+
+	static readonly DAMAGE_TYPE = {
+		NORMAL: "normal",
+		CRITICAL: "critical",
+		INSTANT_KILL: "instant_kill",
+	}
 
 	constructor(scene: Phaser.Scene, options: BlockOptions) {
 		const { row, col, texture = "block" } = options
@@ -332,7 +431,13 @@ export class Brick extends Block {
 		super(scene, { ...options, texture: "block" })
 		this.brickType = BrickType.BRICK
 		this.health = new Health(scene, this, options.level || 1)
-		this.health.on(Health.EVENTS.DIED, () => this.destroy())
+		this.health.on(Health.EVENTS.DIED, () => {
+			this.body.enable = false
+			this.setAlpha(0.5)
+			setTimeout(() => {
+				this.destroy()
+			}, 300)
+		})
 		this.on("move", this.health.update, this.health)
 		this.on("destroy", this.health.destroy, this)
 	}

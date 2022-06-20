@@ -1,4 +1,5 @@
 import { GameConfig as config } from "@config"
+import { Ball } from "./ball"
 import { Balls } from "./balls"
 import { BrickType, ExtraBall, Brick, SpecialBall, ExtraLife } from "./brick"
 import { BlockTypeClass, BrickGroup } from "./brick-group"
@@ -45,8 +46,23 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		})
 
 		// collidables bricks
-		this.scene.physics.collide(this.balls.group, collide, (ball, _brick) => {
+		this.scene.physics.collide(this.balls.group, collide, (_ball, _brick) => {
 			const brick = _brick as Brick
+			const ball = _ball as Ball
+
+			const isCritical = Phaser.Math.FloatBetween(0, 100) < ball.criticalRate
+			const isInstantKill = Phaser.Math.FloatBetween(0, 100) < ball.instantKillRate
+
+			if (isCritical) {
+				brick.health.damage(Brick.DAMAGE_TYPE.CRITICAL)
+				return this
+			}
+
+			if (isInstantKill) {
+				brick.health.damage(Brick.DAMAGE_TYPE.INSTANT_KILL)
+				return this
+			}
+
 			brick.health.damage()
 		})
 

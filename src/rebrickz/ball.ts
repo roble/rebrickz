@@ -12,6 +12,9 @@ export enum BallState {
 
 abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	abstract ballType: BallType
+	abstract criticalRate: number
+	abstract instantKillRate: number
+
 	emitter!: Phaser.GameObjects.Particles.ParticleEmitter
 	particle!: Phaser.GameObjects.Particles.ParticleEmitterManager
 	state: BallState
@@ -136,5 +139,13 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 }
 
 export class Ball extends Base {
+	criticalRate: number
+	instantKillRate: number
 	ballType!: BallType
+
+	constructor(scene: Phaser.Scene, x: number, y: number) {
+		super(scene, x, y)
+		this.criticalRate = config.ball.criticalRate
+		this.instantKillRate = config.ball.instantKillRate
+	}
 }

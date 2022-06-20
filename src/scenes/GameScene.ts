@@ -4,6 +4,7 @@ export enum GameState {
 	WAITING_PLAYER,
 	RUNNING,
 	UPDATING,
+	PREPARING_NEXT_ROUND,
 	GAME_OVER,
 }
 
@@ -50,6 +51,10 @@ export class GameScene extends Phaser.Scene {
 				this.trajectory.setActive(true)
 				break
 			}
+			case GameState.PREPARING_NEXT_ROUND: {
+				this.nextRound()
+				break
+			}
 			default:
 				break
 		}
@@ -79,37 +84,40 @@ export class GameScene extends Phaser.Scene {
 	}
 
 	private async nextRound(): Promise<this> {
-		this.state = GameState.WAITING_PLAYER
+		this.state = GameState.UPDATING
 
 		const firstBall = this.balls.getFirstBall()
 		this.trajectory.setPosition(firstBall.x)
 
 		this.level++
 
-		await this.bricks.move().then(async () => {
-			if (this.state === GameState.GAME_OVER) return this
-			await this.bricks.createRandom(this.level)
+		const gameOver = await this.bricks.move().then(() => {
+			if (this.state === GameState.GAME_OVER) return true
+		})
 
-			this.collected.forEach((brick) => {
-				switch (brick.brickType) {
-					case BrickType.SPECIAL_BALL:
-					case BrickType.EXTRA_BALL: {
-						const ball = this.balls.add(BallType.NORMAL, firstBall.x, firstBall.y)
-						ball.hide()
-						break
-					}
+		if (gameOver) return this
 
-					default:
-						break
+		await this.bricks.createRandom(this.level)
+
+		this.collected.forEach((brick) => {
+			switch (brick.brickType) {
+				case BrickType.SPECIAL_BALL:
+				case BrickType.EXTRA_BALL: {
+					const ball = this.balls.add(BallType.NORMAL, firstBall.x, firstBall.y - 1)
+					ball.hide()
+					break
 				}
-			})
+
+				default:
+					break
+			}
 		})
 
 		this.collected = []
 
-		return new Promise((resolve) => {
-			return resolve(this)
-		})
+		this.state = GameState.WAITING_PLAYER
+
+		return this
 	}
 
 	private addEventListeners(): this {
@@ -124,7 +132,7 @@ export class GameScene extends Phaser.Scene {
 		 * Handle all balls stopped running
 		 */
 		this.balls.on(Balls.EVENTS.BALLS_STOPPED, () => {
-			if (this.state === GameState.RUNNING) this.nextRound()
+			this.state = GameState.PREPARING_NEXT_ROUND
 		})
 		/**
 		 * On brick collided world's bottom
@@ -140,9 +148,13 @@ export class GameScene extends Phaser.Scene {
 		 * On brick has collected
 		 */
 		this.bricks.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
-			this.collected.push(brick)
-			if (brick.brickType === BrickType.EXTRA_LIFE) {
-				this.lives.animateIncrease(brick.x, brick.y)
+			switch (brick.brickType) {
+				case BrickType.EXTRA_LIFE:
+					this.lives.animateIncrease(brick.x, brick.y)
+					break
+				default:
+					this.collected.push(brick)
+					break
 			}
 		})
 		/**
