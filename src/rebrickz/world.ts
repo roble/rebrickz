@@ -25,7 +25,7 @@ export class World extends Phaser.Events.EventEmitter {
 
 		ground.setOrigin(0.5)
 		ground.setBlendMode(Phaser.BlendModes.MULTIPLY)
-		ground.setDisplaySize(config.world.width, config.world.height - config.block.size)
+		ground.setDisplaySize(config.world.width, config.world.height - config.brick.size)
 
 		const worldBounds = ground.getBounds()
 		const { x, y, width, height } = worldBounds
@@ -110,7 +110,7 @@ export class World extends Phaser.Events.EventEmitter {
 	}
 
 	getBoundsBottom(): number {
-		return this.bounds.bottom + config.block.size
+		return this.bounds.bottom + config.brick.size
 	}
 
 	getCollidableLines(): Phaser.Geom.Line[] {
@@ -137,7 +137,7 @@ export class World extends Phaser.Events.EventEmitter {
 
 		for (let col = 0; col < config.cols; col++) {
 			isOdd = !isOdd
-			const blockSize = config.block.size
+			const blockSize = config.brick.size
 
 			for (let row = 0; row < config.rows; row++) {
 				const [x, y] = [this.bounds.left + col * blockSize, this.bounds.top + row * blockSize]

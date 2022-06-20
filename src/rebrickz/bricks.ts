@@ -3,6 +3,7 @@ import { Ball } from "./ball"
 import { Balls } from "./balls"
 import { BrickType, ExtraBall, Brick, SpecialBall, ExtraLife } from "./brick"
 import { BlockTypeClass, BrickGroup } from "./brick-group"
+import { Health } from "./brick/health"
 import { World } from "./world"
 
 export type BlockGroup = {
@@ -54,12 +55,12 @@ export class Bricks extends Phaser.Events.EventEmitter {
 			const isInstantKill = Phaser.Math.FloatBetween(0, 100) < ball.instantKillRate
 
 			if (isCritical) {
-				brick.health.damage(Brick.DAMAGE_TYPE.CRITICAL)
+				brick.health.damage(Health.DAMAGE_TYPE.CRITICAL)
 				return this
 			}
 
 			if (isInstantKill) {
-				brick.health.damage(Brick.DAMAGE_TYPE.INSTANT_KILL)
+				brick.health.damage(Health.DAMAGE_TYPE.INSTANT_KILL)
 				return this
 			}
 
@@ -116,10 +117,10 @@ export class Bricks extends Phaser.Events.EventEmitter {
 	}
 
 	async createRandom(level: number): Promise<this> {
-		const total = Phaser.Math.Between(1, config.block.maxPerRow)
-		const dropExtraBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.extra
-		const dropSpecialBall = Phaser.Math.Between(0, 100) < config.block.dropProbability.special
-		const dropLife = Phaser.Math.Between(0, 100) < config.block.dropProbability.life
+		const total = Phaser.Math.Between(1, config.brick.maxPerRow)
+		const dropExtraBall = Phaser.Math.Between(0, 100) < config.brick.dropProbability.extra
+		const dropSpecialBall = Phaser.Math.Between(0, 100) < config.brick.dropProbability.special
+		const dropLife = Phaser.Math.Between(0, 100) < config.brick.dropProbability.life
 
 		const bricks = []
 
@@ -145,7 +146,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 	}
 
 	async add(type: BrickType, level?: number): Promise<this> {
-		const { min, max } = config.block.dropOnRows
+		const { min, max } = config.brick.dropOnRows
 		const { row, col } = this.getRandomFreeSlot(min, max)
 
 		if (row === -1) {
@@ -159,7 +160,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 					new Brick(this.scene, {
 						row: row,
 						col: col,
-						level: level ? Math.pow(level, config.block.levelIncrement) : 1,
+						level: level ? Math.pow(level, config.brick.levelIncrement) : 1,
 					}),
 					true
 				)
@@ -179,7 +180,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 				break
 		}
 
-		const { delay, duration } = config.block.tweens.fall
+		const { delay, duration } = config.brick.tweens.fall
 
 		return new Promise((resolve) => {
 			setTimeout(() => {
@@ -200,28 +201,28 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		const groupNormal = new BrickGroup(scene, {
 			immovable: true,
 			classType: Brick,
-			maxSize: config.block.max.normal,
+			maxSize: config.brick.max.normal,
 			...callbacks,
 		})
 
 		const groupSpecial = new BrickGroup(scene, {
 			immovable: true,
 			classType: SpecialBall,
-			maxSize: config.block.max.special,
+			maxSize: config.brick.max.special,
 			...callbacks,
 		})
 
 		const groupExtra = new BrickGroup(scene, {
 			immovable: true,
 			classType: ExtraBall,
-			maxSize: config.block.max.extra,
+			maxSize: config.brick.max.extra,
 			...callbacks,
 		})
 
 		const groupLife = new BrickGroup(scene, {
 			immovable: true,
 			classType: ExtraBall,
-			maxSize: config.block.max.life,
+			maxSize: config.brick.max.life,
 			...callbacks,
 		})
 
@@ -284,7 +285,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		for (let row = rowStart; row <= rowEnd; row++) {
 			const usedInRow = slots[row].filter((e) => e).length
 
-			if (usedInRow >= config.block.maxPerRow) continue
+			if (usedInRow >= config.brick.maxPerRow) continue
 
 			for (let col = 0; col < slots[row].length; col++) {
 				if (this.isSlotEmpty(row, col, slots)) free.push({ row: row, col: col })

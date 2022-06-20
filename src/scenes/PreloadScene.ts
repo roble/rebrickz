@@ -30,6 +30,8 @@ export class PreloadScene extends Phaser.Scene {
 
 		this.load.multiatlas("heart", "heart.json")
 
+		this.load.multiatlas("monster-yellow", "monster-yellow.json")
+
 		// listeners
 		this.load.on("progress", this.handleOnProgress, this)
 		this.load.on("complete", this.handleOnComplete, this)

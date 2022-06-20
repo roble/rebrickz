@@ -35,13 +35,12 @@ export class Lives {
 	lives: Life[] = []
 	max: number
 	current: number
-	events: Phaser.Events.EventEmitter
+	events = new Phaser.Events.EventEmitter()
 
 	constructor(scene: Phaser.Scene, max = config.lives) {
 		this.scene = scene
 		this.max = max
 		this.current = max
-		this.events = new Phaser.Events.EventEmitter()
 
 		for (let i = 0; i < max; i++) {
 			this.lives.push(new Life(scene, this.x + this.lifeWidth * i, this.y))
@@ -97,7 +96,6 @@ export class Lives {
 	}
 
 	animateIncrease(x: number, y: number) {
-		console.log(x, y)
 		const tmp = this.current
 		this.increase(false)
 

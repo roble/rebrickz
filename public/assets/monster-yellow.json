@@ -1,0 +1,995 @@
+{
+	"textures": [
+		{
+			"image": "monster-yellow.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 312,
+				"h": 312
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "angry-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "angry-8.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "blink-8.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "die-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "move-7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 209,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 209,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "pain-6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 261,
+						"y": 261,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:1cf8652a8baf00b8299d0cab35043879:872da913d56ae2d1e0f4948d4e37524b:6ac59af6b4615441509a44742366dae1$"
+	}
+}

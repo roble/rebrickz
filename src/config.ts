@@ -22,7 +22,7 @@ export type GameConfigType = {
 	height: number
 	trajectoryDistance: number
 	ball: BallConfigType
-	block: BlockConfigType
+	brick: BlockConfigType
 	world: WorldConfigType
 	lives: number
 }
@@ -134,7 +134,7 @@ export const GameConfig: GameConfigType = {
 			},
 		},
 	},
-	block: {
+	brick: {
 		size: BLOCK_SIZE,
 		levelIncrement: 1.25,
 		max: {
@@ -176,8 +176,8 @@ export const GameConfig: GameConfigType = {
 					min: 0,
 					max: 300,
 				},
-				ease: "Quart.easeOut",
-				duration: 200,
+				ease: "Linear",
+				duration: 600,
 			},
 			fall: {
 				delay: {
