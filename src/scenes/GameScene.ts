@@ -1,3 +1,4 @@
+import { GameConfig as config } from "@config"
 import { Ball, Balls, BallType, Brick, Bricks, BrickType, Lives, Trajectory, World } from "../rebrickz"
 
 export enum GameState {
@@ -33,7 +34,7 @@ export class GameScene extends Phaser.Scene {
 		this.collected = []
 		this.addEventListeners()
 
-		this.addFirstBall()
+		this.addBalls()
 		this.bricks.createRandom(this.level)
 		this.trajectory.setCollidableLines(this.world.getCollidableLines())
 		this.trajectory.setActive(true)
@@ -60,20 +61,13 @@ export class GameScene extends Phaser.Scene {
 		}
 	}
 
-	restart() {
-		this.state = GameState.WAITING_PLAYER
-		this.level = 1
-		this.bricks.restart()
-		this.balls.restart()
-		this.addFirstBall()
-		this.trajectory.setPosition(this.world.getStartPosition().x)
-		this.bricks.createRandom(this.level)
-		this.lives.restart()
-	}
-
-	private addFirstBall(): this {
+	private addBalls(): this {
 		const position = this.world.getStartPosition()
-		this.balls.add(BallType.NORMAL, position.x, position.y)
+
+		for (let i = 0; i < config.ball.startBalls; i++) {
+			this.balls.add(BallType.NORMAL, position.x, position.y)
+		}
+
 		return this
 	}
 

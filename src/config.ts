@@ -32,6 +32,7 @@ export type BallConfigType = {
 	radius: number
 	speed: number
 	max: number
+	startBalls: number
 	delayBetweenBalls: number
 	criticalRate: number
 	criticalHealthPercentage: number
@@ -119,6 +120,7 @@ export const GameConfig: GameConfigType = {
 		radius: BALL_SIZE / 2,
 		speed: 500,
 		max: 48,
+		startBalls: 3,
 		delayBetweenBalls: 100,
 		criticalRate: 0.5, //0.5%
 		criticalHealthPercentage: 0.4, //40%
@@ -150,7 +152,7 @@ export const GameConfig: GameConfigType = {
 		},
 		dropOnRows: {
 			min: 1,
-			max: 3,
+			max: 2,
 		},
 		maxPerRow: GAME_COLS - 2,
 		text: {
