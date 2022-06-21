@@ -108,7 +108,6 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		this.show()
 		// this.emitter.start()
 		this.state = BallState.RUNNING
-		this.enableCollision(true)
 		this.setVelocity(x, y)
 	}
 

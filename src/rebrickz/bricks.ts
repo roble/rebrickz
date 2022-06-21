@@ -77,12 +77,16 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		})
 	}
 
-	private createCallback(obj: Phaser.GameObjects.GameObject) {
-		return obj //TODO: remove
+	createCallback(obj: Phaser.GameObjects.GameObject) {
+		obj.on(Health.EVENTS.DAMAGE, (damage: number) => {
+			this.emit(Health.EVENTS.DAMAGE, damage)
+		})
+
+		return obj
 	}
 
-	private removeCallback(obj: Phaser.GameObjects.GameObject) {
-		return obj //TODO: remove
+	removeCallback(obj: Phaser.GameObjects.GameObject) {
+		obj.off(Health.EVENTS.DAMAGE)
 	}
 
 	getCollidableLines(): Phaser.Geom.Line[] {
@@ -126,16 +130,16 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 		if (this.balls.group.getTotalFree()) {
 			if (dropExtraBall) {
-				this.add(BrickType.EXTRA_BALL)
+				bricks.push(this.add(BrickType.EXTRA_BALL))
 			}
 
 			if (dropSpecialBall) {
-				this.add(BrickType.SPECIAL_BALL)
+				bricks.push(this.add(BrickType.SPECIAL_BALL))
 			}
 		}
 
 		if (dropLife) {
-			this.add(BrickType.EXTRA_LIFE)
+			bricks.push(this.add(BrickType.EXTRA_LIFE))
 		}
 
 		for (let i = 0; i < total; i++) {
@@ -155,16 +159,17 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		}
 
 		switch (type) {
-			case BrickType.BRICK:
-				this.groups[BrickType.BRICK].add(
-					new Brick(this.scene, {
-						row: row,
-						col: col,
-						level: level ? Math.pow(level, config.brick.levelIncrement) : 1,
-					}),
-					true
-				)
+			case BrickType.BRICK: {
+				const brick = new Brick(this.scene, {
+					row: row,
+					col: col,
+					level: level ? Math.pow(level, config.brick.levelIncrement) : 1,
+				})
+				this.groups[BrickType.BRICK].add(brick, true)
+
 				break
+			}
+
 			case BrickType.SPECIAL_BALL:
 				this.groups[BrickType.SPECIAL_BALL].add(new SpecialBall(this.scene, { row: row, col: col }), true)
 				break

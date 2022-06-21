@@ -29,22 +29,27 @@ export class Lives {
 	}
 
 	scene: Phaser.Scene
-	x = 50
-	y = 50
+	x: number
+	y: number
 	lifeWidth = 20
 	lives: Life[] = []
 	max: number
 	current: number
 	events = new Phaser.Events.EventEmitter()
+	livesText!: Phaser.GameObjects.Text
 
-	constructor(scene: Phaser.Scene, max = config.lives) {
+	constructor(scene: Phaser.Scene, x: number, y: number, max = config.lives) {
 		this.scene = scene
+		this.x = x
+		this.y = y
 		this.max = max
 		this.current = max
 
 		for (let i = 0; i < max; i++) {
-			this.lives.push(new Life(scene, this.x + this.lifeWidth * i, this.y))
+			this.lives.push(new Life(scene, this.x + 70 + this.lifeWidth * i, this.y - 2 + this.lifeWidth / 2))
 		}
+
+		this.livesText = this.scene.add.text(this.x, this.y, "LIVES: ")
 
 		this.update()
 	}

@@ -25,6 +25,7 @@ export type GameConfigType = {
 	brick: BlockConfigType
 	world: WorldConfigType
 	lives: number
+	gameSpeed: 1
 }
 
 export type BallConfigType = {
@@ -115,6 +116,7 @@ export const GameConfig: GameConfigType = {
 	height: GAME_HEIGHT,
 	trajectoryDistance: 1000000,
 	lives: 3,
+	gameSpeed: 1,
 	ball: {
 		size: BALL_SIZE,
 		radius: BALL_SIZE / 2,
@@ -216,6 +218,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
+			fps: 50,
 			debug: false,
 			debugShowBody: true,
 			debugShowStaticBody: true,

@@ -1,4 +1,8 @@
 import { GameConfig as config } from "@config"
+import { Health } from "@rebrickz/brick/health"
+import { Level } from "@rebrickz/level"
+import { MaxScore } from "@rebrickz/max-score"
+import { Score } from "@rebrickz/score"
 import { Ball, Balls, BallType, Brick, Bricks, BrickType, Lives, Trajectory, World } from "../rebrickz"
 
 export enum GameState {
@@ -16,28 +20,39 @@ export class GameScene extends Phaser.Scene {
 	private bricks!: Bricks
 	private lives!: Lives
 	private state!: GameState
-	private level!: number
 	private collected!: Brick[]
+	private level!: Level
+	private score!: Score
+	private maxScore!: MaxScore
 
 	constructor() {
 		super({ key: "GameScene", active: false })
 	}
 
-	create() {
+	async create() {
 		this.state = GameState.WAITING_PLAYER
 		this.world = new World(this)
 		this.trajectory = new Trajectory(this, this.world)
 		this.balls = new Balls(this)
 		this.bricks = new Bricks(this, this.balls)
-		this.lives = new Lives(this)
-		this.level = 1
+		// top panel
+		const worldLeft = this.world.getBounds().left
+		this.score = new Score(this, worldLeft, 10)
+		this.maxScore = new MaxScore(this, worldLeft, 30)
+		this.level = new Level(this, worldLeft, 50)
+		this.lives = new Lives(this, worldLeft, 75)
 		this.collected = []
-		this.addEventListeners()
 
 		this.addBalls()
-		this.bricks.createRandom(this.level)
 		this.trajectory.setCollidableLines(this.world.getCollidableLines())
 		this.trajectory.setActive(true)
+		this.bricks.createRandom(this.level.getValue())
+
+		this.addEventListeners()
+
+		// this.tweens.timeScale = 2; // tweens
+		// this.physics.world.timeScale = 0.5; // physics
+		// this.time.timeScale = 2; // time events
 	}
 
 	update() {
@@ -83,7 +98,7 @@ export class GameScene extends Phaser.Scene {
 		const firstBall = this.balls.getFirstBall()
 		this.trajectory.setPosition(firstBall.x)
 
-		this.level++
+		this.level.increase(1)
 
 		const gameOver = await this.bricks.move().then(() => {
 			if (this.state === GameState.GAME_OVER) return true
@@ -91,7 +106,7 @@ export class GameScene extends Phaser.Scene {
 
 		if (gameOver) return this
 
-		await this.bricks.createRandom(this.level)
+		await this.bricks.createRandom(this.level.getValue())
 
 		this.collected.forEach((brick) => {
 			switch (brick.brickType) {
@@ -150,6 +165,12 @@ export class GameScene extends Phaser.Scene {
 					this.collected.push(brick)
 					break
 			}
+		})
+		/**
+		 * Event listeners for brick health
+		 */
+		this.bricks.on(Health.EVENTS.DAMAGE, (damage: number) => {
+			this.score.increase(damage)
 		})
 		/**
 		 * Event listeners for lives

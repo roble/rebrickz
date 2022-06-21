@@ -33,8 +33,9 @@ export class Brick extends Base {
 	}
 
 	addListeners(): this {
-		this.health.on(Health.EVENTS.DAMAGE, () => {
+		this.health.on(Health.EVENTS.DAMAGE, (damage: number) => {
 			this.play("pain")
+			this.emit(Health.EVENTS.DAMAGE, damage)
 			if (this.row === World.lastRowIndex) this.playAfterDelay("angry", 500)
 			else this.playAfterDelay("blink", 500)
 		})

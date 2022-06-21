@@ -193,9 +193,10 @@ export class Health extends Phaser.Events.EventEmitter {
 		const _value = Math.ceil(value)
 		if (this.health >= _value && this.health - _value > 0) {
 			this.health -= _value
-			this.emit(Health.EVENTS.DAMAGE, this.health)
+			this.emit(Health.EVENTS.DAMAGE, _value)
 		} else {
 			this.health = 0
+			this.emit(Health.EVENTS.DAMAGE, _value)
 			this.emit(Health.EVENTS.DIED)
 		}
 
@@ -219,7 +220,6 @@ export class Health extends Phaser.Events.EventEmitter {
 				break
 			}
 			default:
-				console.log("DAMAGE", type)
 				break
 		}
 
