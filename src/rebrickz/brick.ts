@@ -41,6 +41,7 @@ export class Brick extends Base {
 
 		this.health.on(Health.EVENTS.DIED, () => {
 			this.body.enable = false
+			this.setAlpha(0.75)
 			this.play("die")
 			setTimeout(() => {
 				this.destroy()

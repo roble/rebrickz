@@ -24,7 +24,7 @@ export class Health extends Phaser.Events.EventEmitter {
 	parent: Brick
 	_x: number
 	_y: number
-	offsetY = -config.brick.size + 7
+	offsetY = -config.brick.size + 8
 	width = 30
 	height = 6
 
