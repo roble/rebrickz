@@ -12,6 +12,10 @@ const WORLD_HEIGHT = GAME_ROWS * BLOCK_SIZE + BLOCK_SIZE
 const WORLD_WIDTH = GAME_COLS * BLOCK_SIZE
 const BALL_SIZE = 16
 
+interface minMax {
+	min: number
+	max: number
+}
 /**
  * Game Config
  */
@@ -40,10 +44,7 @@ export type BallConfigType = {
 	instantKillRate: number
 	tweens: {
 		move: {
-			delay: {
-				min: number
-				max: number
-			}
+			delay: minMax
 			ease: "Quart.easeOut"
 			duration: number
 		}
@@ -64,8 +65,10 @@ export type BlockConfigType = {
 		life: number
 	}
 	dropOnRows: {
-		min: number
-		max: number
+		normal: minMax
+		special: minMax
+		extra: minMax
+		life: minMax
 	}
 	maxPerRow: number
 	text: {
@@ -77,29 +80,18 @@ export type BlockConfigType = {
 	initialAlpha: number
 	initialDepth: number
 	defaultTexture: string
-	// emitters: {
-	// 	move: {}
-	// 	fall: {}
-	// 	destroy: {}
-	// }
+
 	tweens: {
 		move: {
-			delay: {
-				min: number
-				max: number
-			}
+			delay: minMax
 			duration: number
 			ease: string
 		}
 		fall: {
-			delay: {
-				min: number
-				max: number
-			}
+			delay: minMax
 			duration: number
 			ease: string
 		}
-		// destroy: {}
 	}
 }
 
@@ -115,7 +107,7 @@ export const GameConfig: GameConfigType = {
 	width: GAME_WIDTH,
 	height: GAME_HEIGHT,
 	trajectoryDistance: 1000000,
-	lives: 3,
+	lives: 5,
 	gameSpeed: 1,
 	ball: {
 		size: BALL_SIZE,
@@ -153,8 +145,22 @@ export const GameConfig: GameConfigType = {
 			life: 10,
 		},
 		dropOnRows: {
-			min: 1,
-			max: 2,
+			normal: {
+				min: 1,
+				max: 8,
+			},
+			special: {
+				min: 0,
+				max: GAME_ROWS - 1,
+			},
+			extra: {
+				min: 0,
+				max: GAME_ROWS - 1,
+			},
+			life: {
+				min: 0,
+				max: GAME_ROWS - 1,
+			},
 		},
 		maxPerRow: GAME_COLS - 2,
 		text: {
@@ -169,11 +175,6 @@ export const GameConfig: GameConfigType = {
 		initialAlpha: 0,
 		initialDepth: 0,
 		defaultTexture: "block",
-		// emitters: {
-		// 	move: {},
-		// 	fall: {},
-		// 	destroy: {},
-		// },
 		tweens: {
 			move: {
 				delay: {
@@ -191,7 +192,6 @@ export const GameConfig: GameConfigType = {
 				duration: 500,
 				ease: "Bounce",
 			},
-			// destroy: {},
 		},
 	},
 	world: {
@@ -207,12 +207,10 @@ export const GameConfig: GameConfigType = {
 export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
 	parent: "game",
-	// backgroundColor: "#673ab7",
 	backgroundColor: "#272b33",
 	scale: {
 		width: GameConfig.width,
 		height: GameConfig.height,
-		// mode: Phaser.Scale.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 	},
 	physics: {

@@ -1,7 +1,6 @@
 import { GameConfig as config } from "@config"
 import { Health } from "@rebrickz/brick/health"
 import { Level } from "@rebrickz/level"
-import { MaxScore } from "@rebrickz/max-score"
 import { Score } from "@rebrickz/score"
 import { Ball, Balls, BallType, Brick, Bricks, BrickType, Lives, Trajectory, World } from "../rebrickz"
 
@@ -23,7 +22,6 @@ export class GameScene extends Phaser.Scene {
 	private collected!: Brick[]
 	private level!: Level
 	private score!: Score
-	private maxScore!: MaxScore
 
 	constructor() {
 		super({ key: "GameScene", active: false })
@@ -37,10 +35,9 @@ export class GameScene extends Phaser.Scene {
 		this.bricks = new Bricks(this, this.balls)
 		// top panel
 		const worldLeft = this.world.getBounds().left
-		this.score = new Score(this, worldLeft, 10)
-		this.maxScore = new MaxScore(this, worldLeft, 30)
-		this.level = new Level(this, worldLeft, 50)
-		this.lives = new Lives(this, worldLeft, 75)
+		this.score = new Score(this, worldLeft, 20)
+		this.level = new Level(this, worldLeft, 40)
+		this.lives = new Lives(this, worldLeft, 60)
 		this.collected = []
 
 		this.addBalls()
@@ -147,11 +144,8 @@ export class GameScene extends Phaser.Scene {
 		 * On brick collided world's bottom
 		 */
 		this.bricks.events.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
-			this.bricks.destroyRow(World.lastRowIndex)
-			if (!this.lives.decrease()) {
-				this.state = GameState.GAME_OVER
-				this.scene.launch("GameOverScene")
-			}
+			const destroyed = this.bricks.destroyRow(World.lastRowIndex)
+			this.lives.decrease(destroyed)
 		})
 		/**
 		 * On brick has collected
@@ -178,8 +172,14 @@ export class GameScene extends Phaser.Scene {
 		this.lives.events.on(Lives.EVENTS.INCREASE, () => {
 			console.log("lives increased")
 		})
-		this.lives.events.on(Lives.EVENTS.DECREASE, () => {
-			console.log("lives decreased")
+
+		this.lives.events.on(Lives.EVENTS.DECREASE, (lives: number) => {
+			if (lives === 0) {
+				this.state = GameState.GAME_OVER
+				setTimeout(() => {
+					this.scene.launch("GameOverScene")
+				}, 500)
+			}
 		})
 
 		return this

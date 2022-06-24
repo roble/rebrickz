@@ -61,13 +61,15 @@ export class Lives {
 		})
 	}
 
-	decrease() {
+	decrease(value = 1) {
 		const tmp = this.current
 
-		if (this.current > 0) this.current--
+		if (this.current > 0) this.current = Math.max(0, this.current - value)
 		if (tmp !== this.current) {
-			this.events.emit(Lives.EVENTS.DECREASE)
-			this.flashScene()
+			this.events.emit(Lives.EVENTS.DECREASE, this.current)
+			this.flashScene(value)
+		} else {
+			this.events.emit(Lives.EVENTS.DECREASE, this.current)
 		}
 
 		this.update()
@@ -138,7 +140,7 @@ export class Lives {
 		}
 	}
 
-	private flashScene() {
+	private flashScene(times = 1) {
 		const rect = this.scene.add.rectangle(0, 0, config.width, config.height, 0xff0000)
 
 		rect.setBlendMode(Phaser.BlendModes.ADD)
@@ -152,6 +154,8 @@ export class Lives {
 			ease: "Linear",
 			alpha: { from: 0, to: 1 },
 			yoyo: 1,
+			repeat: Math.max(0, times - 1),
+			repeatDelay: Phaser.Math.Between(10, 50),
 			onComplete: () => {
 				rect.destroy(true)
 			},

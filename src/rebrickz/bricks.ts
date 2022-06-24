@@ -74,11 +74,24 @@ export class Bricks {
 		return this
 	}
 
-	destroyRow(rowIndex: number) {
+	destroyRow(rowIndex: number): number {
 		const bricks = this.getChildren().filter((brick) => brick.row === rowIndex)
+		let count = 0
 		bricks.forEach((brick) => {
+			switch (brick.brickType) {
+				case BrickType.EXTRA_BALL:
+				case BrickType.EXTRA_LIFE:
+				case BrickType.SPECIAL_BALL:
+					this.events.emit(Bricks.EVENTS.COLLECTED, brick)
+					break
+				default:
+					count++
+					break
+			}
 			brick.destroy()
 		})
+
+		return count
 	}
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
@@ -154,16 +167,15 @@ export class Bricks {
 	}
 
 	async add(type: BrickType, level?: number): Promise<this> {
-		const { min, max } = config.brick.dropOnRows
-		const { row, col } = this.getRandomFreeSlot(min, max)
-
-		if (row === -1) {
-			console.warn("No more slots available")
-			return new Promise((resolve) => resolve(this))
-		}
-
 		switch (type) {
 			case BrickType.BRICK: {
+				const { min, max } = config.brick.dropOnRows.normal
+				const { row, col } = this.getRandomFreeSlot(min, max)
+
+				if (row === -1) {
+					return new Promise((resolve) => resolve(this))
+				}
+
 				const brick = new Brick(this.scene, {
 					row: row,
 					col: col,
@@ -174,16 +186,36 @@ export class Bricks {
 				break
 			}
 
-			case BrickType.SPECIAL_BALL:
+			case BrickType.SPECIAL_BALL: {
+				const { min, max } = config.brick.dropOnRows.special
+				const { row, col } = this.getRandomFreeSlot(min, max)
+
+				if (row === -1) {
+					return new Promise((resolve) => resolve(this))
+				}
 				this.groups[BrickType.SPECIAL_BALL].add(new SpecialBall(this.scene, { row: row, col: col }), true)
 				break
-			case BrickType.EXTRA_BALL:
+			}
+			case BrickType.EXTRA_BALL: {
+				const { min, max } = config.brick.dropOnRows.extra
+				const { row, col } = this.getRandomFreeSlot(min, max)
+
+				if (row === -1) {
+					return new Promise((resolve) => resolve(this))
+				}
 				this.groups[BrickType.EXTRA_BALL].add(new ExtraBall(this.scene, { row: row, col: col }), true)
 				break
-			case BrickType.EXTRA_LIFE:
+			}
+			case BrickType.EXTRA_LIFE: {
+				const { min, max } = config.brick.dropOnRows.life
+				const { row, col } = this.getRandomFreeSlot(min, max)
+
+				if (row === -1) {
+					return new Promise((resolve) => resolve(this))
+				}
 				this.groups[BrickType.EXTRA_LIFE].add(new ExtraLife(this.scene, { row: row, col: col }), true)
 				break
-
+			}
 			default:
 				console.warn("Unknown block type ")
 				break
