@@ -8,11 +8,13 @@ enum State {
 interface Vertices {
 	[key: string]: Phaser.Geom.Point
 }
-export class Trajectory extends Phaser.Events.EventEmitter {
+export class Trajectory {
 	static readonly EVENTS = {
 		FIRE: "fire",
 		CREATED: "created",
 	}
+
+	events = new Phaser.Events.EventEmitter()
 
 	private scene: Phaser.Scene
 	private direction!: number
@@ -31,7 +33,6 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	private trajectoryRectangle!: Phaser.GameObjects.Rectangle
 
 	constructor(scene: Phaser.Scene, world: Rebrickz.World) {
-		super()
 		this.scene = scene
 		this.world = world
 
@@ -59,7 +60,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 	}
 
 	private create() {
-		this.emit(Trajectory.EVENTS.CREATED)
+		this.events.emit(Trajectory.EVENTS.CREATED)
 		this.moveToInitialPosition()
 		this.addEventListeners()
 		this.createGraphics()
@@ -121,7 +122,7 @@ export class Trajectory extends Phaser.Events.EventEmitter {
 		}
 
 		this.state = State.WAITING
-		this.emit(Trajectory.EVENTS.FIRE, this.direction)
+		this.events.emit(Trajectory.EVENTS.FIRE, this.direction)
 	}
 
 	private mouseDown() {

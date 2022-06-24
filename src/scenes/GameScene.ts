@@ -130,23 +130,23 @@ export class GameScene extends Phaser.Scene {
 	}
 
 	private addEventListeners(): this {
-		this.trajectory.on(Trajectory.EVENTS.FIRE, this.fireBalls, this)
+		this.trajectory.events.on(Trajectory.EVENTS.FIRE, this.fireBalls, this)
 		/**
 		 * Handle balls collision
 		 */
-		this.world.on(World.EVENTS.BALL_COLLIDED, (ball: { gameObject: Ball }) => {
+		this.world.events.on(World.EVENTS.BALL_COLLIDED, (ball: { gameObject: Ball }) => {
 			this.balls.collideWorldBottom(ball.gameObject)
 		})
 		/**
 		 * Handle all balls stopped running
 		 */
-		this.balls.on(Balls.EVENTS.BALLS_STOPPED, () => {
+		this.balls.events.on(Balls.EVENTS.BALLS_STOPPED, () => {
 			this.state = GameState.PREPARING_NEXT_ROUND
 		})
 		/**
 		 * On brick collided world's bottom
 		 */
-		this.bricks.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
+		this.bricks.events.on(Bricks.EVENTS.COLLIDED_WORLD_DOWN, () => {
 			this.bricks.destroyRow(World.lastRowIndex)
 			if (!this.lives.decrease()) {
 				this.state = GameState.GAME_OVER
@@ -156,10 +156,10 @@ export class GameScene extends Phaser.Scene {
 		/**
 		 * On brick has collected
 		 */
-		this.bricks.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
+		this.bricks.events.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
 			switch (brick.brickType) {
 				case BrickType.EXTRA_LIFE:
-					this.lives.animateIncrease(brick.x, brick.y)
+					this.lives.animateIncrease(brick.x, brick.y - brick.width / 2)
 					break
 				default:
 					this.collected.push(brick)
@@ -169,7 +169,7 @@ export class GameScene extends Phaser.Scene {
 		/**
 		 * Event listeners for brick health
 		 */
-		this.bricks.on(Health.EVENTS.DAMAGE, (damage: number) => {
+		this.bricks.events.on(Health.EVENTS.DAMAGE, (damage: number) => {
 			this.score.increase(damage)
 		})
 		/**

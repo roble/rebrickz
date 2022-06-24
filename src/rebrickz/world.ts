@@ -5,16 +5,16 @@ export interface Sides {
 	bottom: Phaser.Geom.Line
 	left: Phaser.Geom.Line
 }
-export class World extends Phaser.Events.EventEmitter {
+export class World {
 	static readonly EVENTS = {
 		BALL_COLLIDED: "ball_collided",
 	}
 
 	scene: Phaser.Scene
 	bounds!: Phaser.Geom.Rectangle
+	events = new Phaser.Events.EventEmitter()
 
 	constructor(scene: Phaser.Scene) {
-		super()
 		this.scene = scene
 		this.create()
 		this.setCollisionHandler()
@@ -155,6 +155,6 @@ export class World extends Phaser.Events.EventEmitter {
 
 	handleCollision(ball: Phaser.Physics.Arcade.Body, up: boolean, down: boolean) {
 		if (!down) return
-		this.emit(World.EVENTS.BALL_COLLIDED, ball)
+		this.events.emit(World.EVENTS.BALL_COLLIDED, ball)
 	}
 }

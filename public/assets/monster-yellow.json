@@ -4,13 +4,13 @@
 			"image": "monster-yellow.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 312,
-				"h": 312
+				"w": 364,
+				"h": 364
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "angry-0.png",
+					"filename": "explosion/explosion-0",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -35,7 +35,7 @@
 					}
 				},
 				{
-					"filename": "angry-1.png",
+					"filename": "explosion/explosion-1",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -60,7 +60,7 @@
 					}
 				},
 				{
-					"filename": "angry-2.png",
+					"filename": "explosion/explosion-2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -85,7 +85,7 @@
 					}
 				},
 				{
-					"filename": "angry-3.png",
+					"filename": "explosion/explosion-3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -110,7 +110,7 @@
 					}
 				},
 				{
-					"filename": "angry-4.png",
+					"filename": "explosion/explosion-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -135,7 +135,7 @@
 					}
 				},
 				{
-					"filename": "angry-5.png",
+					"filename": "explosion/explosion-5",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -160,7 +160,32 @@
 					}
 				},
 				{
-					"filename": "angry-6.png",
+					"filename": "explosion/explosion-6",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "explosion/explosion-7",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -185,7 +210,7 @@
 					}
 				},
 				{
-					"filename": "angry-7.png",
+					"filename": "explosion/explosion-8",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -210,7 +235,7 @@
 					}
 				},
 				{
-					"filename": "angry-8.png",
+					"filename": "monster/angry/angry-0",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -235,7 +260,7 @@
 					}
 				},
 				{
-					"filename": "blink-0.png",
+					"filename": "monster/angry/angry-1",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -260,82 +285,7 @@
 					}
 				},
 				{
-					"filename": "die-0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 50,
-						"h": 50
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 50,
-						"h": 50
-					},
-					"frame": {
-						"x": 209,
-						"y": 1,
-						"w": 50,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0
-					}
-				},
-				{
-					"filename": "move-0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 50,
-						"h": 50
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 50,
-						"h": 50
-					},
-					"frame": {
-						"x": 209,
-						"y": 1,
-						"w": 50,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0
-					}
-				},
-				{
-					"filename": "pain-0.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 50,
-						"h": 50
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 50,
-						"h": 50
-					},
-					"frame": {
-						"x": 209,
-						"y": 1,
-						"w": 50,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0
-					}
-				},
-				{
-					"filename": "blink-1.png",
+					"filename": "monster/angry/angry-2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -360,7 +310,32 @@
 					}
 				},
 				{
-					"filename": "blink-2.png",
+					"filename": "monster/angry/angry-3",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 313,
+						"y": 1,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/angry/angry-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -385,7 +360,7 @@
 					}
 				},
 				{
-					"filename": "blink-3.png",
+					"filename": "monster/angry/angry-5",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -410,7 +385,7 @@
 					}
 				},
 				{
-					"filename": "blink-4.png",
+					"filename": "monster/angry/angry-6",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -435,7 +410,7 @@
 					}
 				},
 				{
-					"filename": "blink-5.png",
+					"filename": "monster/angry/angry-7",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -460,7 +435,7 @@
 					}
 				},
 				{
-					"filename": "blink-6.png",
+					"filename": "monster/angry/angry-8",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -485,7 +460,107 @@
 					}
 				},
 				{
-					"filename": "blink-7.png",
+					"filename": "monster/blink/blink-0",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/die/die-0",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/move/move-0",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/pain/pain-0",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 53,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/blink/blink-1",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -510,7 +585,7 @@
 					}
 				},
 				{
-					"filename": "blink-8.png",
+					"filename": "monster/blink/blink-2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -535,7 +610,7 @@
 					}
 				},
 				{
-					"filename": "die-1.png",
+					"filename": "monster/blink/blink-3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -560,7 +635,7 @@
 					}
 				},
 				{
-					"filename": "die-2.png",
+					"filename": "monster/blink/blink-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -585,7 +660,32 @@
 					}
 				},
 				{
-					"filename": "die-3.png",
+					"filename": "monster/blink/blink-5",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 313,
+						"y": 53,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/blink/blink-6",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -610,7 +710,7 @@
 					}
 				},
 				{
-					"filename": "die-4.png",
+					"filename": "monster/blink/blink-7",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -635,7 +735,7 @@
 					}
 				},
 				{
-					"filename": "die-5.png",
+					"filename": "monster/blink/blink-8",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -660,7 +760,7 @@
 					}
 				},
 				{
-					"filename": "move-1.png",
+					"filename": "monster/die/die-1",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -685,7 +785,32 @@
 					}
 				},
 				{
-					"filename": "move-2.png",
+					"filename": "monster/die/die-2",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 105,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/die/die-3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -710,7 +835,7 @@
 					}
 				},
 				{
-					"filename": "move-3.png",
+					"filename": "monster/die/die-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -735,7 +860,7 @@
 					}
 				},
 				{
-					"filename": "move-4.png",
+					"filename": "monster/die/die-5",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -760,7 +885,32 @@
 					}
 				},
 				{
-					"filename": "move-5.png",
+					"filename": "monster/move/move-1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 313,
+						"y": 105,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/move/move-2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -785,7 +935,7 @@
 					}
 				},
 				{
-					"filename": "move-6.png",
+					"filename": "monster/move/move-3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -810,7 +960,7 @@
 					}
 				},
 				{
-					"filename": "move-7.png",
+					"filename": "monster/move/move-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -835,7 +985,32 @@
 					}
 				},
 				{
-					"filename": "pain-1.png",
+					"filename": "monster/move/move-5",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 157,
+						"y": 313,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/move/move-6",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -860,7 +1035,7 @@
 					}
 				},
 				{
-					"filename": "pain-2.png",
+					"filename": "monster/move/move-7",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -885,7 +1060,32 @@
 					}
 				},
 				{
-					"filename": "pain-3.png",
+					"filename": "monster/pain/pain-1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 50,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 50
+					},
+					"frame": {
+						"x": 313,
+						"y": 157,
+						"w": 50,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0
+					}
+				},
+				{
+					"filename": "monster/pain/pain-2",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -910,7 +1110,7 @@
 					}
 				},
 				{
-					"filename": "pain-4.png",
+					"filename": "monster/pain/pain-3",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -935,7 +1135,7 @@
 					}
 				},
 				{
-					"filename": "pain-5.png",
+					"filename": "monster/pain/pain-4",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -949,33 +1149,8 @@
 						"h": 50
 					},
 					"frame": {
-						"x": 261,
-						"y": 209,
-						"w": 50,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0
-					}
-				},
-				{
-					"filename": "pain-6.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 50,
-						"h": 50
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 50,
-						"h": 50
-					},
-					"frame": {
-						"x": 261,
-						"y": 261,
+						"x": 209,
+						"y": 313,
 						"w": 50,
 						"h": 50
 					},
@@ -990,6 +1165,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:1cf8652a8baf00b8299d0cab35043879:872da913d56ae2d1e0f4948d4e37524b:6ac59af6b4615441509a44742366dae1$"
+		"smartupdate": "$TexturePacker:SmartUpdate:36eedb3e94a26b7959a873ed9c6064d0:9a5dd99b8db411de99f0523f6f48e43e:6ac59af6b4615441509a44742366dae1$"
 	}
 }

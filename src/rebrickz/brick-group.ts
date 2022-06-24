@@ -1,4 +1,7 @@
-import { Brick, BrickType, ExtraBall, SpecialBall } from "./brick"
+import { BrickType } from "./brick/base"
+import { Brick } from "./brick/brick"
+import { ExtraBall } from "./brick/extra-ball"
+import { SpecialBall } from "./brick/special-ball"
 
 export type BlockTypeClass = Brick | SpecialBall | ExtraBall
 

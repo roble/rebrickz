@@ -1,8 +1,12 @@
 import { GameConfig as config } from "@config"
+
+import { BrickType, ExtraBall, SpecialBall } from "@rebrickz"
+
 import { Ball } from "./ball"
 import { Balls } from "./balls"
-import { BrickType, ExtraBall, Brick, SpecialBall, ExtraLife } from "./brick"
+import { Brick } from "./brick/brick"
 import { BlockTypeClass, BrickGroup } from "./brick-group"
+import { ExtraLife } from "./brick/extra-life"
 import { Health } from "./brick/health"
 import { World } from "./world"
 
@@ -10,7 +14,7 @@ export type BlockGroup = {
 	[key in BrickType]: BrickGroup
 }
 
-export class Bricks extends Phaser.Events.EventEmitter {
+export class Bricks {
 	static readonly EVENTS = {
 		COLLIDED_WORLD_DOWN: "collided_world_down",
 		COLLECTED: "collected",
@@ -19,9 +23,9 @@ export class Bricks extends Phaser.Events.EventEmitter {
 	private scene: Phaser.Scene
 	groups!: BlockGroup
 	balls: Balls
+	events = new Phaser.Events.EventEmitter()
 
 	constructor(scene: Phaser.Scene, balls: Balls) {
-		super()
 		this.scene = scene
 		this.balls = balls
 		this.createGroups(scene)
@@ -43,7 +47,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		// collectables bricks
 		this.scene.physics.overlap(this.balls.group, overlap, (ball, brick) => {
 			brick.destroy(true)
-			this.emit(Bricks.EVENTS.COLLECTED, brick)
+			this.events.emit(Bricks.EVENTS.COLLECTED, brick)
 		})
 
 		// collidables bricks
@@ -79,7 +83,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 
 	createCallback(obj: Phaser.GameObjects.GameObject) {
 		obj.on(Health.EVENTS.DAMAGE, (damage: number) => {
-			this.emit(Health.EVENTS.DAMAGE, damage)
+			this.events.emit(Health.EVENTS.DAMAGE, damage)
 		})
 
 		return obj
@@ -113,7 +117,7 @@ export class Bricks extends Phaser.Events.EventEmitter {
 		const bricks = this.getChildren()
 		const inLastRow = bricks.filter((brick) => brick.row === World.lastRowIndex)
 		const bricksToMove = bricks.filter((brick) => brick.row < World.lastRowIndex)
-		if (inLastRow.length) this.emit(Bricks.EVENTS.COLLIDED_WORLD_DOWN)
+		if (inLastRow.length) this.events.emit(Bricks.EVENTS.COLLIDED_WORLD_DOWN)
 
 		return Promise.all(bricksToMove.map((brick) => brick.moveDown())).then(() => {
 			return this

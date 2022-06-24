@@ -1,72 +1,68 @@
-import { World } from "."
-import { Base } from "./brick/base"
-import { Health } from "./brick/health"
-import { Moveable } from "./brick/moveable"
-
-export interface BlockOptions {
-	texture?: string
-	row: number
-	col: number
-	level?: number
-	frame?: string | number | undefined
-}
-
-export enum BrickType {
-	BRICK,
-	SPECIAL_BALL,
-	EXTRA_BALL,
-	EXTRA_LIFE,
-}
+import { World } from "@rebrickz"
+import { Base, BrickOptions, BrickType } from "./base"
+import { Health } from "./health"
+import { Emitters } from "./emitters"
 
 export class Brick extends Base {
 	readonly brickType: BrickType
 
 	health: Health
+	emitters: Emitters
 
-	constructor(scene: Phaser.Scene, options: BlockOptions) {
-		super(scene, { ...options, frame: "move-0.png" })
+	constructor(scene: Phaser.Scene, options: BrickOptions) {
+		super(scene, { ...options, frame: "monster/move/move-0" })
 		this.brickType = BrickType.BRICK
 		this.health = new Health(scene, this, options.level || 1)
+		this.emitters = new Emitters(scene, this)
+		this.createEmitters()
 		this.addListeners()
 		this.createAnimations()
 		this.play("blink")
 	}
 
+	show(): this {
+		return this.fall()
+	}
+
+	createEmitters(): this {
+		this.emitters.create(Emitters.EMITTERS.EXPLOSION_YELLOW.name)
+		return this
+	}
+
 	addListeners(): this {
-		this.health.on(Health.EVENTS.DAMAGE, (damage: number) => {
+		this.health.events.on(Health.EVENTS.DAMAGE, (damage: number) => {
 			this.play("pain")
 			this.emit(Health.EVENTS.DAMAGE, damage)
 			if (this.row === World.lastRowIndex) this.playAfterDelay("angry", 500)
 			else this.playAfterDelay("blink", 500)
 		})
 
-		this.health.on(Health.EVENTS.DIED, () => {
+		this.health.events.on(Health.EVENTS.DIED, () => {
 			this.body.enable = false
 			this.setAlpha(0.75)
 			this.play("die")
 			setTimeout(() => {
+				this.emitters.explode()
 				this.destroy()
 			}, 600)
 		})
 
-		this.on(Moveable.EVENTS.MOVE, () => {
+		this.on(Base.EVENTS.MOVE, () => {
 			this.health.update()
 		})
 
-		this.on(Moveable.EVENTS.MOVE_START, () => {
+		this.on(Base.EVENTS.MOVE_START, () => {
 			this.play("move")
 		})
 
-		this.on(Moveable.EVENTS.MOVE_END, () => {
+		this.on(Base.EVENTS.MOVE_END, () => {
 			this.stop()
 			this.play("blink")
 		})
 
-		this.on(Moveable.EVENTS.IN_LAST_ROW, () => {
+		this.on(Base.EVENTS.IN_LAST_ROW, () => {
 			this.play("angry")
 		})
-
-		this.on("destroy", this.health.destroy, this)
 
 		return this
 	}
@@ -80,8 +76,7 @@ export class Brick extends Base {
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
 				end: 8,
-				prefix: "blink-",
-				suffix: ".png",
+				prefix: "monster/blink/blink-",
 			}),
 			frameRate: 30,
 			repeat: -1,
@@ -95,8 +90,7 @@ export class Brick extends Base {
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
 				end: 7,
-				prefix: "move-",
-				suffix: ".png",
+				prefix: "monster/move/move-",
 			}),
 			frameRate: 10,
 			repeat: -1,
@@ -109,8 +103,7 @@ export class Brick extends Base {
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
 				end: 5,
-				prefix: "die-",
-				suffix: ".png",
+				prefix: "monster/die/die-",
 			}),
 			frameRate: 20,
 			repeat: 0,
@@ -123,9 +116,8 @@ export class Brick extends Base {
 			key: "pain",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 6,
-				prefix: "pain-",
-				suffix: ".png",
+				end: 4,
+				prefix: "monster/pain/pain-",
 			}),
 			frameRate: 30,
 			repeat: 0,
@@ -139,47 +131,30 @@ export class Brick extends Base {
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
 				end: 8,
-				prefix: "angry-",
-				suffix: ".png",
+				prefix: "monster/angry/angry-",
 			}),
 			frameRate: 20,
 			repeat: -1,
 			repeatDelay: Phaser.Math.Between(200, 500),
 		})
-	}
-}
 
-export class SpecialBall extends Base {
-	readonly brickType: BrickType
-
-	constructor(scene: Phaser.Scene, options: BlockOptions) {
-		super(scene, { ...options, texture: "special_ball" })
-		this.brickType = BrickType.SPECIAL_BALL
-	}
-}
-
-export class ExtraBall extends Base {
-	readonly brickType: BrickType
-
-	constructor(scene: Phaser.Scene, options: BlockOptions) {
-		super(scene, { ...options, texture: "extra_ball" })
-		this.brickType = BrickType.EXTRA_BALL
-	}
-}
-
-export class ExtraLife extends Base {
-	readonly brickType: BrickType
-
-	constructor(scene: Phaser.Scene, options: BlockOptions) {
-		super(scene, { ...options, texture: "life" })
-		this.brickType = BrickType.EXTRA_LIFE
+		/**
+		 * Explosion
+		 */
+		this.anims.create({
+			key: "explosion",
+			frames: this.scene.anims.generateFrameNames(this.texture.key, {
+				start: 0,
+				end: 8,
+				prefix: "explosion/explosion-",
+			}),
+			frameRate: 30,
+			repeat: 0,
+		})
 	}
 }
 
 export default {
 	Brick,
-	SpecialBall,
-	ExtraBall,
-	ExtraLife,
 	BrickType,
 }

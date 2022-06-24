@@ -1,7 +1,7 @@
 import { GameConfig as config } from "@config"
 import { Brick } from ".."
 
-export class Health extends Phaser.Events.EventEmitter {
+export class Health {
 	static readonly EVENTS = {
 		DIED: "died",
 		DAMAGE: "damage",
@@ -13,6 +13,7 @@ export class Health extends Phaser.Events.EventEmitter {
 		INSTANT_KILL: "instant_kill",
 	}
 
+	events = new Phaser.Events.EventEmitter()
 	_level!: number
 	health: number
 	maxHealth: number
@@ -29,7 +30,6 @@ export class Health extends Phaser.Events.EventEmitter {
 	height = 6
 
 	constructor(scene: Phaser.Scene, parent: Brick, health: number) {
-		super()
 		this.scene = scene
 		this.health = Math.ceil(health)
 		this.maxHealth = this.health
@@ -193,11 +193,11 @@ export class Health extends Phaser.Events.EventEmitter {
 		const _value = Math.ceil(value)
 		if (this.health >= _value && this.health - _value > 0) {
 			this.health -= _value
-			this.emit(Health.EVENTS.DAMAGE, _value)
+			this.events.emit(Health.EVENTS.DAMAGE, _value)
 		} else {
 			this.health = 0
-			this.emit(Health.EVENTS.DAMAGE, _value)
-			this.emit(Health.EVENTS.DIED)
+			this.events.emit(Health.EVENTS.DAMAGE, _value)
+			this.events.emit(Health.EVENTS.DIED)
 		}
 
 		if (draw) this.draw()

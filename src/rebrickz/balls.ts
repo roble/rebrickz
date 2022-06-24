@@ -2,7 +2,7 @@ import { GameConfig as config } from "@config"
 import { Ball, BallType } from "./ball"
 import { BallsGroup } from "./balls-group"
 
-export class Balls extends Phaser.Events.EventEmitter {
+export class Balls {
 	static readonly EVENTS = {
 		BALLS_STOPPED: "balls_stopped",
 	}
@@ -13,9 +13,9 @@ export class Balls extends Phaser.Events.EventEmitter {
 	ballsLanded: number
 	fireOrigin: Phaser.Geom.Point | undefined
 	totalBallsText!: Phaser.GameObjects.Text
+	events = new Phaser.Events.EventEmitter()
 
 	constructor(scene: Phaser.Scene) {
-		super()
 		this.scene = scene
 		this.firstBallToLand = undefined
 		this.ballsLanded = 0
@@ -119,7 +119,7 @@ export class Balls extends Phaser.Events.EventEmitter {
 	}
 
 	private emitBallsStopped() {
-		this.emit(Balls.EVENTS.BALLS_STOPPED)
+		this.events.emit(Balls.EVENTS.BALLS_STOPPED)
 		this.ballsLanded = 0
 
 		this.totalBallsText.setPosition(this.getFirstBall().x, this.getFirstBall().y + config.ball.size + 10)
