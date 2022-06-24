@@ -164,7 +164,7 @@ export class GameScene extends Phaser.Scene {
 		 * Event listeners for brick health
 		 */
 		this.bricks.events.on(Health.EVENTS.DAMAGE, (damage: number) => {
-			this.score.increase(damage)
+			this.score.increase(damage * 100)
 		})
 		/**
 		 * Event listeners for lives
@@ -177,7 +177,7 @@ export class GameScene extends Phaser.Scene {
 			if (lives === 0) {
 				this.state = GameState.GAME_OVER
 				setTimeout(() => {
-					this.scene.launch("GameOverScene")
+					this.scene.launch("GameOverScene", { score: this.score.getValue() })
 				}, 500)
 			}
 		})

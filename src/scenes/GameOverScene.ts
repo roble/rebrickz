@@ -13,7 +13,7 @@ export class GameOverScene extends Phaser.Scene {
 		super({ key: "GameOverScene", active: false })
 	}
 
-	create() {
+	create(data: { score: number }) {
 		this.background = this.add.sprite(0, 0, "gameover_screen")
 		this.background.setAlpha(0).setOrigin(0).setDepth(1)
 
@@ -40,5 +40,12 @@ export class GameOverScene extends Phaser.Scene {
 			ease: "Cubic.easeInOut",
 			alpha: { from: 0, to: 1 },
 		})
+
+		const text = this.add.text(config.width / 2, config.height - 200, `SCORE: ${data.score}`, {
+			fontSize: "30px",
+			fontFamily: "Arial Black",
+		})
+		text.setDepth(1)
+		text.setOrigin(0.5)
 	}
 }
