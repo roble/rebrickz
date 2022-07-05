@@ -24,6 +24,7 @@ export type GameConfigType = {
 	cols: number
 	width: number
 	height: number
+	marginTop: number
 	trajectoryDistance: number
 	ball: BallConfigType
 	brick: BlockConfigType
@@ -98,6 +99,9 @@ export type BlockConfigType = {
 export type WorldConfigType = {
 	width: number
 	height: number
+	left: number
+	right: number
+	top: number
 	defaultTexture: string
 }
 
@@ -106,6 +110,7 @@ export const GameConfig: GameConfigType = {
 	cols: GAME_COLS,
 	width: GAME_WIDTH,
 	height: GAME_HEIGHT,
+	marginTop: -30,
 	trajectoryDistance: 1000000,
 	lives: 5,
 	gameSpeed: 1,
@@ -197,6 +202,9 @@ export const GameConfig: GameConfigType = {
 	world: {
 		width: WORLD_WIDTH,
 		height: WORLD_HEIGHT,
+		left: (GAME_WIDTH - WORLD_WIDTH) / 2,
+		right: (GAME_WIDTH - WORLD_WIDTH) / 2,
+		top: 70,
 		defaultTexture: "ground",
 	},
 }
@@ -216,7 +224,6 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: "arcade",
 		arcade: {
-			fps: 50,
 			debug: false,
 			debugShowBody: true,
 			debugShowStaticBody: true,

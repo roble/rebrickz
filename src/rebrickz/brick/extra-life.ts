@@ -12,9 +12,11 @@ export class ExtraLife extends Base {
 		this.brickType = BrickType.EXTRA_LIFE
 		this.emitters = new Emitters(scene, this)
 		this.createEmitters()
+		this.createAnimations()
 	}
 
 	show(): this {
+		this.play("rotate")
 		return this.fall()
 	}
 
@@ -22,6 +24,22 @@ export class ExtraLife extends Base {
 		this.emitters.create(Emitters.EMITTERS.EXPLOSION_HEART_UP.name)
 		this.emitters.create(Emitters.EMITTERS.HEART_UP.name, { offset: { y: 25 } })
 		return this
+	}
+
+	private createAnimations() {
+		/**
+		 * Rotate
+		 */
+		this.anims.create({
+			key: "rotate",
+			frames: this.scene.anims.generateFrameNames(this.texture.key, {
+				start: 0,
+				end: 5,
+				prefix: "life/rotate-",
+			}),
+			frameRate: 10,
+			repeat: -1,
+		})
 	}
 
 	destroy() {

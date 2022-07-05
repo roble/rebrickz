@@ -57,6 +57,18 @@ export class Emitters {
 			config: {
 				...defaultConfig.UP,
 				gravityY: -50,
+				scale: {
+					min: 0.1,
+					max: 0.3,
+				},
+				alpha: {
+					end: 0.0,
+					start: 0.2,
+				},
+				lifespan: 2000,
+				quantity: 1,
+				speed: 30,
+				blendMode: Phaser.BlendModes.DIFFERENCE,
 			},
 		},
 		GREEN_UP: {
@@ -115,9 +127,11 @@ export class Emitters {
 		if (!key) {
 			Object.keys(this.emitters).forEach((key) => {
 				this.emitters[key].active = true
+				this.emitters[key].visible = true
 			})
 		} else {
 			this.emitters[key].active = true
+			this.emitters[key].visible = true
 		}
 
 		return this
@@ -127,9 +141,11 @@ export class Emitters {
 		if (!key) {
 			Object.keys(this.emitters).forEach((key) => {
 				this.emitters[key].active = false
+				this.emitters[key].visible = false
 			})
 		} else {
 			this.emitters[key].active = false
+			this.emitters[key].visible = false
 		}
 		return this
 	}
@@ -144,6 +160,10 @@ export class Emitters {
 			this.start(key)
 			this.emitters[key].explode(quantity, x, y)
 		}
+
+		setTimeout(() => {
+			this.stop(key)
+		}, 1000)
 
 		return this
 	}

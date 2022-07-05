@@ -31,7 +31,7 @@ export abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	col!: number
 
 	constructor(scene: Phaser.Scene, options: BrickOptions) {
-		const { row, col, texture = "monster-yellow", frame = undefined } = options
+		const { row, col, texture = "monster-green", frame = undefined } = options
 		super(scene, 0, 0, texture, frame)
 		this.fixPosition(row, col)
 		this.on("addedtoscene", this.onCreate, this)

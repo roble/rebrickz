@@ -54,6 +54,10 @@ export class Trajectory {
 		return this
 	}
 
+	getPosition(): { x: number; y: number } {
+		return { x: this.x, y: this.y }
+	}
+
 	setCollidableLines(lines: Phaser.Geom.Line[]): this {
 		this.collidableLines = lines
 		return this
@@ -84,7 +88,7 @@ export class Trajectory {
 			config.ball.size + 2,
 			config.height,
 			0xffffff,
-			0.025
+			0.05
 		)
 		this.trajectoryRectangle.setOrigin(0.5, 1)
 		this.trajectoryRectangle.visible = false

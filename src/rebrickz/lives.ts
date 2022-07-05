@@ -43,7 +43,7 @@ export class Lives {
 		this.x = x
 		this.y = y
 		this.max = max
-		this.current = max
+		this.current = 1 //max
 
 		for (let i = 0; i < max; i++) {
 			this.lives.push(new Life(scene, this.x + 70 + this.lifeWidth * i, this.y - 2 + this.lifeWidth / 2))
@@ -102,7 +102,7 @@ export class Lives {
 		return this.lives.find((life) => !life.state)
 	}
 
-	animateIncrease(x: number, y: number) {
+	animateCollect(x: number, y: number) {
 		const tmp = this.current
 		this.increase(false)
 
@@ -119,7 +119,7 @@ export class Lives {
 				tweens: [
 					{
 						y: "+=50",
-						scale: 2,
+						scale: 1.5,
 						alpha: 1,
 						duration: 700,
 						// rotation: 2,

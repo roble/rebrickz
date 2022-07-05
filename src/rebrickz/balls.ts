@@ -158,4 +158,36 @@ export class Balls {
 
 		return this
 	}
+
+	animateCollect(x: number, y: number, toX: number, toY: number) {
+		const ball = this.scene.add.sprite(x, y, "extra_ball")
+
+		ball.setDepth(10)
+		ball.setAlpha(0)
+
+		this.scene.tweens.timeline({
+			targets: ball,
+			ease: "Cubic.easeInOut",
+			tweens: [
+				{
+					y: "+=50",
+					scale: 1.5,
+					alpha: 1,
+					duration: 700,
+					// rotation: 2,
+					angle: 360,
+				},
+				{
+					x: toX,
+					y: toY,
+					scale: 0.5,
+					alpha: 0.1,
+					duration: 350,
+				},
+			],
+			onComplete: () => {
+				ball.destroy(true)
+			},
+		})
+	}
 }

@@ -10,7 +10,7 @@ export class Brick extends Base {
 	emitters: Emitters
 
 	constructor(scene: Phaser.Scene, options: BrickOptions) {
-		super(scene, { ...options, frame: "monster/move/move-0" })
+		super(scene, { ...options, frame: "monster/green/move-0" })
 		this.brickType = BrickType.BRICK
 		this.health = new Health(scene, this, options.level || 1)
 		this.emitters = new Emitters(scene, this)
@@ -39,7 +39,7 @@ export class Brick extends Base {
 
 		this.health.events.on(Health.EVENTS.DIED, () => {
 			this.body.enable = false
-			this.setAlpha(0.75)
+			this.setAlpha(0.95)
 			this.play("die")
 			setTimeout(() => {
 				this.emitters.explode()
@@ -75,12 +75,12 @@ export class Brick extends Base {
 			key: "blink",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 8,
-				prefix: "monster/blink/blink-",
+				end: 4,
+				prefix: "monster/green/blink-",
 			}),
-			frameRate: 30,
+			frameRate: 10,
 			repeat: -1,
-			repeatDelay: Phaser.Math.Between(1000, 5000),
+			repeatDelay: Phaser.Math.Between(3000, 5000),
 		})
 		/**
 		 * Move
@@ -89,8 +89,8 @@ export class Brick extends Base {
 			key: "move",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 7,
-				prefix: "monster/move/move-",
+				end: 5,
+				prefix: "monster/green/move-",
 			}),
 			frameRate: 10,
 			repeat: -1,
@@ -102,8 +102,8 @@ export class Brick extends Base {
 			key: "die",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 5,
-				prefix: "monster/die/die-",
+				end: 4,
+				prefix: "monster/green/die-",
 			}),
 			frameRate: 20,
 			repeat: 0,
@@ -116,10 +116,10 @@ export class Brick extends Base {
 			key: "pain",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 4,
-				prefix: "monster/pain/pain-",
+				end: 3,
+				prefix: "monster/green/pain-",
 			}),
-			frameRate: 30,
+			frameRate: 20,
 			repeat: 0,
 		})
 
@@ -130,10 +130,11 @@ export class Brick extends Base {
 			key: "angry",
 			frames: this.scene.anims.generateFrameNames(this.texture.key, {
 				start: 0,
-				end: 8,
-				prefix: "monster/angry/angry-",
+				end: 6,
+				prefix: "monster/green/angry-",
 			}),
-			frameRate: 20,
+			frameRate: 15,
+			// yoyo: true,
 			repeat: -1,
 			repeatDelay: Phaser.Math.Between(200, 500),
 		})
@@ -141,16 +142,16 @@ export class Brick extends Base {
 		/**
 		 * Explosion
 		 */
-		this.anims.create({
-			key: "explosion",
-			frames: this.scene.anims.generateFrameNames(this.texture.key, {
-				start: 0,
-				end: 8,
-				prefix: "explosion/explosion-",
-			}),
-			frameRate: 30,
-			repeat: 0,
-		})
+		// this.anims.create({
+		// 	key: "explosion",
+		// 	frames: this.scene.anims.generateFrameNames(this.texture.key, {
+		// 		start: 0,
+		// 		end: 8,
+		// 		prefix: "explosion/explosion-",
+		// 	}),
+		// 	frameRate: 30,
+		// 	repeat: 0,
+		// })
 	}
 }
 

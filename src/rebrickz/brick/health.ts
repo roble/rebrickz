@@ -25,7 +25,7 @@ export class Health {
 	parent: Brick
 	_x: number
 	_y: number
-	offsetY = -config.brick.size + 8
+	offsetY = -config.brick.size + 5
 	width = 30
 	height = 6
 
@@ -49,11 +49,11 @@ export class Health {
 		 */
 		this.healthText = scene.add.text(this._x + this.width / 2, this._y, this.health.toString(), {
 			fixedWidth: this.width,
-			fontSize: "10px",
+			fontSize: "9px",
 			color: "#3F3F3F",
 			fontFamily: "Arial Black",
 			stroke: "#fff",
-			strokeThickness: 4,
+			strokeThickness: 3,
 		})
 		this.healthText.setAlpha(0).setDepth(1).setOrigin(0.5).setAlign("center")
 		/**
@@ -134,9 +134,9 @@ export class Health {
 			.fillRect(this.x + 1, this.y + 1, this.width - 2, this.height - 2)
 
 		if (this.percentage * 100 < 30) {
-			this.bar.fillStyle(0xff6464)
+			this.bar.fillStyle(0x732828)
 		} else {
-			this.bar.fillStyle(0x59dc66)
+			this.bar.fillStyle(0xff6464)
 		}
 
 		this.bar.fillRect(this.x + 1, this.y + 1, (this.width - 2) * this.percentage, this.height - 2)
@@ -223,6 +223,11 @@ export class Health {
 				break
 		}
 
+		return this
+	}
+
+	kill(): this {
+		this.decrease(this.health)
 		return this
 	}
 }

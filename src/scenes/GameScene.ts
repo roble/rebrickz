@@ -35,9 +35,9 @@ export class GameScene extends Phaser.Scene {
 		this.bricks = new Bricks(this, this.balls)
 		// top panel
 		const worldLeft = this.world.getBounds().left
-		this.score = new Score(this, worldLeft, 20)
-		this.level = new Level(this, worldLeft, 40)
-		this.lives = new Lives(this, worldLeft, 60)
+		this.score = new Score(this, worldLeft, 5)
+		this.level = new Level(this, worldLeft, 23)
+		this.lives = new Lives(this, worldLeft, 40)
 		this.collected = []
 
 		this.addBalls()
@@ -153,8 +153,13 @@ export class GameScene extends Phaser.Scene {
 		this.bricks.events.on(Bricks.EVENTS.COLLECTED, (brick: Brick) => {
 			switch (brick.brickType) {
 				case BrickType.EXTRA_LIFE:
-					this.lives.animateIncrease(brick.x, brick.y - brick.width / 2)
+					this.lives.animateCollect(brick.x, brick.y - brick.width / 2)
 					break
+				case BrickType.EXTRA_BALL: {
+					const { x, y } = this.trajectory.getPosition()
+					this.balls.animateCollect(brick.x, brick.y - brick.width / 2, x, y)
+					break
+				}
 				default:
 					this.collected.push(brick)
 					break

@@ -8,7 +8,7 @@ export type RowColPosition = {
 
 export class Position {
 	static getYByRow(row: number): number {
-		return Rebrickz.World.origin.y + row * config.brick.size + config.brick.size * 0.5
+		return Rebrickz.World.origin.y + config.marginTop + row * config.brick.size + config.brick.size * 0.5
 	}
 
 	static getXByCol(col: number): number {

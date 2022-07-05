@@ -21,13 +21,23 @@ export class World {
 	}
 
 	create() {
-		const ground = this.scene.add.sprite(config.width / 2, config.height / 2, "ground")
+		const background = this.scene.add.sprite(0, 0, "background")
+		background.setOrigin(0)
 
-		ground.setOrigin(0.5)
+		const ground = this.scene.add.rectangle(
+			config.world.left,
+			config.world.top,
+			config.world.width,
+			config.world.height,
+			0xffffff
+		)
+
+		ground.setOrigin(0)
 		ground.setBlendMode(Phaser.BlendModes.MULTIPLY)
 		ground.setDisplaySize(config.world.width, config.world.height - config.brick.size)
 
 		const worldBounds = ground.getBounds()
+
 		const { x, y, width, height } = worldBounds
 
 		// set the world bounds
@@ -39,20 +49,20 @@ export class World {
 		// enable collision
 		this.scene.physics.world.setBoundsCollision(true, true, true, true)
 
-		this.createWorldTiles()
-
 		/**
 		 * Debug
 		 * TODO: REMOVE
 		 **/
 
-		// if (!this.scene.game.config.physics.arcade?.debug) return
+		if (!this.scene.game.config.physics.arcade?.debug) return
+
+		this.createWorldTiles()
 
 		const graphics = this.scene.add.graphics()
 		const _worldBounds = this.scene.physics.world.bounds
 		const thickness = 1
-		const color = Phaser.Display.Color.HexStringToColor("ffffff").color
-		const alpha = 0.1
+		const color = Phaser.Display.Color.HexStringToColor("000").color
+		const alpha = 0.8
 
 		graphics.lineStyle(thickness, color, alpha)
 
@@ -144,7 +154,8 @@ export class World {
 				const sprite = this.scene.add
 					.sprite(x, y, "ground_tile")
 					.setOrigin(0, 0)
-					.setAlpha(isOdd ? 0.03 : 0.05)
+					.setTint(0xf00000)
+					.setAlpha(isOdd ? 0.3 : 0.5)
 
 				sprite.displayWidth = blockSize
 				sprite.displayHeight = blockSize

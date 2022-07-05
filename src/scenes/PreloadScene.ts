@@ -12,16 +12,12 @@ export class PreloadScene extends Phaser.Scene {
 	preload(): void {
 		this.load.baseURL = "assets/"
 		// preload the assets
-		this.load.image("ground", "ground.png")
-		this.load.image("ground_tile", "ground_tile.png")
+
+		this.load.image("background", "background.png")
+
 		this.load.image("ball", "ball.png")
-		this.load.image("block", "block.png")
-		this.load.image("special_ball", "special_ball.png")
+
 		this.load.image("extra_ball", "extra_ball.png")
-		this.load.image("life", "life.png")
-		this.load.image("orange_ball", "orange_ball.png")
-		this.load.image("collision", "collision.png")
-		this.load.image("aim", "aim.png")
 		this.load.image("arrow_ball", "arrow_ball.png")
 
 		// game over screen
@@ -29,8 +25,9 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.image("gameover_screen", "gameover_screen.png")
 
 		this.load.multiatlas("heart", "heart.json")
-
-		this.load.multiatlas("monster-yellow", "monster-yellow.json")
+		this.load.multiatlas("life", "life.json")
+		this.load.multiatlas("monster-green", "monster-green.json")
+		this.load.multiatlas("special-brick", "special-brick.json")
 
 		// listeners
 		this.load.on("progress", this.handleOnProgress, this)

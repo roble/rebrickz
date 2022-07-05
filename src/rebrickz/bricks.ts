@@ -5,10 +5,11 @@ import { BrickType, ExtraBall, SpecialBall } from "@rebrickz"
 import { Ball } from "./ball"
 import { Balls } from "./balls"
 import { Brick } from "./brick/brick"
-import { BlockTypeClass, BrickGroup } from "./brick-group"
+import { BrickGroup } from "./brick-group"
 import { ExtraLife } from "./brick/extra-life"
 import { Health } from "./brick/health"
 import { World } from "./world"
+import { Base as BrickBase } from "./brick/base"
 
 export type BlockGroup = {
 	[key in BrickType]: BrickGroup
@@ -84,11 +85,13 @@ export class Bricks {
 				case BrickType.SPECIAL_BALL:
 					this.events.emit(Bricks.EVENTS.COLLECTED, brick)
 					break
-				default:
-					count++
+				case BrickType.BRICK: {
+					const _brick = brick as Brick
+					_brick.health.kill()
 					break
+				}
 			}
-			brick.destroy()
+			count++
 		})
 
 		return count
@@ -115,11 +118,11 @@ export class Bricks {
 	}
 
 	getChildrenByType(type: BrickType) {
-		return this.groups[type].bricks as BlockTypeClass[]
+		return this.groups[type].bricks as BrickBase[]
 	}
 
 	getChildren() {
-		let children: BlockTypeClass[] = []
+		let children: BrickBase[] = []
 		for (const type of this.getBlockTypes()) {
 			children = [...children, ...this.getChildrenByType(type)]
 		}
@@ -295,7 +298,7 @@ export class Bricks {
 
 		for (const type of this.getBlockTypes()) {
 			const t = type as BrickType
-			this.groups[t].bricks.forEach((block: BlockTypeClass) => {
+			this.groups[t].bricks.forEach((block: BrickBase) => {
 				slots[block.row][block.col] = true
 			})
 		}
