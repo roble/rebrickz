@@ -33,8 +33,12 @@ export class Brick extends Base {
 		this.health.events.on(Health.EVENTS.DAMAGE, (damage: number) => {
 			this.play("pain")
 			this.emit(Health.EVENTS.DAMAGE, damage)
+
 			if (this.row === World.lastRowIndex) this.playAfterDelay("angry", 500)
-			else this.playAfterDelay("blink", 500)
+			else {
+				if (this.health.isHealthLow()) this.playAfterDelay("tired", 500)
+				else this.playAfterDelay("blink", 500)
+			}
 		})
 
 		this.health.events.on(Health.EVENTS.DIED, () => {
@@ -57,7 +61,8 @@ export class Brick extends Base {
 
 		this.on(Base.EVENTS.MOVE_END, () => {
 			this.stop()
-			this.play("blink")
+			if (this.health.isHealthLow()) this.playAfterDelay("tired", 500)
+			else this.playAfterDelay("blink", 500)
 		})
 
 		this.on(Base.EVENTS.IN_LAST_ROW, () => {
@@ -137,6 +142,21 @@ export class Brick extends Base {
 			// yoyo: true,
 			repeat: -1,
 			repeatDelay: Phaser.Math.Between(200, 500),
+		})
+
+		/**
+		 * Tired
+		 */
+		this.anims.create({
+			key: "tired",
+			frames: this.scene.anims.generateFrameNames(this.texture.key, {
+				start: 0,
+				end: 4,
+				prefix: "monster/green/tired-",
+			}),
+			frameRate: 7,
+			repeat: -1,
+			repeatDelay: 300,
 		})
 
 		/**
