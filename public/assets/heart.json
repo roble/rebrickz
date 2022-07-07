@@ -4,51 +4,51 @@
 			"image": "heart.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 36,
-				"h": 15
+				"w": 40,
+				"h": 18
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "heart_filled.png",
+					"filename": "heart_filled",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 16,
-						"h": 13
+						"w": 20,
+						"h": 18
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 16,
-						"h": 13
+						"w": 20,
+						"h": 18
 					},
 					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 16,
-						"h": 13
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 18
 					}
 				},
 				{
-					"filename": "heart_outlined.png",
+					"filename": "heart_outlined",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 16,
-						"h": 13
+						"w": 20,
+						"h": 18
 					},
 					"spriteSourceSize": {
-						"x": 0,
+						"x": 20,
 						"y": 0,
-						"w": 16,
-						"h": 13
+						"w": 20,
+						"h": 18
 					},
 					"frame": {
-						"x": 19,
-						"y": 1,
-						"w": 16,
-						"h": 13
+						"x": 20,
+						"y": 0,
+						"w": 20,
+						"h": 18
 					}
 				}
 			]

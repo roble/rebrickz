@@ -17,8 +17,8 @@ class Life {
 
 	setState(state: boolean) {
 		this.state = state
-		if (state) this.sprite.setFrame("heart_filled.png")
-		else this.sprite.setFrame("heart_outlined.png")
+		if (state) this.sprite.setFrame("heart_filled")
+		else this.sprite.setFrame("heart_outlined")
 	}
 }
 
