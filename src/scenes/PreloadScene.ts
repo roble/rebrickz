@@ -16,6 +16,7 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.image("background", "background.png")
 
 		this.load.image("ball", "ball.png")
+		this.load.image("collision", "collision.png")
 
 		this.load.image("extra_ball", "extra_ball.png")
 		this.load.image("arrow_ball", "arrow_ball.png")

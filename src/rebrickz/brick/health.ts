@@ -112,6 +112,10 @@ export class Health {
 		this._y = value
 	}
 
+	isHealthLow(): boolean {
+		return this.percentage * 100 < 30
+	}
+
 	draw() {
 		this.criticalText.setAlpha(0)
 		this.instantKillText.setAlpha(0)
@@ -133,7 +137,7 @@ export class Health {
 			.fillStyle(0xffffff)
 			.fillRect(this.x + 1, this.y + 1, this.width - 2, this.height - 2)
 
-		if (this.percentage * 100 < 30) {
+		if (this.isHealthLow()) {
 			this.bar.fillStyle(0x732828)
 		} else {
 			this.bar.fillStyle(0xff6464)
