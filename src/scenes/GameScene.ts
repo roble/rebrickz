@@ -160,10 +160,8 @@ export class GameScene extends Phaser.Scene {
 					this.balls.animateCollect(brick.x, brick.y - brick.width / 2, x, y)
 					break
 				}
-				default:
-					this.collected.push(brick)
-					break
 			}
+			this.collected.push(brick)
 		})
 		/**
 		 * Event listeners for brick health
