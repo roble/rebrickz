@@ -152,7 +152,7 @@ export const GameConfig: GameConfigType = {
 		dropOnRows: {
 			normal: {
 				min: 1,
-				max: 8,
+				max: 2,
 			},
 			special: {
 				min: 0,
