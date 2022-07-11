@@ -1,127 +1,127 @@
 {
 	"textures": [
 		{
-			"image": "special-brick.png",
+			"image": "particles.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 300,
-				"h": 50
+				"w": 66,
+				"h": 22
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "special-brick/float-0",
+					"filename": "green",
 					"sourceSize": {
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"frame": {
 						"x": 0,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "special-brick/float-1",
+					"filename": "yellow",
 					"sourceSize": {
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"spriteSourceSize": {
-						"x": 50,
+						"x": 22,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"frame": {
-						"x": 50,
+						"x": 22,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "special-brick/float-2",
+					"filename": "heart",
 					"sourceSize": {
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"spriteSourceSize": {
-						"x": 100,
+						"x": 44,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"frame": {
-						"x": 100,
+						"x": 44,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "special-brick/float-3",
+					"filename": "light-green",
 					"sourceSize": {
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"spriteSourceSize": {
-						"x": 150,
+						"x": 66,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"frame": {
-						"x": 150,
+						"x": 66,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0
+						"y": 0.5
 					}
 				},
 				{
-					"filename": "special-brick/float-4",
+					"filename": "grey",
 					"sourceSize": {
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"spriteSourceSize": {
-						"x": 200,
+						"x": 88,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"frame": {
-						"x": 200,
+						"x": 88,
 						"y": 0,
-						"w": 50,
-						"h": 50
+						"w": 22,
+						"h": 22
 					},
 					"anchor": {
 						"x": 0.5,
-						"y": 0
+						"y": 0.5
 					}
 				}
 			]

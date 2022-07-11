@@ -1,16 +1,16 @@
 {
 	"textures": [
 		{
-			"image": "special-brick.png",
+			"image": "extra-ball.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 300,
+				"w": 250,
 				"h": 50
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "special-brick/float-0",
+					"filename": "extra-ball/float-0",
 					"sourceSize": {
 						"w": 50,
 						"h": 50
@@ -33,7 +33,7 @@
 					}
 				},
 				{
-					"filename": "special-brick/float-1",
+					"filename": "extra-ball/float-1",
 					"sourceSize": {
 						"w": 50,
 						"h": 50
@@ -56,7 +56,7 @@
 					}
 				},
 				{
-					"filename": "special-brick/float-2",
+					"filename": "extra-ball/float-2",
 					"sourceSize": {
 						"w": 50,
 						"h": 50
@@ -79,7 +79,7 @@
 					}
 				},
 				{
-					"filename": "special-brick/float-3",
+					"filename": "extra-ball/float-3",
 					"sourceSize": {
 						"w": 50,
 						"h": 50
@@ -102,7 +102,7 @@
 					}
 				},
 				{
-					"filename": "special-brick/float-4",
+					"filename": "extra-ball/float-4",
 					"sourceSize": {
 						"w": 50,
 						"h": 50
