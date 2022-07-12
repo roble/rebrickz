@@ -17,8 +17,6 @@ export class PreloadScene extends Phaser.Scene {
 
 		this.load.image("ball", "ball.png")
 		this.load.image("collision", "collision.png")
-
-		this.load.image("extra_ball", "extra_ball.png")
 		this.load.image("arrow_ball", "arrow_ball.png")
 
 		// game over screen
@@ -29,6 +27,8 @@ export class PreloadScene extends Phaser.Scene {
 		this.load.multiatlas("life", "life.json")
 		this.load.multiatlas("monster-green", "monster-green.json")
 		this.load.multiatlas("special-brick", "special-brick.json")
+		this.load.multiatlas("extra-ball", "extra-ball.json")
+		this.load.multiatlas("particles", "particles.json")
 
 		// listeners
 		this.load.on("progress", this.handleOnProgress, this)
