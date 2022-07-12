@@ -1,4 +1,4 @@
-# Phaser 3 Webpack Typescript Brick breaker game
+# Phaser 3 Typescript Brick breaker game
 
 A study case for learning typescript
 
