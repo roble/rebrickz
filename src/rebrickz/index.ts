@@ -1,5 +1,5 @@
 import { BallsGroup } from "./balls-group"
-import { Ball, BallType, BallState } from "./ball"
+import { Ball, BallType, BallState } from "./ball/ball"
 import { Balls } from "./balls"
 import { Brick } from "./brick/brick"
 import { BrickGroup } from "./brick-group"

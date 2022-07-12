@@ -2,12 +2,14 @@ import { World } from "@rebrickz"
 import { Base, BrickOptions, BrickType } from "./base"
 import { Health } from "./health"
 import { Emitters } from "./emitters"
+import { GameConfig as config } from "@config"
 
 export class Brick extends Base {
 	readonly brickType: BrickType
 
 	health: Health
 	emitters: Emitters
+	lastAnimation!: string | Phaser.Animations.Animation | Phaser.Types.Animations.PlayAnimationConfig
 
 	constructor(scene: Phaser.Scene, options: BrickOptions) {
 		super(scene, { ...options, frame: "monster/green/move-0" })
@@ -17,15 +19,51 @@ export class Brick extends Base {
 		this.createEmitters()
 		this.addListeners()
 		this.createAnimations()
+		this.lastAnimation = ""
 		this.play("blink")
+	}
+
+	play(
+		key: string | Phaser.Animations.Animation | Phaser.Types.Animations.PlayAnimationConfig,
+		ignoreIfPlaying?: boolean | undefined
+	): this {
+		this.lastAnimation = key
+		return super.play(key, ignoreIfPlaying)
+	}
+
+	playAndRestore(
+		key: string | Phaser.Animations.Animation | Phaser.Types.Animations.PlayAnimationConfig,
+		delay = 500,
+		ignoreIfPlaying?: boolean | undefined
+	): this {
+		this.play(key, ignoreIfPlaying)
+		if (this.lastAnimation) this.playAfterDelay(this.lastAnimation, delay)
+
+		return this
 	}
 
 	show(): this {
 		return this.fall()
 	}
 
+	attack(): this {
+		const args = {
+			alpha: 1,
+			scale: 1,
+			ease: "Power3",
+			duration: 600,
+			y: config.height + config.brick.size,
+			onComplete: () => {
+				this.destroy()
+			},
+			onCompleteContext: this,
+		}
+		this.animate(args, true)
+		return this
+	}
+
 	createEmitters(): this {
-		this.emitters.create(Emitters.EMITTERS.EXPLOSION_YELLOW.name)
+		this.emitters.create(Emitters.EMITTERS.EXPLOSION_GREY.name)
 		return this
 	}
 
@@ -44,7 +82,7 @@ export class Brick extends Base {
 		this.health.events.on(Health.EVENTS.DIED, () => {
 			this.body.enable = false
 			this.setAlpha(0.95)
-			this.play("die")
+			this.play("die", true)
 			setTimeout(() => {
 				this.emitters.explode()
 				this.destroy()
@@ -158,20 +196,6 @@ export class Brick extends Base {
 			repeat: -1,
 			repeatDelay: 300,
 		})
-
-		/**
-		 * Explosion
-		 */
-		// this.anims.create({
-		// 	key: "explosion",
-		// 	frames: this.scene.anims.generateFrameNames(this.texture.key, {
-		// 		start: 0,
-		// 		end: 8,
-		// 		prefix: "explosion/explosion-",
-		// 	}),
-		// 	frameRate: 30,
-		// 	repeat: 0,
-		// })
 	}
 }
 

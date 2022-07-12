@@ -1,4 +1,5 @@
 import { GameConfig as config } from "@config"
+import { Emitters } from "@rebrickz/brick/emitters"
 
 export enum BallType {
 	NORMAL,
@@ -14,14 +15,14 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	abstract ballType: BallType
 	abstract criticalRate: number
 	abstract instantKillRate: number
-
-	emitter!: Phaser.GameObjects.Particles.ParticleEmitter
-	particle!: Phaser.GameObjects.Particles.ParticleEmitterManager
+	emitters: Emitters
 	state: BallState
 
 	constructor(scene: Phaser.Scene, x: number, y: number, texture = "ball") {
 		super(scene, x, y, texture)
 		this.state = BallState.STOPPED
+		this.emitters = new Emitters(scene, this)
+
 		this.on("addedtoscene", this.onCreate, this)
 	}
 
@@ -31,31 +32,15 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 		this.displayWidth = size
 		this.displayHeight = size
 		this.enableCollision(true)
-		this.createEmitter()
+		this.createEmitters()
+
 		return this
 	}
 
-	private createEmitter() {
-		this.particle = this.scene.add.particles("ball")
-		this.emitter = this.particle.createEmitter({
-			angle: 0,
-			x: this.x,
-			y: this.y,
-			speed: { min: 0, max: 100 },
-			accelerationX: {
-				min: 100,
-				max: 500,
-			},
-			gravityY: 1000,
-			gravityX: 0,
-			visible: false,
-			scale: { start: 0.8, end: 0.0 },
-			alpha: { min: 0.3, max: 0.9 },
-			lifespan: 100,
-			blendMode: "ADD",
-		})
-		// this.emitter.startFollow(this)
-		this.emitter.stop()
+	createEmitters(): this {
+		this.emitters.create(Emitters.EMITTERS.NORMAL_BALL.name)
+		this.emitters.stop()
+		return this
 	}
 
 	private animate(args: object) {
@@ -106,14 +91,14 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 
 	start(x: number, y?: number) {
 		this.show()
-		// this.emitter.start()
+		this.emitters.start()
 		this.state = BallState.RUNNING
 		this.setVelocity(x, y)
 	}
 
 	stop(): this {
 		super.stop()
-		this.emitter.stop()
+		this.emitters.stop()
 		this.state = BallState.STOPPED
 		this.setVelocity(0)
 		return this
@@ -121,8 +106,7 @@ abstract class Base extends Phaser.Physics.Arcade.Sprite {
 
 	destroy(emit?: boolean): void {
 		if (emit) {
-			this.emitter.active = true
-			this.emitter.explode(20, 0, 0)
+			this.emitters.explode(20, 0, 0)
 		}
 		// destroy and remove from scene
 		super.destroy(true)

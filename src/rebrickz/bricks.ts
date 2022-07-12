@@ -2,7 +2,7 @@ import { GameConfig as config } from "@config"
 
 import { BrickType, ExtraBall, SpecialBall } from "@rebrickz"
 
-import { Ball } from "./ball"
+import { Ball } from "./ball/ball"
 import { Balls } from "./balls"
 import { Brick } from "./brick/brick"
 import { BrickGroup } from "./brick-group"
@@ -84,14 +84,15 @@ export class Bricks {
 				case BrickType.EXTRA_LIFE:
 				case BrickType.SPECIAL_BALL:
 					this.events.emit(Bricks.EVENTS.COLLECTED, brick)
+					brick.destroy()
 					break
 				case BrickType.BRICK: {
 					const _brick = brick as Brick
-					_brick.health.kill()
+					_brick.attack()
+					count++
 					break
 				}
 			}
-			count++
 		})
 
 		return count

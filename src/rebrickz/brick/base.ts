@@ -60,10 +60,12 @@ export abstract class Base extends Phaser.Physics.Arcade.Sprite {
 	 * Move methods
 	 */
 
-	animate(args: object): this {
+	animate(args: object, silent = false): this {
 		this.scene?.tweens.add({
 			targets: [this, ...this.followPosition],
-			onUpdate: () => this.emit(Base.EVENTS.MOVE),
+			onUpdate: () => {
+				if (!silent) this.emit(Base.EVENTS.MOVE)
+			},
 			...args,
 		})
 		return this

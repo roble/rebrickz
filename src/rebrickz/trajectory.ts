@@ -332,7 +332,7 @@ export class Trajectory {
 			this.world.getBounds().x + this.world.getBounds().width,
 			this.world.getBounds().y + this.world.getBounds().height,
 			this.world.getBounds().x + this.world.getBounds().width,
-			this.world.getBoundsBottom() + 2 // 2 is to fix 1 pixel bug on very bottom
+			this.world.getBoundsBottom() + 4 // 4 is to fix 1 pixel bug on very bottom
 		)
 	}
 
@@ -341,7 +341,7 @@ export class Trajectory {
 			this.world.getBounds().x,
 			this.world.getBounds().y + this.world.getBounds().height,
 			this.world.getBounds().x,
-			this.world.getBoundsBottom() + 2 // 2 is to fix 1 pixel bug on very bottom
+			this.world.getBoundsBottom() + 4 // 4 is to fix 1 pixel bug on very bottom
 		)
 	}
 

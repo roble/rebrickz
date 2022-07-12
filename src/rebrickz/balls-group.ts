@@ -1,4 +1,4 @@
-import { Ball } from "./ball"
+import { Ball } from "./ball/ball"
 
 export type BallTypeClass = Ball // add other types
 

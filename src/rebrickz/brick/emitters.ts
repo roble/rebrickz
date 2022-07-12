@@ -1,3 +1,4 @@
+import { Ball } from ".."
 import { Base } from "./base"
 
 interface emitter {
@@ -11,7 +12,7 @@ interface emitter {
 const defaultConfig = {
 	EXPLOSION: {
 		scale: {
-			start: 0.8,
+			start: 1.5,
 			end: 0.1,
 		},
 		speed: 70,
@@ -43,29 +44,40 @@ const defaultConfig = {
 
 export class Emitters {
 	static readonly EMITTERS: emitter = {
-		EXPLOSION_GREEN: {
-			name: "EXPLOSION_GREEN",
-			particle: "extra_ball",
+		NORMAL_BALL: {
+			name: "NORMAL_BALL",
+			particle: "particles",
 			config: {
-				...defaultConfig.EXPLOSION,
-				gravityY: 200,
+				radial: false,
+				frame: "white-50",
+				lifespan: 700,
+				alpha: {
+					end: 0.0,
+					start: 0.7,
+				},
+				quantity: 1,
+				// speed: 100,
+				scale: { start: 0.7, end: 0, ease: "Power3" },
+
+				blendMode: Phaser.BlendModes.SCREEN,
 			},
 		},
 		HEART_UP: {
 			name: "HEART_UP",
-			particle: "life",
+			particle: "particles",
 			config: {
 				...defaultConfig.UP,
 				gravityY: -50,
+				frame: "heart",
 				scale: {
 					min: 0.1,
-					max: 0.3,
+					max: 0.6,
 				},
 				alpha: {
 					end: 0.0,
 					start: 0.2,
 				},
-				lifespan: 2000,
+				lifespan: 1000,
 				quantity: 1,
 				speed: 30,
 				blendMode: Phaser.BlendModes.DIFFERENCE,
@@ -73,42 +85,72 @@ export class Emitters {
 		},
 		GREEN_UP: {
 			name: "GREEN_UP",
-			particle: "extra_ball",
+			particle: "particles",
 			config: {
 				...defaultConfig.UP,
+
 				gravityY: -50,
+			},
+		},
+		EXPLOSION_GREEN: {
+			name: "EXPLOSION_GREEN",
+			particle: "particles",
+			config: {
+				...defaultConfig.EXPLOSION,
+				frame: "green",
+				gravityY: 200,
+			},
+		},
+		EXPLOSION_LIGHT_GREEN: {
+			name: "EXPLOSION_LIGHT_GREEN",
+			particle: "particles",
+			config: {
+				...defaultConfig.EXPLOSION,
+				frame: "light-green",
+				gravityY: 200,
 			},
 		},
 		EXPLOSION_HEART_UP: {
 			name: "EXPLOSION_HEART_UP",
-			particle: "life",
+			particle: "particles",
 			config: {
 				...defaultConfig.EXPLOSION,
+				frame: "heart",
 				gravityY: -10,
 			},
 		},
 		EXPLOSION_HEART_DOWN: {
 			name: "EXPLOSION_HEART_DOWN",
-			particle: "life",
+			particle: "particles",
 			config: {
 				...defaultConfig.EXPLOSION,
+				frame: "heart",
 				gravityY: 200,
 			},
 		},
 		EXPLOSION_YELLOW: {
 			name: "EXPLOSION_YELLOW",
-			particle: "block",
+			particle: "particles",
 			config: {
 				...defaultConfig.EXPLOSION,
+				frame: "yellow",
+			},
+		},
+		EXPLOSION_GREY: {
+			name: "EXPLOSION_GREY",
+			particle: "particles",
+			config: {
+				...defaultConfig.EXPLOSION,
+				frame: "grey",
 			},
 		},
 	}
 
 	private scene: Phaser.Scene
 	emitters: { [key: string]: Phaser.GameObjects.Particles.ParticleEmitter }
-	follow: Base
+	follow: Base | Ball
 
-	constructor(scene: Phaser.Scene, follow: Base) {
+	constructor(scene: Phaser.Scene, follow: Base | Ball) {
 		this.scene = scene
 		this.emitters = {}
 		this.follow = follow
@@ -138,15 +180,16 @@ export class Emitters {
 	}
 
 	stop(key?: keyof emitter): this {
-		if (!key) {
-			Object.keys(this.emitters).forEach((key) => {
-				this.emitters[key].active = false
-				this.emitters[key].visible = false
-			})
-		} else {
-			this.emitters[key].active = false
+		const _stop = (key: keyof emitter) => {
 			this.emitters[key].visible = false
+			setTimeout(() => {
+				this.emitters[key].active = false
+			}, 1000)
 		}
+
+		if (!key) Object.keys(this.emitters).forEach((key) => _stop(key))
+		else _stop(key)
+
 		return this
 	}
 

@@ -1,5 +1,5 @@
 import { GameConfig as config } from "@config"
-import { Ball, BallType } from "./ball"
+import { Ball, BallType } from "./ball/ball"
 import { BallsGroup } from "./balls-group"
 
 export class Balls {
@@ -160,10 +160,11 @@ export class Balls {
 	}
 
 	animateCollect(x: number, y: number, toX: number, toY: number) {
-		const ball = this.scene.add.sprite(x, y, "extra_ball")
+		const ball = this.scene.add.sprite(x, y, "ball")
 
 		ball.setDepth(10)
 		ball.setAlpha(0)
+		ball.setOrigin(0.5)
 
 		this.scene.tweens.timeline({
 			targets: ball,
@@ -174,7 +175,6 @@ export class Balls {
 					scale: 1.5,
 					alpha: 1,
 					duration: 700,
-					// rotation: 2,
 					angle: 360,
 				},
 				{

@@ -21,7 +21,7 @@ export class SpecialBall extends Base {
 	}
 
 	createEmitters(): this {
-		this.emitters.create(Emitters.EMITTERS.EXPLOSION_GREEN.name)
+		this.emitters.create(Emitters.EMITTERS.EXPLOSION_YELLOW.name)
 		return this
 	}
 

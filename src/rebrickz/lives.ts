@@ -122,7 +122,6 @@ export class Lives {
 						scale: 1.5,
 						alpha: 1,
 						duration: 700,
-						// rotation: 2,
 						angle: 360,
 					},
 					{

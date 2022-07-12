@@ -159,11 +159,6 @@ export class Health {
 	set level(value: number) {
 		this._level = value
 	}
-
-	set alpha(value: number) {
-		// this.bar.alpha = value
-	}
-
 	private animateText(text: Phaser.GameObjects.Text): Promise<this> {
 		text
 			.setScale(0)
