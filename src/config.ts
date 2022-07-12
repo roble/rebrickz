@@ -10,7 +10,7 @@ const GAME_COLS = 6
 const BLOCK_SIZE = GAME_HEIGHT / (GAME_ROWS + 4)
 const WORLD_HEIGHT = GAME_ROWS * BLOCK_SIZE + BLOCK_SIZE
 const WORLD_WIDTH = GAME_COLS * BLOCK_SIZE
-const BALL_SIZE = 16
+const BALL_SIZE = 18
 
 interface minMax {
 	min: number
