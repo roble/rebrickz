@@ -25,11 +25,11 @@ After starting the development server with `npm start`, you can edit any files i
 
 ## TODO
 
-[ ] - Implement special balls
-[ ] - Create sprite for the ball launcher
-[ ] - Improve the layout of score panel
-[ ] - Create a main screen
-[ ] - Create other type of monster
+- [ ] Implement special balls
+- [ ] Create sprite for the ball launcher
+- [ ] Improve the layout of score panel
+- [ ] Create a main screen
+- [ ] Create other type of monster
 
 
 
