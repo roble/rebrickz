@@ -1,8 +1,15 @@
-# Phaser 3 Typescript Brick breaker game
+# Rebrickz
 
-A study case for learning typescript.
+Rebrickz is a brick breaker game based on Ballz style. I started develop this game with the intention of learning how to use Typescript and Phaser3.
+
+All the code, styling and graphics were created by me.
+
+Check it out:
 
 [Online demo](https://roble.github.io/rebrickz/)
+[Figma file](https://www.figma.com/file/nYsDfhw9c2LeFwbtLRveoS/Rebrickz?node-id=0%3A1)
+
+Feel free to use, however, if you want to use the code, please make sure to give me credit.
 
 ## Requirements
 
@@ -30,6 +37,3 @@ After starting the development server with `npm start`, you can edit any files i
 - [ ] Improve the layout of score panel
 - [ ] Create a main screen
 - [ ] Create other type of monster
-
-
-
