@@ -6,12 +6,12 @@ All the code, styling and graphics were created by me.
 
 Feel free to use, however, if you want to use the code, please make sure to give me credit.
 
-## Demo 
+## Demo
 
 [Online demo](https://roble.github.io/rebrickz)
 
 
-## Design files 
+## Design files 
 
 [Figma file](https://www.figma.com/file/nYsDfhw9c2LeFwbtLRveoS/Rebrickz?node-id=0%3A1)
 
