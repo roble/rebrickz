@@ -16,7 +16,11 @@ export default defineConfig({
 	},
 	build: {
 		emptyOutDir: true,
+		chunkSizeWarningLimit: 2000,
 		rollupOptions: {
+			manualChunks: {
+				phaser: ['phaser']
+			},
 			plugins: [
 				//  Toggle the booleans here to enable / disable Phaser 3 features:
 				replace({

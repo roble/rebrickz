@@ -1,0 +1,62 @@
+{
+	"textures": [
+		{
+			"image": "heart.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 40,
+				"h": 18
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "heart_filled",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 18
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 18
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 18
+					}
+				},
+				{
+					"filename": "heart_outlined",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 18
+					},
+					"spriteSourceSize": {
+						"x": 20,
+						"y": 0,
+						"w": 20,
+						"h": 18
+					},
+					"frame": {
+						"x": 20,
+						"y": 0,
+						"w": 20,
+						"h": 18
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:218162768b868a5a20307d043321aca5:2980c9df7009642af5ac8363bb9c81d0:cb39580ce6d86b4835ef90f0a2df983e$"
+	}
+}
