@@ -43,7 +43,7 @@ export class Lives {
 		this.x = x
 		this.y = y
 		this.max = max
-		this.current = 1 //max
+		this.current = max
 
 		for (let i = 0; i < max; i++) {
 			this.lives.push(new Life(scene, this.x + 70 + this.lifeWidth * i, this.y - 2 + this.lifeWidth / 2))
