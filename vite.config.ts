@@ -14,10 +14,10 @@ export default defineConfig({
 		},
 		extensions: [".ts", ".tsx", ".js"],
 	},
+	base: '/rebrickz/',
 	build: {
 		emptyOutDir: true,
 		chunkSizeWarningLimit: 2000,
-		base: '/rebrickz/',
 		rollupOptions: {
 			manualChunks: {
 				phaser: ['phaser']
