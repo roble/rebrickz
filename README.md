@@ -1,6 +1,8 @@
 # Phaser 3 Typescript Brick breaker game
 
-A study case for learning typescript
+A study case for learning typescript.
+
+[Online demo](https://roble.github.io/rebrickz/)
 
 ## Requirements
 
