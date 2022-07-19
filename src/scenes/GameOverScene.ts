@@ -8,6 +8,7 @@ export enum GameState {
 export class GameOverScene extends Phaser.Scene {
 	background!: Phaser.GameObjects.Sprite
 	buttonRestart!: Phaser.GameObjects.Sprite
+	scoreText!: Phaser.GameObjects.Text
 
 	constructor() {
 		super({ key: "GameOverScene", active: false })
@@ -20,32 +21,29 @@ export class GameOverScene extends Phaser.Scene {
 		this.buttonRestart = this.add.sprite(config.width / 2, config.height - 100, "button_restart")
 		this.buttonRestart.setAlpha(0).setOrigin(0.5).setDepth(2).setInteractive()
 
+		this.scoreText = this.add.text(config.width / 2, config.height - 200, `SCORE: ${data.score}`, {
+			fontSize: "30px",
+			fontFamily: "Arial Black",
+		})
+		this.scoreText.setDepth(1).setAlpha(0).setOrigin(0.5)
+
 		this.buttonRestart.on("pointerdown", () => {
-			console.log("RESTART")
 			this.tweens.add({
-				targets: [this.background, this.buttonRestart],
+				targets: [this.background, this.buttonRestart, this.scoreText],
 				duration: 300,
 				ease: "Cubic.easeInOut",
 				alpha: { from: 1, to: 0 },
 				onComplete: () => {
-					console.log("GO TO MAIN SCENE")
 					this.scene.start("GameScene")
 				},
 			})
 		})
 
 		this.tweens.add({
-			targets: [this.background, this.buttonRestart],
+			targets: [this.background, this.buttonRestart, this.scoreText],
 			duration: 500,
 			ease: "Cubic.easeInOut",
 			alpha: { from: 0, to: 1 },
 		})
-
-		const text = this.add.text(config.width / 2, config.height - 200, `SCORE: ${data.score}`, {
-			fontSize: "30px",
-			fontFamily: "Arial Black",
-		})
-		text.setDepth(1)
-		text.setOrigin(0.5)
 	}
 }

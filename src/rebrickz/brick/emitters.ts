@@ -166,12 +166,13 @@ export class Emitters {
 	}
 
 	start(key?: keyof emitter): this {
+		console.log("start", key)
 		if (!key) {
 			Object.keys(this.emitters).forEach((key) => {
 				this.emitters[key].active = true
 				this.emitters[key].visible = true
 			})
-		} else {
+		} else if (this.emitters[key] !== undefined) {
 			this.emitters[key].active = true
 			this.emitters[key].visible = true
 		}
@@ -187,8 +188,11 @@ export class Emitters {
 			}, 1000)
 		}
 
-		if (!key) Object.keys(this.emitters).forEach((key) => _stop(key))
-		else _stop(key)
+		if (!key) {
+			Object.keys(this.emitters).forEach((key) => _stop(key))
+		} else if (this.emitters[key] !== undefined) {
+			_stop(key)
+		}
 
 		return this
 	}
@@ -199,7 +203,7 @@ export class Emitters {
 				this.start(key)
 				this.emitters[key].explode(quantity, x, y)
 			})
-		} else {
+		} else if (this.emitters[key] !== undefined) {
 			this.start(key)
 			this.emitters[key].explode(quantity, x, y)
 		}
